@@ -1,8 +1,13 @@
-site_name: My site
+site_name: Single cell transcriptomics
 nav:
     - Home: index.md
     - Precourse preparations: precourse.md
     - Course schedule: course_schedule.md
+    - Day 1:
+      - General introduction: day1/general_introduction.md
+      - Introduction scRNAseq: day1/introduction_scrnaseq.md
+      - Normalization and scaling: day1/normalization_scaling.md
+      - Quality control: day1/quality_control.md
     - Exercises: exercises.md
 
 theme:
@@ -11,8 +16,8 @@ theme:
   favicon: assets/images/SIB_logo.svg
 
 # Repository
-repo_name: sib-swiss/course_website_template
-repo_url: https://github.com/sib-swiss/course_website_template
+repo_name: sib-swiss/single-cell-training
+repo_url: https://github.com/sib-swiss/single-cell-training
 
 markdown_extensions:
   - abbr
