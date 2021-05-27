@@ -1,6 +1,7 @@
 .DS_Store
 site
 .Rproj.user
+.cache
 .local
 .config
 .bash_history
