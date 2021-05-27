@@ -13,6 +13,10 @@
 
 After this course, you will be able to:
 
+- distinguish advantages and pitfalls of scRNAseq
+- design your own scRNA-seq experiment
+- apply a downstream analysis using R
+
 ### Learning outcomes explained
 
 To reach the general learning outcomes above, we have set a number of smaller learning outcomes. Each chapter starts with these smaller learning outcomes. Use these at the start of a chapter to get an idea what you will learn. Use them also at the end of a chapter to evaluate whether you have learned what you were expected to learn.

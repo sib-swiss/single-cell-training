@@ -16,22 +16,22 @@
 
 | block   	| start    	| end      	| subject                             	|
 |---------	|----------	|----------	|-------------------------------------	|
-| block 1 	| 9:00 AM  	| 10:30 AM 	| [Dimensionality reduction](day2/read_alignment.md)	|
+| block 1 	| 9:00 AM  	| 10:30 AM 	| [Dimensionality reduction](day2/dimensionality_reduction.md)	|
 |         	| 10:30 AM 	| 11:00 AM 	| BREAK                               	|
-| block 2 	| 11:00 AM 	| 12:30 PM 	| [Cell type and marker identification](day2/file_types.md)              	|
+| block 2 	| 11:00 AM 	| 12:30 PM 	| [Integration](day2/integration.md)              	|
 |         	| 12:30 PM 	| 1:30 PM  	| BREAK                               	|
-| block 3 	| 1:30 PM  	| 3:00 PM  	| [Differential expression analysis](day2/samtools.md)  |
+| block 3 	| 1:30 PM  	| 3:00 PM  	| [Cell annotation](day2/cell_annotation.md)  |
 |         	| 3:00 PM  	| 3:30 PM  	| BREAK                               	|
-| block 4 	| 3:30 PM  	| 5:00 PM  	| [Exercises](group_work.md)	|
+| block 4 	| 3:30 PM  	| 5:00 PM  	| Further exercises	|
 
 ## Day 3
 
 | block   	| start    	| end      	| subject                             	|
 |---------	|----------	|----------	|-------------------------------------	|
-| block 1 	| 9:00 AM  	| 10:30 AM 	| [Differential expression analysis - continued](day2/read_alignment.md)	|
+| block 1 	| 9:00 AM  	| 10:30 AM 	| [Differential gene expression](day3/differential_gene_expression.md)	|
 |         	| 10:30 AM 	| 11:00 AM 	| BREAK                               	|
-| block 2 	| 11:00 AM 	| 12:30 PM 	| [Differential expression analysis - continued](day2/file_types.md)              	|
+| block 2 	| 11:00 AM 	| 12:30 PM 	| [Differential gene expression](day3/differential_gene_expression.md)            	|
 |         	| 12:30 PM 	| 1:30 PM  	| BREAK                               	|
-| block 3 	| 1:30 PM  	| 3:00 PM  	| [Pseudotime analysis](day2/samtools.md)  |
+| block 3 	| 1:30 PM  	| 3:00 PM  	| [Trajectory analysis](day3/trajectory_analysis)  |
 |         	| 3:00 PM  	| 3:30 PM  	| BREAK                               	|
-| block 4 	| 3:30 PM  	| 5:00 PM  	| [Exercises](group_work.md)	|
+| block 4 	| 3:30 PM  	| 5:00 PM  	| [Trajectory analysis](day3/trajectory_analysis) 	|
