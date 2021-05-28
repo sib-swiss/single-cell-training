@@ -32,6 +32,6 @@
 |         	| 10:30 AM 	| 11:00 AM 	| BREAK                               	|
 | block 2 	| 11:00 AM 	| 12:30 PM 	| [Differential gene expression](day3/differential_gene_expression.md)            	|
 |         	| 12:30 PM 	| 1:30 PM  	| BREAK                               	|
-| block 3 	| 1:30 PM  	| 3:00 PM  	| [Trajectory analysis](day3/trajectory_analysis)  |
+| block 3 	| 1:30 PM  	| 3:00 PM  	| [Enrichment analysis](day3/enrichment_analysis.md)  |
 |         	| 3:00 PM  	| 3:30 PM  	| BREAK                               	|
-| block 4 	| 3:30 PM  	| 5:00 PM  	| [Trajectory analysis](day3/trajectory_analysis) 	|
+| block 4 	| 3:30 PM  	| 5:00 PM  	| [Trajectory analysis](day3/trajectory_analysis.md) 	|

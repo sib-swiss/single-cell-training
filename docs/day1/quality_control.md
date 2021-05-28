@@ -8,7 +8,7 @@
 
 ## Exercises
 
-> :material-zodiac-cancer: This chapter uses the `gbm` dataset 
+> :material-zodiac-cancer: This chapter uses the `gbm` dataset
 
 ### Cell cycle analysis
 
@@ -176,4 +176,20 @@ This might be slow to compute
 ```R
 # do not run
 gbm_cc <- SCTransform(gbm, vars.to.regress = c("S.Score", "G2M.Score"))
+```
+
+### Save the dataset and clear environment
+
+Now, save the dataset so you can use it tomorrow:
+
+```R
+saveRDS(gbm, "gbm_day1.rds")
+```
+
+Clear your environment:
+
+```R
+rm(list = ls())
+gc()
+.rs.restartR()
 ```

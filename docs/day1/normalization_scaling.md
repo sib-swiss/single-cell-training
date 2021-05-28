@@ -8,7 +8,7 @@
 
 ## Exercises
 
-> :material-zodiac-cancer: This chapter uses the `gbm` dataset 
+> :material-zodiac-cancer: This chapter uses the `gbm` dataset
 
 ### Normalization
 
@@ -136,7 +136,8 @@ plot_mean_variance <- function(count_mat){
   # get density colors
   cols <- densCols(log_mean, log_var)
 
-  plot(log_mean, log_var, col = cols, pch = 19, cex = 0.2, xlab = "log10(mean)", ylab = "log10(variation)")
+  plot(log_mean, log_var, col = cols, pch = 19, cex = 0.2,
+        xlab = "log10(mean)", ylab = "log10(variation)")
   # draw the line y=x
   abline(0,1, col = "red")
 }

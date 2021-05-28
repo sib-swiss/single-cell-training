@@ -8,9 +8,15 @@
 
 ## Exercises
 
-> :material-zodiac-cancer: This chapter uses the `gbm` dataset 
+> :material-zodiac-cancer: This chapter uses the `gbm` dataset
 
 ### Dimensionality reduction using Seurat
+
+Load the `gbm` dataset you have created yesterday:
+
+```R
+gbm <- readRDS("gbm_day1.rds")
+```
 
 Once the data is normalized, scaled and variable features have been identified, we can start to reduce the dimensionality of the data.
 For the PCA, by default, only the previously determined variable features are used as input, but can be defined using features argument if you wish to specify a vector of genes. The PCA will only be run on the variable features, that you can check with `VariableFeatures(gbm)`.
@@ -72,7 +78,7 @@ Seurat::DimPlot(gbm, reduction = "umap", group.by = "Phase")
 
 The method implemented in Seurat first constructs a KNN graph based on the euclidean distance in PCA space,
 and refine the edge weights between any two cells based on the shared overlap in their local neighborhoods
-(Jaccard similarity). This step is performed using the FindNeighbors() function, and takes as input the
+(Jaccard similarity). This step is performed using the `FindNeighbors()` function, and takes as input the
 previously defined dimensionality of the dataset.
 
 ```R
@@ -81,7 +87,7 @@ gbm <- Seurat::FindNeighbors(gbm, dims = 1:25)
 
 To cluster the cells, Seurat next implements modularity optimization techniques such as the Louvain algorithm
 (default) or SLM [SLM, Blondel et al., Journal of Statistical Mechanics], to iteratively group cells together,
-with the goal of optimizing the standard modularity function. The FindClusters() function implements this
+with the goal of optimizing the standard modularity function. The `FindClusters()`` function implements this
 procedure, and contains a resolution parameter that sets the ‘granularity’ of the downstream clustering,
 with increased values leading to a greater number of clusters.
 
@@ -100,7 +106,7 @@ To view how clusters sub-divide at increasing resolution:
 ```R
 library(clustree)
 clustree::clustree(gbm@meta.data[,grep("RNA_snn_res", colnames(gbm@meta.data))],
-         prefix = "RNA_snn_res.")
+                   prefix = "RNA_snn_res.")
 ```
 
 You can view the UMAP coloring each cell according to a cluster id like this:
@@ -121,3 +127,19 @@ Seurat::DimPlot(gbm, group.by = "RNA_snn_res.0.1")
     <figure>
       <img src="../../assets/images/UMAP_res.0.2.png" width="400"/>
     </figure>
+
+### Save the dataset and clear environment
+
+Now, save the dataset so you can use it later today:
+
+```R
+saveRDS(gbm, "gbm_day2_part1.rds")
+```
+
+Clear your environment:
+
+```R
+rm(list = ls())
+gc()
+.rs.restartR()
+```

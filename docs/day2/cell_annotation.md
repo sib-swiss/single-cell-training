@@ -9,9 +9,15 @@
 
 ## Exercises
 
-> :material-zodiac-cancer: This chapter uses the `gbm` dataset 
+> :material-zodiac-cancer: This chapter uses the `gbm` dataset
 
-Let's go back to our `gbm` dataset. In the last exercise we saw that probably clustering at a resolution of 0.2 gave the most sensible results. Let's therefore set the default identity of each cell based on this clustering:
+Load the `gbm` dataset you have created earlier today:
+
+```R
+gbm <- readRDS("gbm_day2_part1.rds")
+```
+
+In the last exercise we saw that probably clustering at a resolution of 0.2 gave the most sensible results. Let's therefore set the default identity of each cell based on this clustering:
 
 ```R
 gbm <- Seurat::SetIdent(gbm, value = gbm$RNA_snn_res.0.2)
@@ -167,3 +173,19 @@ Seurat::DimPlot(gbm, group.by = "SingleR_annot", label = T, repel = T)
     Showing that T-cells and NK-cells have a high module score based on our set of immune genes, which makes sense.
 
     Of course, it was also already clear from the UMAP plots that cluster 6 (the cluster with the high module score for the immune genes) contained the T-cells and NK-cells.
+
+### Save the dataset and clear environment
+
+Now, save the dataset so you can use it tomorrow:
+
+```R
+saveRDS(gbm, "gbm_day2_part2.rds")
+```
+
+Clear your environment:
+
+```R
+rm(list = ls())
+gc()
+.rs.restartR()
+```

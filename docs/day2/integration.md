@@ -13,8 +13,8 @@
 The `gbm` dataset does not contain any samples, treatments or methods to integrate. Therefore for these exercises we will use a different dataset that is described in [Comprehensive Integration of Single CellData](https://www.biorxiv.org/content/10.1101/460147v1). It is a dataset comprising of four different single cell experiment performed by using four different methods.
 
 ```R
-pancreas.data <- readRDS(file = "data/pancreas_v3_files/pancreas_expression_matrix.rds")
-metadata <- readRDS(file = "data/pancreas_v3_files/pancreas_metadata.rds")
+pancreas.data <- readRDS(file = "data/pancreas_dataset/pancreas_expression_matrix.rds")
+metadata <- readRDS(file = "data/pancreas_dataset/pancreas_metadata.rds")
 ```
 
 Create a Seurat object with all datasets.
@@ -97,7 +97,7 @@ To perform the integration, we split the combined object into a list, with each 
 pancreas.list <- Seurat::SplitObject(pancreas, split.by = "tech")
 
 for (i in 1:length(pancreas.list)) {
-    pancreas.list[[i]] <- Seurat::NormalizeData(pancreas.list[[i]], verbose = FALSE)
+    pancreas.list[[i]] <- Seurat::NormalizeData(pancreas.list[[i]])
     pancreas.list[[i]] <- Seurat::FindVariableFeatures(pancreas.list[[i]], selection.method = "vst", nfeatures = 2000,
         verbose = FALSE)
 }
@@ -138,8 +138,8 @@ Seurat::DefaultAssay(pancreas.integrated) <- "integrated"
     Performing the scaling, PCA and UMAP:
 
     ```R
-    pancreas.integrated <- Seurat::ScaleData(pancreas.integrated, verbose = FALSE)
-    pancreas.integrated <- Seurat::RunPCA(pancreas.integrated, npcs = 30, verbose = FALSE)
+    pancreas.integrated <- Seurat::ScaleData(pancreas.integrated)
+    pancreas.integrated <- Seurat::RunPCA(pancreas.integrated, npcs = 30)
     pancreas.integrated <- Seurat::RunUMAP(pancreas.integrated, reduction = "pca", dims = 1:30)
     ```
 
@@ -161,8 +161,18 @@ Seurat::DefaultAssay(pancreas.integrated) <- "integrated"
 
     So, yes, integration performed well. Clustering is now not according to technology, but according to cell type.  
 
+### Save the dataset and clear environment
+
 Finally, store the integrated dataset as an `.rds` file. We will use it tomorrow:
 
 ```R
 saveRDS(pancreas.integrated, "pancreas.integrated.rds")
+```
+
+Clear your environment:
+
+```R
+rm(list = ls())
+gc()
+.rs.restartR()
 ```
