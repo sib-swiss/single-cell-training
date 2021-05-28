@@ -9,6 +9,8 @@
 
 ## Exercises
 
+> :material-zodiac-cancer: This chapter uses the `gbm` dataset 
+
 Let's go back to our `gbm` dataset. In the last exercise we saw that probably clustering at a resolution of 0.2 gave the most sensible results. Let's therefore set the default identity of each cell based on this clustering:
 
 ```R

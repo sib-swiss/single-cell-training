@@ -14,7 +14,7 @@
 
 Log in to Rstudio server with the provided link and password, your username is `rstudio`.
 
-First, we will set up a project in a new directory. On the top right choose the button **Project (none)** and select **New Project...**
+First, we will set up a project in a new directory. On the top right choose the button **Project (None)** and select **New Project...**
 
 <figure>
   <img src="../../assets/images/create_new_project.png" width="200"/>
@@ -32,7 +32,7 @@ As project type select **New Project**
   <img src="../../assets/images/choose_new_project.png" width="300"/>
 </figure>
 
-Finally, type in the project name. This should be `single_cell_course`. Finish by clicking **Create project**.
+Finally, type in the project name. This should be `single_cell_course`. Finish by clicking **Create Project**.
 
 <figure>
   <img src="../../assets/images/define_directory_name.png" width="300"/>
@@ -53,6 +53,8 @@ rm scRNAseq.tar.gz
 ```
 
 ### Loading scRNAseq data
+
+> :material-zodiac-cancer: This part uses the `gbm` dataset 
 
 Have a look at the data directory you have downloaded. It should contain the following:
 

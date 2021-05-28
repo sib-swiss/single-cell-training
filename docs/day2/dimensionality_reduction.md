@@ -8,6 +8,8 @@
 
 ## Exercises
 
+> :material-zodiac-cancer: This chapter uses the `gbm` dataset 
+
 ### Dimensionality reduction using Seurat
 
 Once the data is normalized, scaled and variable features have been identified, we can start to reduce the dimensionality of the data.

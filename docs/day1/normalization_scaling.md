@@ -8,6 +8,10 @@
 
 ## Exercises
 
+> :material-zodiac-cancer: This chapter uses the `gbm` dataset 
+
+### Normalization
+
 !!! bug
     Recommendations are unclear here. Should we use the `NormalizeData` -> `FindVariableFeatures` -> `ScaleData` workflow or `SCTransform`??
 

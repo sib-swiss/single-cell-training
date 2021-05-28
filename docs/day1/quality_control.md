@@ -8,6 +8,8 @@
 
 ## Exercises
 
+> :material-zodiac-cancer: This chapter uses the `gbm` dataset 
+
 ### Cell cycle analysis
 
 Cells can be captured in different cycling phases, which can be identified.

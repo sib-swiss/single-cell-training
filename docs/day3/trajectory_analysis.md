@@ -10,6 +10,8 @@
 
 ### Trajectory analysis using Slingshot
 
+> :material-transit-connection-variant: This part uses the `Deng` dataset
+
 !!! bug
     Paper citation needed
 

@@ -8,6 +8,8 @@
 
 ## Exercises
 
+> :fontawesome-solid-disease: This chapter uses the `pancreas` dataset
+
 The `gbm` dataset does not contain any samples, treatments or methods to integrate. Therefore for these exercises we will use a different dataset that is described in [Comprehensive Integration of Single CellData](https://www.biorxiv.org/content/10.1101/460147v1). It is a dataset comprising of four different single cell experiment performed by using four different methods.
 
 ```R
