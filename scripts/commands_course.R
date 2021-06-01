@@ -1,6 +1,6 @@
 library(Seurat)
 
-gbm.data <- Seurat::Read10X(data.dir = "data/filtered_feature_bc_matrix/")
+gbm.data <- Seurat::Read10X(data.dir = "data/gbm_dataset/filtered_feature_bc_matrix/")
 
 gbm <- Seurat::CreateSeuratObject(counts = gbm.data,
                                   project = "gbm",
@@ -37,6 +37,9 @@ Seurat::LabelPoints(plot = vf_plot,
 
 gbm <- Seurat::ScaleData(gbm,
                          features = rownames(gbm))
+
+
+
 
 cc.genes.updated.2019
 
@@ -98,6 +101,7 @@ gbm_sce <- scuttle::addPerCellQC(gbm_sce,
 SingleCellExperiment::colData(gbm_sce)
 
 scater::plotColData(gbm_sce, x = "sum", y="detected")
+
 
 scater::plotColData(gbm_sce, x = "detected", y="subsets_mito_genes_percent")
 scater::plotColData(gbm_sce, x = "detected", y="subsets_dissoc_genes_percent")
