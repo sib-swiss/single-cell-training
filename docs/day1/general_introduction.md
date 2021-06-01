@@ -7,4 +7,4 @@
 
 ## Material
 
-[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/sequencing_technologies.pdf){: .md-button }
+[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/introduction.pdf){: .md-button }

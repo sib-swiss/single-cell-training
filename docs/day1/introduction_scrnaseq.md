@@ -2,11 +2,24 @@
 
 **After having completed this chapter you will be able to:**
 
+- Explain what kind of information single cell RNA-seq can give you to answer a biological question
+- Describe essential considerations during the design of a single cell RNA-seq experiment
+- Describe the pros and cons of different single cell sequencing methods
+- Load single cell data into R
+- Explain the basic structure of a `Seurat` object and extract count data and metadata
+- Perform a basic quality control by:
+    - Evaluating the percentage of UMIs originating from mitochondrial genes
+    - Detecting doublets
 
 
 ## Material
 
-[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/sequencing_technologies.pdf){: .md-button }
+[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/introduction_scRNAseq.pdf){: .md-button }
+
+- Seurat [website](https://satijalab.org/seurat/)
+- [Paper](https://doi.org/10.3389/fcell.2018.00108) on experimental considerations
+- [Paper](https://doi.org/10.1093/bib/bby007) on experimental design
+- [SMART-seq3 protocol](https://www.protocols.io/view/smart-seq3-protocol-bcq4ivyw) at protocols.io
 
 ## Exercises
 
@@ -44,6 +57,8 @@ Now that we have setup a project and a project directory (it is in `/home/rstudi
   <img src="../../assets/images/select_terminal_tab.png" width="300"/>
 </figure>
 
+### Downloading the course data
+
 To download and extract the dataset, copy-paste these commands inside the terminal tab:
 
 ```sh
@@ -51,10 +66,6 @@ wget https://single-cell-transcriptomics.s3.eu-central-1.amazonaws.com/scRNAseq_
 tar -xvf scRNAseq_v2.tar.gz
 rm scRNAseq_v2.tar.gz
 ```
-
-### Loading scRNAseq data
-
-> :material-zodiac-cancer: This part uses the `gbm` dataset
 
 Have a look at the data directory you have downloaded. It should contain the following:
 
@@ -80,9 +91,13 @@ Have a look at the data directory you have downloaded. It should contain the fol
 
 We will be working with three different datasets:
 
-- **gbm_dataset**: This will be our most used dataset, we will use it throughout the course
-- **pancreas_dataset**: Pancreas cell dataset generated with four different methods. We will use it for integration and differential gene expression analysis
-- **deng_dataset**: Cell development dataset, which we will use for trajectory analysis at day 3
+- :material-zodiac-cancer: **gbm_dataset**: This will be our most used dataset, we will use it throughout the course
+- :fontawesome-solid-disease: **pancreas_dataset**: Pancreas cell dataset generated with four different methods. We will use it for integration and differential gene expression analysis
+- :material-transit-connection-variant: **deng_dataset**: Cell development dataset, which we will use for trajectory analysis at day 3
+
+### Loading scRNAseq data
+
+> :material-zodiac-cancer: This part uses the `gbm` dataset
 
 Today we will mainly work with the package `Seurat`. Load it into your environment like this:
 

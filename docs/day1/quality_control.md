@@ -2,9 +2,16 @@
 
 **After having completed this chapter you will be able to:**
 
+- Assign cell cycle phases to a single cell dataset
+- Use the package `scater` evaluate cell quality based on reads originating from:
+    - mitochondrial genes
+    - ribosomal genes
+    - dissociation-related genes
+- Evaluate confounding effects on expression data by analyzing the explained variance
+
 ## Material
 
-[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/sequencing_technologies.pdf){: .md-button }
+[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/quality_control.pdf){: .md-button }
 
 ## Exercises
 
@@ -35,7 +42,9 @@ The `CellCycleScoring()` function allows to assign cell cycle phase information
 to each cell, stored in the metadata as the "S.Score", "G2M.Score" and "Phase" columns
 
 ```R
-gbm <- Seurat::CellCycleScoring(gbm, s.features = s.genes, g2m.features = g2m.genes)
+gbm <- Seurat::CellCycleScoring(gbm,
+                                s.features = s.genes,
+                                g2m.features = g2m.genes)
 ```
 
 ```R
@@ -95,7 +104,7 @@ They have been described by:
 And are availabe in the file `data/dissocation_genes.txt`. Load these into a vector, and generate also a vector of ribosomal genes and mitochondrial genes:
 
 ```R
-dissoc_genes <- readLines("data/dissocation_genes.txt")
+dissoc_genes <- readLines("data/gbm_dataset/dissocation_genes.txt")
 ribo_genes <- rownames(gbm)[grep(pattern = "^RP[S|L]", rownames(gbm), perl = T)]
 mito_genes <- rownames(gbm)[grep(pattern = "^MT-", rownames(gbm))]
 ```
@@ -152,9 +161,7 @@ here is the method with the cell cycle phase as example:
 
 ```R
 vars <- scater::getVarianceExplained(gbm_sce,
-                             variables = "Phase"
-                             #, variables=c("tissue", "detected", "sex", "age")
-)
+                             variables = "Phase")
 head(vars)
 ```
 
@@ -170,12 +177,12 @@ If we think that the cell cycling has an effect on the analysis,
 and if we want to "remove" this effect so that cycling cells are
 integrated into the rest of the cells and not clustering apart anymore,
 we can regress out the cell cycling phase at the moment of normalizing
-the data using SCTransform.
+the data using `ScaleData`.
 This might be slow to compute
 
 ```R
 # do not run
-gbm_cc <- SCTransform(gbm, vars.to.regress = c("S.Score", "G2M.Score"))
+gbm_cc <- Seurat::ScaleData(gbm, vars.to.regress = c("S.Score", "G2M.Score"))
 ```
 
 ### Save the dataset and clear environment

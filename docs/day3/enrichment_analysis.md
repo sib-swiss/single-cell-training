@@ -6,6 +6,9 @@
 
 [:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/sequencing_technologies.pdf){: .md-button }
 
+- [MSigDB](http://www.gsea-msigdb.org/gsea/msigdb/index.jsp)
+- `clusterProfiler` [vignette](https://bioconductor.org/packages/release/bioc/vignettes/clusterProfiler/inst/doc/clusterProfiler.html)
+
 ## Exercises
 
 > :material-zodiac-cancer: This chapter uses the `gbm` dataset

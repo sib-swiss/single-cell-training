@@ -2,9 +2,12 @@
 
 **After having completed this chapter you will be able to:**
 
+- Describe and perform standard procedures for normalization and scaling with the package `Seurat`
+- Select the most variable genes from a `Seurat` object for downstream analyses
+
 ## Material
 
-[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/sequencing_technologies.pdf){: .md-button }
+- [Seurat vignette](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html)
 
 ## Exercises
 
