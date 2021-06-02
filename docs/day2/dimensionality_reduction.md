@@ -38,11 +38,16 @@ To view the PCA plot:
 Seurat::DimPlot(gbm, reduction = "pca")
 ```
 
-Coming back to the cell cycle analysis, we can check the distribution of the different cell cycle phases and eventually regress it out using the SCTransform() function.
+We can colour the PCA plot according to any factor that is present in `@meta.data`. For example we can take the column `Phase` (i.e. predicted cell cycle phase):
 
 ```R
 Seurat::DimPlot(gbm, reduction = "pca", group.by = "Phase")
 ```
+
+!!! note
+    Coming back to the cell cycle analysis, we can check the distribution of the different cell cycle phases over the PCA, and eventually regress it out using the `ScaleData()` function. But here, the PCA doesn't seem to cluster according to the cell cycle phase.
+
+We can generate heatmaps according to the correlations with the different dimensions of our PCA:
 
 ```R
 Seurat::DimHeatmap(gbm, dims = 1:12, cells = 500, balanced = TRUE)
