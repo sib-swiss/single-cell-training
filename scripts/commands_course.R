@@ -40,7 +40,6 @@ gbm <- Seurat::ScaleData(gbm,
 
 
 
-
 cc.genes.updated.2019
 
 s.genes <- Seurat::cc.genes.updated.2019$s.genes
