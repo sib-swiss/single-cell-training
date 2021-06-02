@@ -10,7 +10,7 @@
 
 ### Find all markers for each cluster
 
-> :material-zodiac-cancer: This part uses the `gbm` dataset
+> :fontawesome-solid-ribbon: This part uses the `gbm` dataset
 
 Load the `gbm` dataset you have created yesterday:
 
@@ -72,7 +72,7 @@ View(de_genes)
 
 ### Differential expression between clusters
 
-> :material-zodiac-cancer: This part uses the `gbm` dataset
+> :fontawesome-solid-ribbon: This part uses the `gbm` dataset
 
 The `FindMarkers` function allows to test for differential gene expression analysis specifically between 2 clusters, i.e. perform pairwise comparisons, eg between cells of cluster 0 vs cluster 2, or between cells annotated as astrocytes and macrophages.
 

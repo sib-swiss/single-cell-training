@@ -11,7 +11,7 @@
 
 ## Exercises
 
-> :material-zodiac-cancer: This chapter uses the `gbm` dataset
+> :fontawesome-solid-ribbon: This chapter uses the `gbm` dataset
 
 Load the following packages:
 
