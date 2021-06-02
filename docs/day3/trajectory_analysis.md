@@ -10,6 +10,16 @@
 
 ## Exercises
 
+Load the following packages:
+
+```R
+library(SingleCellExperiment)
+library(BiocSingular)
+library(slingshot)
+library(ggplot)
+library(ggbeeswarm)
+```
+
 ### Trajectory analysis using Slingshot
 
 > :material-transit-connection-variant: This part uses the `Deng` dataset

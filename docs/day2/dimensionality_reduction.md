@@ -18,6 +18,13 @@ Load the `gbm` dataset you have created yesterday:
 gbm <- readRDS("gbm_day1.rds")
 ```
 
+And load the following packages:
+
+```R
+library(Seurat)
+library(clustree)
+```
+
 Once the data is normalized, scaled and variable features have been identified, we can start to reduce the dimensionality of the data.
 For the PCA, by default, only the previously determined variable features are used as input, but can be defined using features argument if you wish to specify a vector of genes. The PCA will only be run on the variable features, that you can check with `VariableFeatures(gbm)`.
 

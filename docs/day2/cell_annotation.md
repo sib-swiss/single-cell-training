@@ -17,6 +17,13 @@ Load the `gbm` dataset you have created earlier today:
 gbm <- readRDS("gbm_day2_part1.rds")
 ```
 
+And load the following packages:
+
+```R
+library(celldex)
+library(SingleR)
+```
+
 In the last exercise we saw that probably clustering at a resolution of 0.2 gave the most sensible results. Let's therefore set the default identity of each cell based on this clustering:
 
 ```R

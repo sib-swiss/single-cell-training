@@ -18,6 +18,14 @@ Load the `gbm` dataset you have created yesterday:
 gbm <- readRDS("gbm_day2_part2.rds")
 ```
 
+And load the following packages:
+
+```R
+library(Seurat)
+library(edgeR)
+library(limma)
+```
+
 The function `FindAllMarkers` performs a Wilcoxon plot to determine the genes differentially expressed between each cluster and the rest of the cells. Other types of tests than the Wilcoxon test are available. Check it out by running `?Seurat::FindAllMarkers`.
 
 Now run analysis:
@@ -66,7 +74,7 @@ View(de_genes)
 
 > :material-zodiac-cancer: This part uses the `gbm` dataset
 
-The FindMarkers function allows to test for differential gene expression analysis specifically between 2 clusters, i.e. perform pairwise comparisons, eg between cells of cluster 0 vs cluster 2, or between cells annotated as astrocytes and macrophages.
+The `FindMarkers` function allows to test for differential gene expression analysis specifically between 2 clusters, i.e. perform pairwise comparisons, eg between cells of cluster 0 vs cluster 2, or between cells annotated as astrocytes and macrophages.
 
 First we can set the default cell identity to the cell types defined by `SingleR`:
 
@@ -171,7 +179,7 @@ pancreas.dg <- subset(pancreas.integrated, idents = c("delta", "gamma"))
 Get the count matrix and keep only genes that are expressed in at least one cell:
 
 ```R
-counts <- GetAssayData(pancreas.dg, slot = "counts")
+counts <- Seurat::GetAssayData(pancreas.dg, slot = "counts")
 counts <- counts[rowSums(counts) != 0,]
 ```
 
@@ -213,6 +221,6 @@ limma::topTable(fit.contrasts, number = 10, sort.by = "P")
 And we can check whether this corresponds to the counts by generating a violin plot:
 
 ```R
-VlnPlot(pancreas.dg, "PPY", split.by = "tech")
-VlnPlot(pancreas.dg, "RBP4", split.by = "tech")
+Seurat::VlnPlot(pancreas.dg, "PPY", split.by = "tech")
+Seurat::VlnPlot(pancreas.dg, "RBP4", split.by = "tech")
 ```
