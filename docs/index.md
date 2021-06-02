@@ -1,11 +1,11 @@
-# Course website
+## Authors
 
-## Material
+- Tania Wyss
+- Rachel Marcone-Jeitziner
+- Walid Gharib
+- Geert van Geest
 
-* This website
-* Zoom meeting (through mail)
-* Google doc (through mail)
-* [Slack channel](https://slack.com)
+Parts of this course are inspired by the [Broad Institute Single Cell Workshop](https://broadinstitute.github.io/2019_scWorkshop/index.html)
 
 ## Learning outcomes
 
@@ -30,7 +30,7 @@ To reach the learning outcomes we will use lectures, exercises, polls and group 
 Each block has practical work involved. Some more than others. The practicals are subdivided into chapters, and we'll have a (short) discussion after each chapter. All answers to the practicals are incorporated, but they are hidden. Do the exercise first by yourself, before checking out the answer. If your answer is different from the answer in the practicals, try to figure out why they are different.
 
 ### Asking questions
-During lectures, you are encouraged to raise your hand if you have questions (if in-person), or use the Zoom functionality (if online). Find the buttons in the participants list ('Participants' button):
+During lectures, you are encouraged to raise your hand if you have questions (if in-person), or use the "raise hand" Zoom functionality (if online). Find the buttons in the participants list ('Participants' button):
 
 <figure>
   <img src="assets/images/zoom_icons.png" width="300"/>

@@ -5,4 +5,4 @@ Participants should already have a basic knowledge in Next Generation Sequencing
 
 ## Software
 
-Attendees should have a Wi-Fi enabled computer. An online R and RStudio environment will be provided, but attendees who wish to run the practicals on their own laptop should install R and RStudio, as well as install a range of R packages including Seurat, scran, scater, SingleR and monocle3, exact requirements will be communicated before the course.
+Attendees should have a Wi-Fi enabled computer. An online R and RStudio environment will be provided, but attendees who wish to run the practicals on their own laptop should install R and RStudio, as well as install a range of R packages including Seurat, scran, scater, SingleR and monocle3. Exact requirements will be communicated before the course.
