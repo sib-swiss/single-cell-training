@@ -15,9 +15,6 @@
 
 ### Normalization
 
-!!! bug
-    Recommendations are unclear here. Should we use the `NormalizeData` -> `FindVariableFeatures` -> `ScaleData` workflow or `SCTransform`??
-
 After removing unwanted cells from the dataset, the next step is to normalize the data.
 By default, Seurat employs a global-scaling normalization method `"LogNormalize"` that normalizes the feature expression measurements for each cell by the total expression, multiplies this by a scale factor (10,000 by default), and log-transforms the result.
 Normalized values are stored in the "RNA" slot of the gbm object.

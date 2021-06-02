@@ -24,9 +24,6 @@ library(ggbeeswarm)
 
 > :material-transit-connection-variant: This part uses the `Deng` dataset
 
-!!! bug
-    Paper citation needed
-
 Read in data. It is an object of class `SingleCellExperiment`.
 
 ```R
