@@ -59,15 +59,11 @@ The elblowplot can help you in determining how many PCs to use for downstream an
 Seurat::ElbowPlot(gbm, ndims = 40)
 ```
 
-The elblow plot ranks principle components based on the percentage of variance
-explained by each one. Where we observe an "elblow" or flattening curve, the majority of true signal
-is captured by this number of PCs, eg around 25 PCs for the gbm dataset.
+The elblow plot ranks principle components based on the percentage of variance explained by each one. Where we observe an "elblow" or flattening curve, the majority of true signal is captured by this number of PCs, eg around 25 PCs for the gbm dataset.
 
-Including too many PCs usually does not affect much the result, while including too few
-PCs can affect the results very much.
+Including too many PCs usually does not affect much the result, while including too few PCs can affect the results very much.
 
-UMAP: The goal of these algorithms is to learn the underlying manifold of the data in order to place similar
-cells together in low-dimensional space.
+UMAP: The goal of these algorithms is to learn the underlying manifold of the data in order to place similar cells together in low-dimensional space.
 
 ```R
 gbm <- Seurat::RunUMAP(gbm, dims = 1:25)
@@ -79,7 +75,7 @@ To view the UMAP plot:
 Seurat::DimPlot(gbm, reduction = "umap")
 ```
 
-Cells can be colored according to cell cycle phase.
+Cells can be coloured according to cell cycle phase.
 Is there a group of cells than contains a high proportion of cells in G2/M phase?
 
 ```R
@@ -88,20 +84,13 @@ Seurat::DimPlot(gbm, reduction = "umap", group.by = "Phase")
 
 ### Clustering
 
-The method implemented in Seurat first constructs a KNN graph based on the euclidean distance in PCA space,
-and refine the edge weights between any two cells based on the shared overlap in their local neighborhoods
-(Jaccard similarity). This step is performed using the `FindNeighbors()` function, and takes as input the
-previously defined dimensionality of the dataset.
+The method implemented in Seurat first constructs a KNN graph based on the euclidean distance in PCA space, and refine the edge weights between any two cells based on the shared overlap in their local neighborhoods (Jaccard similarity). This step is performed using the `FindNeighbors()` function, and takes as input the previously defined dimensionality of the dataset.
 
 ```R
 gbm <- Seurat::FindNeighbors(gbm, dims = 1:25)
 ```
 
-To cluster the cells, Seurat next implements modularity optimization techniques such as the Louvain algorithm
-(default) or SLM [SLM, Blondel et al., Journal of Statistical Mechanics], to iteratively group cells together,
-with the goal of optimizing the standard modularity function. The `FindClusters()`` function implements this
-procedure, and contains a resolution parameter that sets the ‘granularity’ of the downstream clustering,
-with increased values leading to a greater number of clusters.
+To cluster the cells, Seurat next implements modularity optimization techniques such as the Louvain algorithm (default) or SLM [SLM, Blondel et al., Journal of Statistical Mechanics], to iteratively group cells together, with the goal of optimizing the standard modularity function. The `FindClusters()` function implements this procedure, and contains a resolution parameter that sets the ‘granularity’ of the downstream clustering, with increased values leading to a greater number of clusters.
 
 ```R
 gbm <- Seurat::FindClusters(gbm, resolution = seq(0.1, 0.8, by=0.1))
