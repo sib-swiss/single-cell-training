@@ -69,6 +69,13 @@ mostly composed of G2/M cells for example.
 
 ### Quality control with `scater`
 
+For the below exercises we will use the following packages:
+
+```R
+library(scater)
+library(SingleCellExperiment)
+```
+
 Scater includes different types of quality controls:
 
 1. QC and filtering of cells
@@ -104,13 +111,6 @@ And are availabe in the file `data/dissocation_genes.txt`. Load these into a vec
 dissoc_genes <- readLines("data/gbm_dataset/dissocation_genes.txt")
 ribo_genes <- rownames(gbm)[grep(pattern = "^RP[S|L]", rownames(gbm), perl = T)]
 mito_genes <- rownames(gbm)[grep(pattern = "^MT-", rownames(gbm))]
-```
-
-For the below exercises we will use the following packages:
-
-```R
-library(scater)
-library(SingleCellExperiment)
 ```
 
 `scater` calls the `addPerCellQC` function of the `scuttle` package to compute a number of quality control metrics for each cell and feature (i.e gene)
