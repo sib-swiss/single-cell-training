@@ -16,6 +16,7 @@
 
 [:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/introduction_scRNAseq.pdf){: .md-button }
 
+- Single cell introductory [video on iBiology](https://www.youtube.com/watch?v=k9VFNLLQP8c)
 - Seurat [website](https://satijalab.org/seurat/)
 - [Paper](https://doi.org/10.3389/fcell.2018.00108) on experimental considerations
 - [Paper](https://doi.org/10.1093/bib/bby007) on experimental design
