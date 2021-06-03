@@ -1,8 +1,3 @@
-## License & copyright
-
-**License:** [CC BY-SA 4.0](https://raw.githubusercontent.com/sib-swiss/single-cell-training/master/LICENCE)
-
-**Copyright:** [SIB Swiss Institute of Bioinformatics](https://www.sib.swiss/)
 
 ## Authors
 
@@ -12,6 +7,12 @@
 - Geert van Geest
 
 Parts of this course are inspired by the [Broad Institute Single Cell Workshop](https://broadinstitute.github.io/2019_scWorkshop/index.html).
+
+## License & copyright
+
+**License:** [CC BY-SA 4.0](https://raw.githubusercontent.com/sib-swiss/single-cell-training/master/LICENCE)
+
+**Copyright:** [SIB Swiss Institute of Bioinformatics](https://www.sib.swiss/)
 
 ## Learning outcomes
 
