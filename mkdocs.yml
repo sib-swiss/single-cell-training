@@ -5,6 +5,7 @@ nav:
     - Course schedule: course_schedule.md
     - Day 1:
       - General introduction: day1/general_introduction.md
+      - Setup: day1/setup.md
       - Introduction scRNAseq: day1/introduction_scrnaseq.md
       - Normalization and scaling: day1/normalization_scaling.md
       - Quality control: day1/quality_control.md
