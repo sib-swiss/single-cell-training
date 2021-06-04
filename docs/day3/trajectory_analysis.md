@@ -221,3 +221,116 @@ PCAplot_slingshot(deng_SCE,
                   col = 'black',
                   legend = TRUE)
 ```
+
+Clear your environment:
+
+```R
+rm(list = ls())
+gc()
+.rs.restartR()
+```
+
+### Trajectory analysis with `monocle3`
+
+> :fontawesome-solid-ribbon: This part uses the `gbm` dataset
+
+This part showcases how you can use `monocle3` to perform a trajectory analysis. First load the `gbm` dataset:
+
+```R
+gbm <- readRDS("gbm_day3.rds")
+```
+
+Load the required package into your environment:
+
+```R
+library(monocle3)
+```
+
+Generate a `monocle3` object (with class `cell_data_set`) from our `Seurat` object:
+
+```R
+feature_names <- as.data.frame(rownames(gbm))
+rownames(feature_names) <- rownames(gbm)
+colnames(feature_names) <- "gene_short_name"
+gbm_monocl <- monocle3::new_cell_data_set(gbm@assays$RNA@counts,
+                              cell_metadata = gbm@meta.data,
+                              gene_metadata = feature_names)
+```
+
+We pre-process the newly created object. What does it involve? Check:
+
+```R
+?preprocess_cds
+```
+
+Preprocess the dataset:
+
+```R
+gbm_monocl <- monocle3::preprocess_cds(gbm_monocl)
+```
+
+And check out the elbow plot:
+
+```R
+monocle3::plot_pc_variance_explained(gbm_monocl)
+```
+
+Perform UMAP using the implementation in the `monocle3` package and its default parameters:
+
+```R
+gbm_monocl <- monocle3::reduce_dimension(gbm_monocl, reduction_method = "UMAP")
+```
+
+Plot the `monocle3` UMAP coloring cells according to the cluster ID ran with `Seurat`:
+
+```R
+monocle3::plot_cells(gbm_monocl, color_cells_by = "RNA_snn_res.0.2")
+monocle3::plot_cells(gbm_monocl, genes = "PMP2") # to plot expression level of a gene
+```
+
+Cluster cells using `monocle3`'s clustering function:
+
+```R
+gbm_monocl <- monocle3::cluster_cells(gbm_monocl, resolution=0.00025)
+p1 <- monocle3::plot_cells(gbm_monocl, label_cell_groups = F)
+p2 <- monocle3::plot_cells(gbm_monocl, color_cells_by = "RNA_snn_res.0.2", label_cell_groups = F)
+cowplot::plot_grid(p1, p2, ncol = 2) # Are there differences?
+```
+
+learn graph (i.e. identify trajectory) using `monocle3` UMAP and clustering:
+
+```R
+gbm_monocl <- monocle3::learn_graph(gbm_monocl)
+monocle3::plot_cells(gbm_monocl)
+monocle3::plot_cells(gbm_monocl, color_cells_by = "RNA_snn_res.0.2")
+```
+
+Replace `monocle3` cluster id by `Seurat` cluster id if we want to keep the same information:
+
+```R
+gbm_monocl@clusters$UMAP$clusters <- colData(gbm_monocl)$RNA_snn_res.0.2
+names(gbm_monocl@clusters$UMAP$clusters) <- rownames(colData(gbm_monocl))
+gbm_monocl <- monocle3::learn_graph(gbm_monocl)
+monocle3::plot_cells(gbm_monocl, label_cell_groups = F)
+```
+
+Select the "initial" cells to calculate pseudotime. A pop up window will open and you need to click on the "initial" cells (one node per trajectory), then click "Done".
+
+```R
+gbm_monocl<-monocle3::order_cells(gbm_monocl)#
+```
+
+```R
+monocle3::plot_cells(gbm_monocl,
+           color_cells_by = "pseudotime",
+           label_cell_groups=F,
+           label_leaves=F,
+           label_branch_points=FALSE,
+           graph_label_size=1.5, cell_size = 1)
+```
+
+Plot a gene's expression vs pseudotime
+
+```R
+plot_genes_in_pseudotime(subset(gbm_monocl, rowData(gbm_monocl)$gene_short_name=="PMP2"))
+```
