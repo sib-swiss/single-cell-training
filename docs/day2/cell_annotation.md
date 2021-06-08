@@ -56,7 +56,7 @@ These cells are almost all in cluster 6. Which becomes clearer when looking at t
 
 ```R
 Seurat::VlnPlot(gbm,
-                features = immune_genes
+                features = immune_genes,
                 ncol = 2)
 ```
 

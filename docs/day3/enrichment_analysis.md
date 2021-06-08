@@ -37,7 +37,7 @@ symbol, ensembl ID, Entrez ID. To list the allowed
 label types use:
 
 ```R
-BiocManager::install("org.Hs.eg.db")
+BiocManager::install("org.Hs.eg.db", ask = FALSE)
 library(org.Hs.eg.db)
 AnnotationDbi::keytypes(org.Hs.eg.db)
 ```
@@ -71,13 +71,13 @@ We can quite easily generate an enrichment map with the `enrichplot` package:
 
 ```R
 enrichplot::emapplot(enrichplot::pairwise_termsim(AC_MAC_GO),
-                     showCategory = 30)
+                     showCategory = 30, cex_label_category = 0.5)
 ```
 
 In stead of testing for gene ontology terms, we can also test for other gene set collections. For example the hallmark collection from [MSigDB](http://www.gsea-msigdb.org/gsea/msigdb/index.jsp):
 
 ```R
-gmt <- clusterProfiler::read.gmt("data/h.all.v7.2.symbols.xls")
+gmt <- clusterProfiler::read.gmt("data/gbm_dataset/h.all.v7.2.symbols.xls")
 head(gmt)
 ```
 
@@ -101,7 +101,7 @@ View(AC_MAC_enrich@result)
 You can get a vector of gene symbols that are in the set of MYC targets like this:
 
 ```R
-myc_target_genes <- gmt$gene[gmt$term=="HALLMARK_MYC_TARGETS_V1")]
+myc_target_genes <- gmt$gene[gmt$term=="HALLMARK_MYC_TARGETS_V1"]
 ```
 
 **Exercise:** Calculate a module score for each cell for the MYC target genes by using the function `AddModuleScore`, and generate a violin plot of the `gbm` dataset to view differences of this score between `SingleR` annotations.

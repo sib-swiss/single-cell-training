@@ -16,7 +16,7 @@ Load the following packages:
 library(SingleCellExperiment)
 library(BiocSingular)
 library(slingshot)
-library(ggplot)
+library(ggplot2)
 library(ggbeeswarm)
 ```
 
@@ -52,6 +52,56 @@ We can run a PCA directly on the object of class `SingleCellExperiment` with the
 
 ```R
 deng_SCE <- BiocSingular::runPCA(deng_SCE, ncomponents = 50)
+```
+
+Use the `reducedDim` function to access the PCA and store the results.
+
+```R
+pca <- SingleCellExperiment::reducedDim(deng_SCE, "PCA")
+```
+
+Describe how the PCA is stored in a matrix. Why does it have this structure?
+
+```R
+head(pca)
+```
+
+Add PCA data to the deng_SCE object.
+
+```R
+deng_SCE$PC1 <- pca[, 1]
+deng_SCE$PC2 <- pca[, 2]
+```
+
+Plot PC biplot with cells colored by cell_type2.
+`colData(deng_SCE)` accesses the cell metadata `DataFrame` object for `deng_SCE`.
+Look at Figure 1A of the [paper](https://science.sciencemag.org/content/343/6167/193) as a comparison to your PC biplot.
+
+```R
+ggplot(as.data.frame(colData(deng_SCE)), aes(x = PC1, y = PC2, color = cell_type2)) +
+  geom_point(size=2, shape=20) +
+  theme_classic() +
+  xlab("PC1") + ylab("PC2") + ggtitle("PC biplot")
+```
+
+PCA is a simple approach and can be good to compare to more complex algorithms
+designed to capture differentiation processes. As a simple measure of pseudotime
+we can use the coordinates of PC1.
+Plot PC1 vs cell_type2.
+
+```R
+deng_SCE$pseudotime_PC1 <- rank(deng_SCE$PC1)  # rank cells by their PC1 score
+```
+
+Create a jitter plot
+
+```
+ggplot(as.data.frame(colData(deng_SCE)), aes(x = pseudotime_PC1, y = cell_type2,
+                                             colour = cell_type2)) +
+  ggbeeswarm::geom_quasirandom(groupOnX = FALSE) +
+  theme_classic() +
+  xlab("PC1") + ylab("Timepoint") +
+  ggtitle("Cells ordered by first principal component")
 ```
 
 Read the Slingshot documentation (`?slingshot::slingshot`) and then run Slingshot below.
@@ -96,7 +146,7 @@ PCAplot_slingshot <- function(sce, draw_lines = TRUE, variable = NULL, legend = 
   plot(pca, bg = colors, pch = 21)
   # draw lines
   if(draw_lines){
-    slingshot::lines(slingshot::SlingshotDataSet(sce), lwd = 2, ... )
+    lines(slingshot::SlingshotDataSet(sce), lwd = 2, ... )
   }
   # add legend
   if(legend & is.factor(variable)){
@@ -146,6 +196,7 @@ gcdata <- Seurat::RunPCA(object = gcdata,
                          pc.genes = gcdata@var.genes)
 
 gcdata <- Seurat::FindNeighbors(gcdata,
+                                reduction = "pca",
                                 dims = 1:5)
 
 # clustering with resolution of 0.6
@@ -153,7 +204,7 @@ gcdata <- Seurat::FindClusters(object = gcdata,
                                resolution = 0.6)
 ```
 
-**Exercise:** Have a look at the UMAP and color it according to the clustering (we used a resolution of 0.6). Does it look acceptable to you?
+<!-- **Exercise:** Have a look at the UMAP and color it according to the clustering (we used a resolution of 0.6). Does it look acceptable to you?
 
 !!! note
     The UMAP has not yet been generated for this object.
@@ -171,7 +222,7 @@ gcdata <- Seurat::FindClusters(object = gcdata,
 
     <figure>
      <img src="../../assets/images/umap_gcdata.png" width="400"/>
-    </figure>
+    </figure> -->
 
 
 Now we can add these clusters to the `slingshot` function:
@@ -190,16 +241,34 @@ There have been added two `slingPseudotime` columns:
 head(colData(deng_SCE))
 ```
 
-Let's see whether things have improved:
+Check how the slingshot object has evolved
+
+```R
+SlingshotDataSet(deng_SCE)
+```
+
+Plot PC1 versus PC2 colored by slingshot pseudotime:
 
 ```R
 PCAplot_slingshot(deng_SCE, variable = deng_SCE$slingPseudotime_2)
 ```
 
+Plot Slingshot pseudotime vs cell stage.
+
 ```R
-ggplot(as.data.frame(colData(deng_SCE)), aes(x = slingPseudotime_2,
-                                             y = cell_type2,
-                                             colour = cell_type2)) +
+ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
+                  slingPseudotime_1 = deng_SCE$slingPseudotime_1),
+        aes(x = slingPseudotime_1, y = cell_type2,
+        colour = cell_type2)) +
+  ggbeeswarm::geom_quasirandom(groupOnX = FALSE) +
+  theme_classic() +
+  xlab("Slingshot pseudotime") + ylab("Timepoint") +
+  ggtitle("Cells ordered by Slingshot pseudotime")
+
+ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
+                  slingPseudotime_2 = deng_SCE$slingPseudotime_2),
+        aes(x = slingPseudotime_2, y = cell_type2,
+        colour = cell_type2)) +
   ggbeeswarm::geom_quasirandom(groupOnX = FALSE) +
   theme_classic() +
   xlab("Slingshot pseudotime") + ylab("Timepoint") +

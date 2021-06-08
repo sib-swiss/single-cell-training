@@ -173,7 +173,7 @@ If we think that the cell cycling has an effect on the analysis, and if we want 
 !!! warning
     The code below is an example, you don't need to run it.
 
-```R
+```
 # do not run
 gbm_cc <- Seurat::ScaleData(gbm, vars.to.regress = c("S.Score", "G2M.Score"))
 ```
