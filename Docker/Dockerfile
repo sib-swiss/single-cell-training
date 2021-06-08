@@ -1,14 +1,14 @@
-FROM rocker/rstudio:4.0.5
+FROM rocker/rstudio:4.1.0
+#FROM rocker/rstudio:4.0.5
 
 RUN sudo apt-get update
 
-RUN sudo apt-get install -y libxml2-dev
-
-RUN sudo apt-get install -y libglpk-dev
-
-RUN sudo apt-get install -y libcurl4-openssl-dev
-
-RUN sudo apt-get install -y libxtst6
+RUN sudo apt-get install -y \
+libxt6 \
+libgl1-mesa-glx \
+libcurl4-openssl-dev \
+libglpk-dev \
+libxml2-dev
 
 COPY install_packages.R ./
 

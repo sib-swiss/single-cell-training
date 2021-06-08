@@ -2,7 +2,7 @@
 
 # CRAN packages:
 install.packages(c("ggplot2", "BiocManager", "Seurat", "sctransform", "devtools", "cowplot",
-                   "ggbeeswarm"))
+                   "ggbeeswarm", "ggnewscale"))
 
 # Bioconductor packages:
 BiocManager::install(c("scran", "clusterProfiler", "scater", "SingleR",
