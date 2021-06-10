@@ -14,7 +14,7 @@ Load the following packages:
 
 ```R
 library(SingleCellExperiment)
-library(BiocSingular)
+library(scater)
 library(slingshot)
 library(ggplot2)
 library(ggbeeswarm)
@@ -51,7 +51,7 @@ deng_SCE$cell_type2 <- factor(deng_SCE$cell_type2,
 We can run a PCA directly on the object of class `SingleCellExperiment` with the function `runPCA`:
 
 ```R
-deng_SCE <- BiocSingular::runPCA(deng_SCE, ncomponents = 50)
+deng_SCE <- scater::runPCA(deng_SCE, ncomponents = 50)
 ```
 
 Use the `reducedDim` function to access the PCA and store the results.
