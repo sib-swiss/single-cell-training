@@ -9,4 +9,4 @@ Attendees should have a Wi-Fi enabled computer. An online R and RStudio environm
 
 - R version > 4.0: https://cran.r-project.org/
 - Latest RStudio version, the free version is perfectly fine: https://rstudio.com/products/rstudio/download/
-- The R packages necessary for the course. Find the script to install them [here](../../assets/scripts/install_packages.R). 
+- The R packages necessary for the course. Find the script to install them [here](../assets/scripts/install_packages.R). 
