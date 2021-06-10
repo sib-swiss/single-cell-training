@@ -11,5 +11,5 @@ echo "# Auto-extracted code from markdown files" > scripts/auto_extracted_code.R
 for file in `echo $MDFILES`
 do
   printf "\n## Code found in: $file\n" >>  scripts/auto_extracted_code.R
-  cat docs/$file | codedown R >> scripts/auto_extracted_code.R
+  cat docs/$file | sed 's/^ *//' | codedown R >> scripts/auto_extracted_code.R
 done
