@@ -385,7 +385,7 @@ gc()
 
 ## Code found in: day3/trajectory_analysis.md
 library(SingleCellExperiment)
-library(BiocSingular)
+library(scater)
 library(slingshot)
 library(ggplot2)
 library(ggbeeswarm)
@@ -404,7 +404,7 @@ levels = c("zy",
 "midblast",
 "lateblast"))
 
-deng_SCE <- BiocSingular::runPCA(deng_SCE, ncomponents = 50)
+deng_SCE <- scater::runPCA(deng_SCE, ncomponents = 50)
 
 pca <- SingleCellExperiment::reducedDim(deng_SCE, "PCA")
 
@@ -419,6 +419,13 @@ theme_classic() +
 xlab("PC1") + ylab("PC2") + ggtitle("PC biplot")
 
 deng_SCE$pseudotime_PC1 <- rank(deng_SCE$PC1)  # rank cells by their PC1 score
+
+ggplot(as.data.frame(colData(deng_SCE)), aes(x = pseudotime_PC1, y = cell_type2,
+colour = cell_type2)) +
+ggbeeswarm::geom_quasirandom(groupOnX = FALSE) +
+theme_classic() +
+xlab("PC1") + ylab("Timepoint") +
+ggtitle("Cells ordered by first principal component")
 
 sce <- slingshot::slingshot(deng_SCE, reducedDim = 'PCA')
 
@@ -498,7 +505,8 @@ deng_SCE$Seurat_clusters <- as.character(Idents(gcdata))  # go from factor to ch
 
 deng_SCE <- slingshot::slingshot(deng_SCE,
 clusterLabels = 'Seurat_clusters',
-reducedDim = 'PCA')
+reducedDim = 'PCA',
+start.clus = "2")
 
 head(colData(deng_SCE))
 

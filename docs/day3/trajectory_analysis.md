@@ -95,7 +95,7 @@ deng_SCE$pseudotime_PC1 <- rank(deng_SCE$PC1)  # rank cells by their PC1 score
 
 Create a jitter plot
 
-```
+```R
 ggplot(as.data.frame(colData(deng_SCE)), aes(x = pseudotime_PC1, y = cell_type2,
                                              colour = cell_type2)) +
   ggbeeswarm::geom_quasirandom(groupOnX = FALSE) +
@@ -232,7 +232,8 @@ deng_SCE$Seurat_clusters <- as.character(Idents(gcdata))  # go from factor to ch
 
 deng_SCE <- slingshot::slingshot(deng_SCE,
                                  clusterLabels = 'Seurat_clusters',
-                                 reducedDim = 'PCA')
+                                 reducedDim = 'PCA',
+                                 start.clus = "2")
 ```
 
 There have been added two `slingPseudotime` columns:
