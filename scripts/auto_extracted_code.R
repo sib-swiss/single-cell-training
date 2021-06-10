@@ -337,7 +337,7 @@ Seurat::VlnPlot(pancreas.dg, "RBP4", split.by = "tech")
 library(clusterProfiler)
 library(enrichplot)
 
-BiocManager::install("org.Hs.eg.db", ask = FALSE)
+BiocManager::install("org.Hs.eg.db", update = FALSE)
 library(org.Hs.eg.db)
 AnnotationDbi::keytypes(org.Hs.eg.db)
 

@@ -37,7 +37,7 @@ symbol, ensembl ID, Entrez ID. To list the allowed
 label types use:
 
 ```R
-BiocManager::install("org.Hs.eg.db", ask = FALSE)
+BiocManager::install("org.Hs.eg.db", update = FALSE)
 library(org.Hs.eg.db)
 AnnotationDbi::keytypes(org.Hs.eg.db)
 ```
