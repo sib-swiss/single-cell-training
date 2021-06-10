@@ -5,4 +5,8 @@ Participants should already have a basic knowledge in Next Generation Sequencing
 
 ## Software
 
-Attendees should have a Wi-Fi enabled computer. An online R and RStudio environment will be provided, but attendees who wish to run the practicals on their own laptop should install R and RStudio, as well as install a range of R packages including Seurat, scran, scater, SingleR and monocle3. Exact requirements will be communicated before the course.
+Attendees should have a Wi-Fi enabled computer. An online R and RStudio environment will be provided. However, in case you wish to perform the practical exercises on your own computer, please take a moment to install the following before the course:
+
+- R version > 4.0: https://cran.r-project.org/
+- Latest RStudio version, the free version is perfectly fine: https://rstudio.com/products/rstudio/download/
+- The R packages necessary for the course. Find the script to install them [here](../../assets/scripts/install_packages.R). 
