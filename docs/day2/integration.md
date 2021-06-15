@@ -1,8 +1,3 @@
-
-## Material
-
-[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/sequencing_technologies.pdf){: .md-button }
-
 ## Exercises
 
 > :fontawesome-solid-disease: This chapter uses the `pancreas` dataset
