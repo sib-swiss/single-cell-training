@@ -11,6 +11,7 @@ nav:
       - Quality control: day1/quality_control.md
     - Day 2:
       - Dimensionality reduction: day2/dimensionality_reduction.md
+      - Clustering: day2/clustering.md
       - Integration: day2/integration.md
       - Cell annotation: day2/cell_annotation.md
     - Day 3:
