@@ -1,7 +1,7 @@
 
 ## Material
 
-[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/scRNAseq_RM_Integration_dimreduction.pdf){: .md-button }
+[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/scRNAseq_RM_dimreduction_only.pdf){: .md-button }
 
 ## Exercises
 

@@ -12,8 +12,8 @@ nav:
     - Day 2:
       - Dimensionality reduction: day2/dimensionality_reduction.md
       - Clustering: day2/clustering.md
-      - Integration: day2/integration.md
       - Cell annotation: day2/cell_annotation.md
+      - Integration: day2/integration.md
     - Day 3:
       - Differential gene expression: day3/differential_gene_expression.md
       - Erichment analysis: day3/enrichment_analysis.md

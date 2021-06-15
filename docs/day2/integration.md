@@ -1,3 +1,8 @@
+
+## Material
+
+[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/Integration_only.pdf){: .md-button }
+
 ## Exercises
 
 > :fontawesome-solid-disease: This chapter uses the `pancreas` dataset
