@@ -6,7 +6,7 @@
 
 > :fontawesome-solid-ribbon: This chapter uses the `gbm` dataset
 
-The method implemented in Seurat first constructs a KNN graph based on the euclidean distance in PCA space, and refine the edge weights between any two cells based on the shared overlap in their local neighborhoods (Jaccard similarity). This step is performed using the `FindNeighbors()` function, and takes as input the previously defined dimensionality of the dataset.
+The method implemented in Seurat first constructs a SNN graph based on the euclidean distance in PCA space, and refine the edge weights between any two cells based on the shared overlap in their local neighborhoods (Jaccard similarity). This step is performed using the `FindNeighbors()` function, and takes as input the previously defined dimensionality of the dataset.
 
 ```R
 gbm <- Seurat::FindNeighbors(gbm, dims = 1:25)
