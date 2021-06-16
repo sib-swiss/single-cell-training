@@ -16,7 +16,7 @@ nav:
       - Integration: day2/integration.md
     - Day 3:
       - Differential gene expression: day3/differential_gene_expression.md
-      - Erichment analysis: day3/enrichment_analysis.md
+      - Enrichment analysis: day3/enrichment_analysis.md
       - Trajectory analysis: day3/trajectory_analysis.md
 
 theme:
