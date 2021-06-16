@@ -153,6 +153,7 @@ Seurat::DimPlot(gbm, reduction = "umap")
 
 Seurat::DimPlot(gbm, reduction = "umap", group.by = "Phase")
 
+## Code found in: day2/clustering.md
 gbm <- Seurat::FindNeighbors(gbm, dims = 1:25)
 
 gbm <- Seurat::FindClusters(gbm, resolution = seq(0.1, 0.8, by=0.1))
@@ -168,49 +169,6 @@ Seurat::DimPlot(gbm, group.by = "RNA_snn_res.0.1")
 Seurat::DimPlot(gbm, group.by = "RNA_snn_res.0.2")
 
 saveRDS(gbm, "gbm_day2_part1.rds")
-
-rm(list = ls())
-gc()
-.rs.restartR()
-
-## Code found in: day2/integration.md
-pancreas.data <- readRDS(file = "data/pancreas_dataset/pancreas_expression_matrix.rds")
-metadata <- readRDS(file = "data/pancreas_dataset/pancreas_metadata.rds")
-
-pancreas <- Seurat::CreateSeuratObject(pancreas.data, meta.data = metadata)
-
-pancreas <- Seurat::NormalizeData(pancreas)
-pancreas <- Seurat::FindVariableFeatures(pancreas, selection.method = "vst", nfeatures = 2000)
-pancreas <- Seurat::ScaleData(pancreas)
-pancreas <- Seurat::RunPCA(pancreas, npcs = 30)
-pancreas <- Seurat::RunUMAP(pancreas, reduction = "pca", dims = 1:30)
-
-Seurat::DimPlot(pancreas, reduction = "umap", group.by = "tech")
-
-Seurat::DimPlot(pancreas, reduction = "umap", group.by = "celltype")
-
-pancreas.list <- Seurat::SplitObject(pancreas, split.by = "tech")
-
-for (i in 1:length(pancreas.list)) {
-pancreas.list[[i]] <- Seurat::NormalizeData(pancreas.list[[i]])
-pancreas.list[[i]] <- Seurat::FindVariableFeatures(pancreas.list[[i]], selection.method = "vst", nfeatures = 2000,
-verbose = FALSE)
-}
-
-pancreas.anchors <- Seurat::FindIntegrationAnchors(object.list = pancreas.list, dims = 1:30)
-
-pancreas.integrated <- Seurat::IntegrateData(anchorset = pancreas.anchors, dims = 1:30)
-
-Seurat::DefaultAssay(pancreas.integrated) <- "integrated"
-
-pancreas.integrated <- Seurat::ScaleData(pancreas.integrated)
-pancreas.integrated <- Seurat::RunPCA(pancreas.integrated, npcs = 30)
-pancreas.integrated <- Seurat::RunUMAP(pancreas.integrated, reduction = "pca", dims = 1:30)
-
-Seurat::DimPlot(pancreas.integrated, reduction = "umap", group.by = "tech")
-Seurat::DimPlot(pancreas.integrated, reduction = "umap", group.by = "celltype", label = TRUE, repel = TRUE)
-
-saveRDS(pancreas.integrated, "pancreas.integrated.rds")
 
 rm(list = ls())
 gc()
@@ -268,6 +226,49 @@ mean_scores <- tapply(gbm$immune_genes1, gbm$SingleR_annot, mean)
 mean_scores[order(mean_scores, decreasing = TRUE)[1:6]]
 
 saveRDS(gbm, "gbm_day2_part2.rds")
+
+rm(list = ls())
+gc()
+.rs.restartR()
+
+## Code found in: day2/integration.md
+pancreas.data <- readRDS(file = "data/pancreas_dataset/pancreas_expression_matrix.rds")
+metadata <- readRDS(file = "data/pancreas_dataset/pancreas_metadata.rds")
+
+pancreas <- Seurat::CreateSeuratObject(pancreas.data, meta.data = metadata)
+
+pancreas <- Seurat::NormalizeData(pancreas)
+pancreas <- Seurat::FindVariableFeatures(pancreas, selection.method = "vst", nfeatures = 2000)
+pancreas <- Seurat::ScaleData(pancreas)
+pancreas <- Seurat::RunPCA(pancreas, npcs = 30)
+pancreas <- Seurat::RunUMAP(pancreas, reduction = "pca", dims = 1:30)
+
+Seurat::DimPlot(pancreas, reduction = "umap", group.by = "tech")
+
+Seurat::DimPlot(pancreas, reduction = "umap", group.by = "celltype")
+
+pancreas.list <- Seurat::SplitObject(pancreas, split.by = "tech")
+
+for (i in 1:length(pancreas.list)) {
+pancreas.list[[i]] <- Seurat::NormalizeData(pancreas.list[[i]])
+pancreas.list[[i]] <- Seurat::FindVariableFeatures(pancreas.list[[i]], selection.method = "vst", nfeatures = 2000,
+verbose = FALSE)
+}
+
+pancreas.anchors <- Seurat::FindIntegrationAnchors(object.list = pancreas.list, dims = 1:30)
+
+pancreas.integrated <- Seurat::IntegrateData(anchorset = pancreas.anchors, dims = 1:30)
+
+Seurat::DefaultAssay(pancreas.integrated) <- "integrated"
+
+pancreas.integrated <- Seurat::ScaleData(pancreas.integrated)
+pancreas.integrated <- Seurat::RunPCA(pancreas.integrated, npcs = 30)
+pancreas.integrated <- Seurat::RunUMAP(pancreas.integrated, reduction = "pca", dims = 1:30)
+
+Seurat::DimPlot(pancreas.integrated, reduction = "umap", group.by = "tech")
+Seurat::DimPlot(pancreas.integrated, reduction = "umap", group.by = "celltype", label = TRUE, repel = TRUE)
+
+saveRDS(pancreas.integrated, "pancreas.integrated.rds")
 
 rm(list = ls())
 gc()
