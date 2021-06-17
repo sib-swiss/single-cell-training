@@ -6,7 +6,7 @@
 - [Signaling Pathway Impact Analysis (SPIA)](https://bioconductor.org/packages/release/bioc/html/SPIA.html)
 - Original [paper](https://www.pnas.org/content/102/43/15545) on GSEA
 - [STRING](https://string-db.org/) for protein-protein interactions
-- [GO figure!](https://gitlab.com/evogenlab/GO-Figure) for plotting GO terms and the assocatied [paper](https://www.frontiersin.org/articles/10.3389/fbinf.2021.638255/full)
+- [GO figure!](https://gitlab.com/evogenlab/GO-Figure) for plotting GO terms and the associated [paper](https://www.frontiersin.org/articles/10.3389/fbinf.2021.638255/full)
 
 ## Exercises
 
