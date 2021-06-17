@@ -5,6 +5,7 @@
 - [Revigo](http://revigo.irb.hr/)
 - [Signaling Pathway Impact Analysis (SPIA)](https://bioconductor.org/packages/release/bioc/html/SPIA.html)
 - Original [paper](https://www.pnas.org/content/102/43/15545) on GSEA
+- [STRING](https://string-db.org/) for protein-protein interactions
 
 ## Exercises
 

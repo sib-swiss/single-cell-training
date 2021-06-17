@@ -3,6 +3,10 @@
 
 [:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/scRNAseq_Day3_062021.pdf){: .md-button }
 
+- More information on [pseudobulk analysis](https://bioconductor.org/books/release/OSCA/multi-sample-comparisons.html#differential-expression-between-condition)
+- [Muscat](https://bioconductor.org/packages/devel/bioc/vignettes/muscat/inst/doc/analysis.html) for pseudobulk DGE.
+- [Paper](https://www.nature.com/articles/nmeth.4612) on the robustness of different differential expression analysis methods
+
 ## Exercises
 
 ### Find all markers for each cluster
