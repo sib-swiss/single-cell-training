@@ -3,6 +3,9 @@
 
 [:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/scRNAseq_RM_dimreduction_only.pdf){: .md-button }
 
+- Making sense of [PCA](https://stats.stackexchange.com/questions/2691/making-sense-of-principal-component-analysis-eigenvectors-eigenvalues)
+- Understanding [UMAP](https://pair-code.github.io/understanding-umap/)
+
 ## Exercises
 
 > :fontawesome-solid-ribbon: This chapter uses the `gbm` dataset

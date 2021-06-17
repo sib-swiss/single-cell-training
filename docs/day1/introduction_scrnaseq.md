@@ -21,6 +21,9 @@
 - [Paper](https://doi.org/10.3389/fcell.2018.00108) on experimental considerations
 - [Paper](https://doi.org/10.1093/bib/bby007) on experimental design
 - [SMART-seq3 protocol](https://www.protocols.io/view/smart-seq3-protocol-bcq4ivyw) at protocols.io
+- `cellranger` [system requirements](https://support.10xgenomics.com/single-cell-gene-expression/software/overview/system-requirements) and [installation](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation)
+- [Review](https://www.nature.com/articles/s41596-020-00409-w?proof=t) by Tallulah Andrews
+- [Paper](https://www.biorxiv.org/content/10.1101/749473v3.full) on correlation between mRNA and protein level in single cells
 
 ### Loading scRNAseq data
 

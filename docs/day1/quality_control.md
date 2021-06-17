@@ -13,6 +13,8 @@
 
 [:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/quality_control.pdf){: .md-button }
 
+- [Paper](https://www.embopress.org/doi/full/10.15252/msb.20209946) on annotating more refined cell stages
+
 ## Exercises
 
 > :fontawesome-solid-ribbon: This chapter uses the `gbm` dataset
