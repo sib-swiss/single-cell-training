@@ -4,7 +4,12 @@
 [:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/scRNAseq_RM_dimreduction_only.pdf){: .md-button }
 
 - Making sense of [PCA](https://stats.stackexchange.com/questions/2691/making-sense-of-principal-component-analysis-eigenvectors-eigenvalues)
+- Understanding [t-SNE](https://distill.pub/2016/misread-tsne/)
+- [t-SNE explained](https://www.youtube.com/watch?v=NEaUSP4YerM) by Josh Starmer
 - Understanding [UMAP](https://pair-code.github.io/understanding-umap/)
+- [Video](https://www.youtube.com/watch?v=nq6iPZVUxZU) by one of the UMAP authors
+- More info on [UMAP parameters](https://umap.scikit-tda.org/parameters.html)
+
 
 ## Exercises
 
