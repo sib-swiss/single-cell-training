@@ -1,4 +1,8 @@
-# Course website template
+This website is hosted at: https://sib-swiss.github.io/single-cell-training/latest/
+
+Please refer to [issues](https://github.com/sib-swiss/single-cell-training/issues) for improvements/bugs for course material or the website 
+
+# Course website single cell transcriptomics
 
 This website is generated with [MkDocs](https://www.mkdocs.org/), with the theme [Material](https://squidfunk.github.io/mkdocs-material/).
 
