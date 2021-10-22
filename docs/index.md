@@ -1,7 +1,4 @@
 
-!!! info "Additional scripts"
-    The additional scripts (used during the correction) can be found [here](assets/scripts/scripts_june2021.R) and the corresponding neuron marker genes [here](assets/scripts/CellMarker_brain_neuron.csv).
-
 ## Authors
 
 - Tania Wyss
