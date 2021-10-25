@@ -1,0 +1,35 @@
+{
+    "title": "Course material Single cell transcriptomics",
+    "keywords": [
+      "NGS",
+      "RNA-seq",
+      "Single cell",
+      "Seurat",
+      "course",
+      "training"
+    ],
+    "creators": [
+      {
+        "name": "Tania Wyss",
+        "affiliation": "SIB Swiss Institute of Bioinformatics"
+      },
+      {
+        "name": "Rachel Marcone",
+        "affiliation": "SIB Swiss Institute of Bioinformatics"
+      },
+      {
+        "name": "Walid Gharib",
+        "affiliation": "SIB Swiss Institute of Bioinformatics"
+      },
+      {
+        "name": "Geert van Geest",
+        "affiliation": "SIB Swiss Institute of Bioinformatics",
+        "orcid": "0000-0002-1561-078X"
+      },
+      {
+        "name": "Patricia Palagi",
+        "affiliation": "SIB Swiss Institute of Bioinformatics",
+        "orcid": "0000-0001-9062-6303"
+      }
+    ]
+  }
