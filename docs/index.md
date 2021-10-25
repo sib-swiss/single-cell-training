@@ -4,7 +4,7 @@
 - Tania Wyss
 - Rachel Marcone-Jeitziner
 - Walid Gharib
-- Geert van Geest
+- Geert van Geest | [ORCiD](https://orcid.org/0000-0002-1561-078X)
 
 Parts of this course are inspired by the [Broad Institute Single Cell Workshop](https://broadinstitute.github.io/2019_scWorkshop/index.html).
 
