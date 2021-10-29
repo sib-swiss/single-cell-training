@@ -84,3 +84,31 @@ Is there a group of cells than contains a high proportion of cells in G2/M phase
 ```R
 Seurat::DimPlot(gbm, reduction = "umap", group.by = "Phase")
 ```
+
+**Exercise:** Try to change:
+
+**A.** The number of neighbors used for the calculation of the UMAP. Which is the parameter to change and how did it affect the output. What is the default ? In which situation would you lower/increase this ?
+
+**B.** The number of dims to extremes dims = 1:5 or dims = 1:50 how
+did it affect the output ? In your opinion better few PCAs too much or too few ?
+Why does dims = 1:100 not work ? When would more precision be needed ?
+
+??? done "Answer"
+    **Answer A**
+
+    ```R 
+    gbm <- Seurat::RunUMAP(gbm, dims = 1:25,n.neighbors = 50)
+    ```
+
+    It can be of interest to change the number of neighbors if one has subset the data (for instance in the situation where you would only consider the t-cells inyour data set), then maybe the number of neighbors in a cluster would anyway be most of the time lower than 30 then 30 is too much. In the other extreme where your dataset is extremely big an increase in the number of neighbors can be considered.
+
+    **Answer B** 
+
+    ```R
+    gbm <- Seurat::RunUMAP(gbm, dims = 1:5)
+    ```
+
+    ```R
+    gbm <- Seurat::RunUMAP(gbm, dims = 1:50) 
+    ```
+    Taking dims = 1:100 does not work as in the step RunPCA by default only 50pcs are calculated, so the maximum that we can consider in further steps are 50, if more precision makes sense, for instance, if the genes that is of interest for your study is not present when the RunPCA was calculated, then an increase in the number of components calculated at start might be interesting tobe considered. Taking too few PCs we have a « blob » everything looks connected. Too many PCs tends to separate everything. Personally it is more interesting for me too have maybe 2 clusters separated of epithelial cells that I then group for further downstream analysis rather than having very distinct cells being clustered together. So I would rather take the « elbow » of the elbow plota bit further to the right.

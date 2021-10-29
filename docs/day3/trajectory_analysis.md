@@ -290,6 +290,16 @@ PCAplot_slingshot(deng_SCE,
                   legend = TRUE)
 ```
 
+**Exercise:** Instead of providing an initial cluster, think of an end cluster that would fit this trajectory analysis and perform the slingshot analysis. Does slingshot find the initial cluster corresponding to the biological correct situation?
+
+??? done "Answer"
+    ```R
+    deng_SCE <- slingshot::slingshot(deng_SCE,
+                                 clusterLabels = 'Seurat_clusters',
+                                 reducedDim = 'PCA',
+                                 end.clus = c(« 0 », « 3 », « 5 »)) ## check which would be the best according to bio
+    ```
+
 Clear your environment:
 
 ```R

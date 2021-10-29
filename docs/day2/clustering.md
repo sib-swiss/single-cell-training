@@ -53,6 +53,13 @@ Seurat::DimPlot(gbm, group.by = "RNA_snn_res.0.1")
       <img src="../../assets/images/UMAP_res.0.2.png" width="400"/>
     </figure>
 
+**Exercise:** When do the number of neighbors need to be changed? How does changing the method of clustering in FindClusters affect the output? Which parameter should be changed?
+
+??? done "Answer"
+    As FindClusters is an unsupervised clustering method supposedly telling yousomething about your UMAP plot, the two should go along. If one has reasons to change the number of neighbors in the UMAP function, here the same parameter should be adapted.
+    
+    The method can be changed with algorithm = 2,3 or 4
+
 ### Save the dataset and clear environment
 
 Now, save the dataset so you can use it later today:
