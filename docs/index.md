@@ -1,10 +1,10 @@
 
 ## Authors
 
-- Tania Wyss | [ORCiD](https://orcid.org/0000-0003-2641-0895)
-- Rachel Marcone-Jeitziner | [ORCiD](https://orcid.org/0000-0002-5711-8435)
+- Tania Wyss [:custom-orcid:](https://orcid.org/0000-0003-2641-0895)
+- Rachel Marcone-Jeitziner [:custom-orcid:](https://orcid.org/0000-0002-5711-8435)
 - Walid Gharib
-- Geert van Geest | [ORCiD](https://orcid.org/0000-0002-1561-078X)
+- Geert van Geest [:custom-orcid:](https://orcid.org/0000-0002-1561-078X)
 
 Parts of this course are inspired by the [Broad Institute Single Cell Workshop](https://broadinstitute.github.io/2019_scWorkshop/index.html).
 
