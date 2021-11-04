@@ -1,6 +1,6 @@
 ## Material
 
-[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/scRNAseq_clustering_RM.pdf){: .md-button }
+[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/scRNAseq_clustering_RM_november.pdf){: .md-button }
 
 - Evaluation of [clustering methods](https://f1000research.com/articles/7-1141)
 
