@@ -1,7 +1,7 @@
 
 ## Material
 
-[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/cell_annotation_scRNAseq_062021.pdf){: .md-button }
+[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/cell_annotation_scRNAseq_112021.pdf){: .md-button }
 
 - [Review on automated cell annotation](https://www.sciencedirect.com/science/article/pii/S2001037021000192)
 
