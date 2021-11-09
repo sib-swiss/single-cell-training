@@ -149,6 +149,12 @@ See what's in there by using `head`:
 ```R
 head(gbm_SingleR)
 ```
+Visualize singleR score quality scores:
+
+```R
+plotScoreHeatmap(gbm_SingleR)
+plotDeltaDistribution(gbm_SingleR)
+```
 
 In order to visualize it in our UMAP, we have to add the annotation to `gbm@meta.data`:
 
