@@ -1,7 +1,7 @@
 
 ## Material
 
-[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/scRNAseq_Day3_112021.pdf){: .md-button }
+[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/scRNAseq_Day3_DE_112021.pdf){: .md-button }
 
 - More information on [pseudobulk analysis](https://bioconductor.org/books/release/OSCA/multi-sample-comparisons.html#differential-expression-between-condition)
 - [Muscat](https://bioconductor.org/packages/devel/bioc/vignettes/muscat/inst/doc/analysis.html) for pseudobulk DGE.
