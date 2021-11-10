@@ -228,30 +228,29 @@ Now we can add these clusters to the `slingshot` function:
 ```R
 deng_SCE$Seurat_clusters <- as.character(Idents(gcdata))  # go from factor to character
 
-deng_SCE <- slingshot::slingshot(deng_SCE,
+sce <- slingshot::slingshot(deng_SCE,
                                  clusterLabels = 'Seurat_clusters',
                                  reducedDim = 'PCA',
                                  start.clus = "2")
 ```
 
-
 Check how the slingshot object has evolved
 
 ```R
-SlingshotDataSet(deng_SCE)
+SlingshotDataSet(sce)
 ```
 
 Plot PC1 versus PC2 colored by slingshot pseudotime:
 
 ```R
-PCAplot_slingshot(deng_SCE, variable = deng_SCE$slingPseudotime_2)
+PCAplot_slingshot(sce, variable = sce$slingPseudotime_2)
 ```
 
 Plot Slingshot pseudotime vs cell stage.
 
 ```R
 ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
-                  slingPseudotime_1 = deng_SCE$slingPseudotime_1),
+                  slingPseudotime_1 = sce$slingPseudotime_1),
         aes(x = slingPseudotime_1, y = cell_type2,
         colour = cell_type2)) +
   ggbeeswarm::geom_quasirandom(groupOnX = FALSE) +
@@ -260,7 +259,7 @@ ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
   ggtitle("Cells ordered by Slingshot pseudotime")
 
 ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
-                  slingPseudotime_2 = deng_SCE$slingPseudotime_2),
+                  slingPseudotime_2 = sce$slingPseudotime_2),
         aes(x = slingPseudotime_2, y = cell_type2,
         colour = cell_type2)) +
   ggbeeswarm::geom_quasirandom(groupOnX = FALSE) +
@@ -272,27 +271,28 @@ ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
 Particularly the later stages, separation seems to improve. Since we have included the Seurat clustering, we can plot the PCA, with colors according to these clusters:
 
 ```R
-PCAplot_slingshot(deng_SCE,
+PCAplot_slingshot(sce,
                   variable = deng_SCE$Seurat_clusters,
                   type = 'lineages',
                   col = 'black',
                   legend = TRUE)
 
-PCAplot_slingshot(deng_SCE,
+PCAplot_slingshot(sce,
                   variable = deng_SCE$cell_type2,
                   type = 'lineages',
                   col = 'black',
                   legend = TRUE)
 ```
 
+
 **Exercise:** Instead of providing an initial cluster, think of an end cluster that would fit this trajectory analysis and perform the slingshot analysis. Does slingshot find the initial cluster corresponding to the biological correct situation?
 
 ??? done "Answer"
     ```R
-    deng_SCE <- slingshot::slingshot(deng_SCE,
+    sce <- slingshot::slingshot(deng_SCE,
                                  clusterLabels = 'Seurat_clusters',
                                  reducedDim = 'PCA',
-                                 end.clus = c(« 0 », « 3 », « 5 »)) ## check which would be the best according to bio
+                                 end.clus = c("0", "3", "5")) ## check which would be the best according to bio
     ```
 
 Clear your environment:
