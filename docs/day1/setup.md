@@ -35,7 +35,7 @@ Choose one of the following:
       -p 8787:8787 \
       -e PASSWORD=test \
       -v $PWD:/home/rstudio \
-      geertvangeest/single-cell-rstudio:2021.6
+      geertvangeest/single-cell-rstudio:latest
       ```
 
     If this command has run successfully, approach Rstudio server like this:
@@ -48,7 +48,7 @@ Choose one of the following:
 
     The option `-v` mounts a local directory in your computer to the directory `/home/rstudio` in the docker container ('rstudio' is the default user for Rstudio containers). In that way, you have files available both in the container and on your computer. Use this directory on your computer. Change the first path to a path on your computer that you want to use as a working directory.
 
-    The part `geertvangeest/single-cell-rstudio:2021.6` is the image we are going to load into the container. The image contains all the information about software and dependencies needed for this course. When you run this command for the first time it will download the image. Once it's on your computer, it will start immediately.
+    The part `geertvangeest/single-cell-rstudio:latest` is the image we are going to load into the container. The image contains all the information about software and dependencies needed for this course. When you run this command for the first time it will download the image. Once it's on your computer, it will start immediately.
 
 ### Create a project
 
