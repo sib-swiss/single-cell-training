@@ -234,11 +234,6 @@ deng_SCE <- slingshot::slingshot(deng_SCE,
                                  start.clus = "2")
 ```
 
-There have been added two `slingPseudotime` columns:
-
-```R
-head(colData(deng_SCE))
-```
 
 Check how the slingshot object has evolved
 
