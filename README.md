@@ -1,3 +1,7 @@
+![build workflow](https://github.com/sib-swiss/single-cell-training/actions/workflows/docker-image.yml/badge.svg)
+![GitHub Release Date](https://img.shields.io/github/release-date/sib-swiss/single-cell-training)
+[![License: CC BY-SA 4.0](https://img.shields.io/badge/License-CC_BY--SA_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-sa/4.0/)
+
 This website is hosted at: https://sib-swiss.github.io/single-cell-training/latest/
 
 Please refer to [issues](https://github.com/sib-swiss/single-cell-training/issues) for improvements/bugs for course material or the website 
