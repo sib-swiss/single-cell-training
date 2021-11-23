@@ -11,15 +11,13 @@
     "creators": [
       {
         "name": "Tania Wyss",
-        "affiliation": "SIB Swiss Institute of Bioinformatics"
+        "affiliation": "SIB Swiss Institute of Bioinformatics",
+        "orcid": "0000-0003-2641-0895"
       },
       {
         "name": "Rachel Marcone",
-        "affiliation": "SIB Swiss Institute of Bioinformatics"
-      },
-      {
-        "name": "Walid Gharib",
-        "affiliation": "SIB Swiss Institute of Bioinformatics"
+        "affiliation": "SIB Swiss Institute of Bioinformatics",
+        "orcid": "0000-0002-5711-8435"
       },
       {
         "name": "Geert van Geest",
