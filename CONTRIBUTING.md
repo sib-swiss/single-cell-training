@@ -17,11 +17,11 @@ By contributing, you agree that we may redistribute your work under [our license
 
 The easiest way to get started is to file an issue to tell us about a spelling mistake, some awkward wording, or a factual error. This is a good way to introduce yourself and to meet some of our community members.
 
-1.  If you have a [GitHub][github] account, or are willing to [create one][github-join], but do not know how to use Git, you can report problems or suggest improvements by [creating an issue][issues]. This allows us to assign the item to someone and to respond to it in a threaded discussion.
+1.  If you have a [GitHub](https://github.com/) account, or are willing to [create one](https://github.com/join), but do not know how to use Git, you can report problems or suggest improvements by [creating an issue](https://github.com/sib-swiss/single-cell-training/issues). This allows us to assign the item to someone and to respond to it in a threaded discussion.
 2.  If you are comfortable with Git, and would like to add or change material,  you can submit a pull request (PR). 
 
 ## What to Contribute
 
-There are many ways to contribute, from writing new exercises and improving existing ones  to providing feedback after teaching or learning from this course,  and submitting [bug reports][issues] about things that don't work, aren't clear, or are missing. If you are looking for ideas, please see the 'Issues' tab for  a list of issues associated with this repository.
+There are many ways to contribute, from writing new exercises and improving existing ones  to providing feedback after teaching or learning from this course, and submitting [bug reports](https://github.com/sib-swiss/single-cell-training/issues) about things that don't work, aren't clear, or are missing. If you are looking for ideas, please see the 'Issues' tab for  a list of issues associated with this repository.
 
-Comments on issues and reviews of pull requests are just as welcome:  we are smarter together than we are on our own. Reviews from novices and newcomers are particularly valuable:  it's easy for people who have been using these courses for a while  to forget how impenetrable some of this material can be, so fresh eyes are always welcome.
+Comments on issues and reviews of pull requests are just as welcome: we are smarter together than we are on our own. Reviews from novices and newcomers are particularly valuable: it's easy for people who have been using these courses for a while to forget how impenetrable some of this material can be, so fresh eyes are always welcome.
