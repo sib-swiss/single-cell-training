@@ -1,4 +1,4 @@
-FROM rocker/rstudio:4.1.0
+FROM rocker/rstudio:4.1.2
 #FROM rocker/rstudio:4.0.5
 
 RUN sudo apt-get update
@@ -13,3 +13,6 @@ libxml2-dev
 COPY install_packages.R ./
 
 RUN Rscript install_packages.R
+
+# add cellranger to PATH
+# check installation Seurat

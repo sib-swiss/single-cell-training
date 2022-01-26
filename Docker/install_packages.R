@@ -1,12 +1,15 @@
 # Packages to install:
 
 # CRAN packages:
-install.packages(c("ggplot2", "BiocManager", "Seurat", "sctransform", "devtools", "cowplot",
-                   "ggbeeswarm", "ggnewscale"))
+install.packages(c("ggplot2", "BiocManager", "Seurat", "sctransform",
+                   "devtools", "cowplot", "matrixStats",
+                   "ggbeeswarm", "ggnewscale"),
+                   repos = "http://cran.us.r-project.org")
 
 # Bioconductor packages:
 BiocManager::install(c("scran", "clusterProfiler", "scater", "SingleR",
-                       "celldex","BiocGenerics", "DelayedArray", "DelayedMatrixStats",
+                       "celldex", "BiocGenerics", "DelayedArray",
+                       "DelayedMatrixStats",
                        "limma", "S4Vectors", "SingleCellExperiment",
                        "SummarizedExperiment", "batchelor", "Matrix.utils",
                        "slingshot",
