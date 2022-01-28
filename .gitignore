@@ -7,3 +7,5 @@ site
 .bash_history
 .Rhistory
 single_cell_course
+cellranger*
+course_data*
