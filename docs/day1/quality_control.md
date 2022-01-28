@@ -164,7 +164,7 @@ VlnPlot(seu, features = c("nFeature_RNA",
 Now, save the dataset so you can use it tomorrow:
 
 ```R
-saveRDS(gbm, "gbm_day1.rds")
+saveRDS(seu, "seu_day1.rds")
 ```
 
 Clear your environment:
