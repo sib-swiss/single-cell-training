@@ -13,102 +13,117 @@
 
 ## Exercises
 
-> :fontawesome-solid-ribbon: This chapter uses the `gbm` dataset
+> :fontawesome-solid-ribbon: This chapter uses the `seu` dataset
 
-Load the `gbm` dataset you have created yesterday:
+Load the `seu` dataset you have created yesterday:
 
 ```R
-gbm <- readRDS("gbm_day1.rds")
+seu <- readRDS("seu_day1.rds")
 ```
 
 And load the following packages:
 
 ```R
 library(Seurat)
-library(clustree)
 ```
 
 Once the data is normalized, scaled and variable features have been identified, we can start to reduce the dimensionality of the data.
-For the PCA, by default, only the previously determined variable features are used as input, but can be defined using features argument if you wish to specify a vector of genes. The PCA will only be run on the variable features, that you can check with `VariableFeatures(gbm)`.
+For the PCA, by default, only the previously determined variable features are used as input, but can be defined using features argument if you wish to specify a vector of genes. The PCA will only be run on the variable features, that you can check with `VariableFeatures(seu)`.
 
 ```R
-gbm <- Seurat::RunPCA(gbm)
+seu <- Seurat::RunPCA(seu)
 ```
 
 To view the PCA plot:
 
 ```R
-Seurat::DimPlot(gbm, reduction = "pca")
+Seurat::DimPlot(seu, reduction = "pca")
 ```
 
-We can colour the PCA plot according to any factor that is present in `@meta.data`. For example we can take the column `Phase` (i.e. predicted cell cycle phase):
+We can colour the PCA plot according to any factor that is present in `@meta.data`, or for any gene. For example we can take the column `percent.globin`:
 
 ```R
-Seurat::DimPlot(gbm, reduction = "pca", group.by = "Phase")
+Seurat::FeaturePlot(seu, reduction = "pca", group.by = "percent.globin")
 ```
 
-!!! note
-    Coming back to the cell cycle analysis, we can check the distribution of the different cell cycle phases over the PCA, and eventually regress it out using the `ScaleData()` function. But here, the PCA doesn't seem to cluster according to the cell cycle phase.
+!!! note 
+    Note that we used a different plotting function here `FeaturePlot`. The difference between `DimPlot` and `FeaturePlot` is that the first allows you to color the points in the plot according to a grouping variable (e.g. sample) while the latter allows you to color the points according to a continuous variable (e.g. gene expression).
+
+**Exercise:** Generate a PCA plot where color is according to counts of a gene (i.e. gene expression). For example, you can take `HBA1` (alpha subunit of hemoglobin), or one of the most variable genes (e.g. `IGKC`).
+
+??? done "Answer"
+    Generating a PCA plot coloured according to gene expression (here `HBA1`):
+
+    ```R
+    Seurat::FeaturePlot(seu, reduction = "pca", group.by = "HBA1")
+    ```
+
 
 We can generate heatmaps according to the correlations with the different dimensions of our PCA:
 
 ```R
-Seurat::DimHeatmap(gbm, dims = 1:12, cells = 500, balanced = TRUE)
+Seurat::DimHeatmap(seu, dims = 1:12, cells = 500, balanced = TRUE)
 ```
 
-The elblowplot can help you in determining how many PCs to use for downstream analysis such as UMAP:
+The elbowplot can help you in determining how many PCs to use for downstream analysis such as UMAP:
 
 ```R
-Seurat::ElbowPlot(gbm, ndims = 40)
+Seurat::ElbowPlot(seu, ndims = 40)
 ```
 
-The elblow plot ranks principle components based on the percentage of variance explained by each one. Where we observe an "elblow" or flattening curve, the majority of true signal is captured by this number of PCs, eg around 25 PCs for the gbm dataset.
+The elbow plot ranks principle components based on the percentage of variance explained by each one. Where we observe an "elbow" or flattening curve, the majority of true signal is captured by this number of PCs, eg around 25 PCs for the seu dataset.
 
 Including too many PCs usually does not affect much the result, while including too few PCs can affect the results very much.
 
 UMAP: The goal of these algorithms is to learn the underlying manifold of the data in order to place similar cells together in low-dimensional space.
 
 ```R
-gbm <- Seurat::RunUMAP(gbm, dims = 1:25)
+seu <- Seurat::RunUMAP(seu, dims = 1:25)
 ```
 
 To view the UMAP plot:
 
 ```R
-Seurat::DimPlot(gbm, reduction = "umap")
-```
-
-Cells can be coloured according to cell cycle phase.
-Is there a group of cells than contains a high proportion of cells in G2/M phase?
-
-```R
-Seurat::DimPlot(gbm, reduction = "umap", group.by = "Phase")
+Seurat::DimPlot(seu, reduction = "umap")
 ```
 
 **Exercise:** Try to change:
 
-**A.** The number of neighbors used for the calculation of the UMAP. Which is the parameter to change and how did it affect the output. What is the default ? In which situation would you lower/increase this ?
+**A.** Color the dots in the UMAP according to a variable (e.g. `percent.globin` or `HBA1`). Any idea where the erythrocytes probably are in the UMAP?
 
-**B.** The number of dims to extremes dims = 1:5 or dims = 1:50 how
+**B.** The number of neighbors used for the calculation of the UMAP. Which is the parameter to change and how did it affect the output. What is the default ? In which situation would you lower/increase this ?
+
+**C.** The number of dims to extremes dims = 1:5 or dims = 1:50 how
 did it affect the output ? In your opinion better few PCAs too much or too few ?
-Why does dims = 1:100 not work ? When would more precision be needed ?
+Why does dims = 1:100 not work? When would more precision be needed?
 
 ??? done "Answer"
-    **Answer A**
+    **Answer A** 
+
+    ```R
+    Seurat::FeaturePlot(seu, features = c("HBA1", "percent.globin", "IGKC", "percent.mito"))
+    ```
+
+    The erythrocytes are probably in the cluster with a higher percentage of globin expression.
+
+    **Answer B**
 
     ```R 
-    gbm <- Seurat::RunUMAP(gbm, dims = 1:25,n.neighbors = 50)
+    seu <- Seurat::RunUMAP(seu, dims = 1:25, n.neighbors = 5)
     ```
 
-    It can be of interest to change the number of neighbors if one has subset the data (for instance in the situation where you would only consider the t-cells inyour data set), then maybe the number of neighbors in a cluster would anyway be most of the time lower than 30 then 30 is too much. In the other extreme where your dataset is extremely big an increase in the number of neighbors can be considered.
+    The default number of neighbours is 30. It can be of interest to change the number of neighbors if one has subset the data (for instance in the situation where you would only consider the t-cells inyour data set), then maybe the number of neighbors in a cluster would anyway be most of the time lower than 30 then 30 is too much. In the other extreme where your dataset is extremely big an increase in the number of neighbors can be considered.
 
-    **Answer B** 
+    **Answer C** 
 
     ```R
-    gbm <- Seurat::RunUMAP(gbm, dims = 1:5)
+    seu <- Seurat::RunUMAP(seu, dims = 1:5)
+    Seurat::DimPlot(seu, reduction = "umap")
     ```
 
     ```R
-    gbm <- Seurat::RunUMAP(gbm, dims = 1:50) 
+    seu <- Seurat::RunUMAP(seu, dims = 1:50) 
+    Seurat::DimPlot(seu, reduction = "umap")
     ```
-    Taking dims = 1:100 does not work as in the step RunPCA by default only 50pcs are calculated, so the maximum that we can consider in further steps are 50, if more precision makes sense, for instance, if the genes that is of interest for your study is not present when the RunPCA was calculated, then an increase in the number of components calculated at start might be interesting tobe considered. Taking too few PCs we have a « blob » everything looks connected. Too many PCs tends to separate everything. Personally it is more interesting for me too have maybe 2 clusters separated of epithelial cells that I then group for further downstream analysis rather than having very distinct cells being clustered together. So I would rather take the « elbow » of the elbow plota bit further to the right.
+
+    Taking dims = 1:100 does not work as in the step RunPCA by default only 50pcs are calculated, so the maximum that we can consider in further steps are 50, if more precision makes sense, for instance, if the genes that is of interest for your study is not present when the RunPCA was calculated, then an increase in the number of components calculated at start might be interesting tobe considered. Taking too few PCs we have a « blob » everything looks connected. Too many PCs tends to separate everything. Personally it is more interesting for me too have maybe 2 clusters separated of epithelial cells that I then group for further downstream analysis rather than having very distinct cells being clustered together. So I would rather take the « elbow » of the elbow plot a bit further to the right.

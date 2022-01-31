@@ -101,6 +101,8 @@ Seurat::LabelPoints(plot = vf_plot,
             points = top10, repel = TRUE)
 ```
 
+You can see that most of the highly variables are antibody subunits (starting with IGH, IGL). Not very surprising since we look at bone marrow tissue. We can have a look later in which cells they are expressed. 
+
 ### Scaling
 
 Next, we apply scaling, a linear transformation that is a standard pre-processing
@@ -142,3 +144,19 @@ seu <- Seurat::ScaleData(seu,
     ```R
     DefaultAssay(seu) <- "RNA"
     ```
+
+### Save the dataset and clear environment
+
+Now, save the dataset so you can use it tomorrow:
+
+```R
+saveRDS(seu, "seu_day1.rds")
+```
+
+Clear your environment:
+
+```R
+rm(list = ls())
+gc()
+.rs.restartR()
+```

@@ -1,4 +1,4 @@
-sample_info <- read.csv("sample_info_course.csv")
+sample_info <- read.csv("course_data/sample_info_course.csv")
 datadirs <- file.path("course_data", "count_matrices", sample_info$SampleName,
                       "outs", "filtered_feature_bc_matrix")
 names(datadirs) <- gsub("_", "-", sample_info$SampleName)
@@ -75,6 +75,8 @@ VlnPlot(seu, features = c("nFeature_RNA",
                           "nCount_RNA",
                           "percent.mito"))
 
+
+
 Seurat::GetAssay(seu)[1:10,1:10]  
 
 seu <- Seurat::NormalizeData(seu,
@@ -96,27 +98,145 @@ Seurat::LabelPoints(plot = vf_plot,
 seu <- Seurat::ScaleData(seu,
                          features = rownames(seu))
 
-s.genes <- Seurat::cc.genes.updated.2019$s.genes
-g2m.genes <- Seurat::cc.genes.updated.2019$g2m.genes
+saveRDS(seu, "seu_day1.rds")
 
-seu <- Seurat::CellCycleScoring(seu,
-                                s.features = s.genes,
-                                g2m.features = g2m.genes)
+# s.genes <- Seurat::cc.genes.updated.2019$s.genes
+# g2m.genes <- Seurat::cc.genes.updated.2019$g2m.genes
+# 
+# seu <- Seurat::CellCycleScoring(seu,
+#                                 s.features = s.genes,
+#                                 g2m.features = g2m.genes)
+
+seu <- readRDS("seu_day1.rds")
 
 seu <- Seurat::RunPCA(seu)
+Seurat::DimPlot(seu, reduction = "pca")
+Seurat::FeaturePlot(seu, reduction = "pca", features = "percent.mito")
+Seurat::FeaturePlot(seu, reduction = "pca", features = "percent.ribo")
+Seurat::FeaturePlot(seu, reduction = "pca", features = "percent.globin")
+Seurat::FeaturePlot(seu, reduction = "pca", features = "HBA1")
+
+Seurat::DimHeatmap(seu, dims = 1:12, cells = 500, balanced = TRUE)
+
 
 seu <- Seurat::RunUMAP(seu, dims = 1:25)
 
 Seurat::DimPlot(seu, reduction = "umap")
 
-Seurat::DimPlot(seu, group.by = "Phase")
+Seurat::FeaturePlot(seu, features = c("HBA1", "percent.globin", "IGKC", "percent.mito"))
+
+seu <- Seurat::RunUMAP(seu, dims = 1:25, n.neighbors = 5)
+Seurat::DimPlot(seu, reduction = "umap")
+
+seu <- Seurat::RunUMAP(seu, dims = 1:5)
+Seurat::DimPlot(seu, reduction = "umap")
+
+seu <- Seurat::RunUMAP(seu, dims = 1:25)
+
+seu_list <- Seurat::SplitObject(seu, split.by = "orig.ident")
+
+for (i in 1:length(seu_list)) {
+  seu_list[[i]] <- Seurat::NormalizeData(seu_list[[i]])
+  seu_list[[i]] <- Seurat::FindVariableFeatures(seu_list[[i]], selection.method = "vst", nfeatures = 2000,
+                                                verbose = FALSE)
+}
+
+seu_anchors <- Seurat::FindIntegrationAnchors(object.list = seu_list, dims = 1:30)
+
+seu_int <- Seurat::IntegrateData(anchorset = seu_anchors, dims = 1:30)
+
+Seurat::DefaultAssay(seu_int) <- "integrated"
+
+seu_int <- Seurat::ScaleData(seu_int)
+seu_int <- Seurat::RunPCA(seu_int, npcs = 30)
+seu_int <- Seurat::RunUMAP(seu_int, reduction = "pca", dims = 1:30)
+
+Seurat::DimPlot(seu_int, reduction = "umap")
+
+
+seu_int <- Seurat::FindNeighbors(seu_int, dims = 1:25)
+
+seu_int <- Seurat::FindClusters(seu_int, resolution = seq(0.1, 0.8, by=0.1))
+
+head(seu_int@meta.data)
+
+library(clustree)
+clustree::clustree(seu_int@meta.data[,grep("integrated_snn_res", colnames(seu_int@meta.data))],
+                   prefix = "integrated_snn_res.")
+
+Seurat::DimPlot(seu_int, group.by = "integrated_snn_res.0.3")
+
+seu_int <- Seurat::SetIdent(seu_int, value = seu_int$integrated_snn_res.0.3)
+DefaultAssay(seu_int) <- "RNA"
+
+Seurat::FeaturePlot(seu_int, "HBA1")
+
+immune_genes <- c("IL7R", "LTB", "TRAC", "CD3D")
+
+
+
+
+Seurat::FeaturePlot(seu_int, immune_genes, ncol=2)
+
+Seurat::VlnPlot(seu_int,
+                features = immune_genes,
+                ncol = 2)
+
+monocyte_genes <- c("CD14", "CST3", "CD68", "CTSS")
+Seurat::FeaturePlot(seu_int, monocyte_genes, ncol=2)
+
+Seurat::VlnPlot(seu_int,
+                features = monocyte_genes,
+                ncol = 2)
+
+seu_int <- Seurat::AddModuleScore(seu_int,
+                                  features = list(immune_genes),
+                                  name = "immune_genes")
+
+Seurat::FeaturePlot(seu_int, "immune_genes1")
+
+Seurat::VlnPlot(seu_int,
+                features = "immune_genes1")
+
+
+hpca.se <- celldex::HumanPrimaryCellAtlasData()
+class(hpca.se)
+table(hpca.se$label.main)
+
+ref <- celldex::BlueprintEncodeData()
+ref <- celldex::NovershternHematopoieticData()
+
+seu_int_SingleR <- SingleR::SingleR(test = Seurat::GetAssayData(seu_int, slot = "data"),
+                                    ref = ref,
+                                    labels = ref$label.main)
+
+library(SingleR)
+plotScoreHeatmap(seu_int_SingleR)
+plotDeltaDistribution(seu_int_SingleR)
+
+singleR_labels <- seu_int_SingleR$labels
+t <- table(singleR_labels)
+other <- names(t)[t < 10]
+singleR_labels[singleR_labels %in% other] <- NA
+
+seu_int$SingleR_annot <- singleR_labels
+
+library(dittoSeq)
+dittoDimPlot(seu_int, "SingleR_annot", size = 0.7)
+dittoDimPlot(seu_int, "integrated_snn_res.0.3", size = 0.7)
+dittoBarPlot(seu_int, var = "SingleR_annot", group.by = "orig.ident")
+dittoSeq::dittoBarPlot(seu_int, 
+                       var = "SingleR_annot", 
+                       group.by = "integrated_snn_res.0.3")
+
+
 
 seu.list <- Seurat::SplitObject(seu, split.by = "orig.ident")
 
 for (i in 1:length(seu.list)) {
   seu.list[[i]] <- Seurat::NormalizeData(seu.list[[i]])
   seu.list[[i]] <- Seurat::FindVariableFeatures(seu.list[[i]], selection.method = "vst", nfeatures = 2000,
-                                                     verbose = FALSE)
+                                                verbose = FALSE)
 }
 
 seu.anchors <- Seurat::FindIntegrationAnchors(object.list = seu.list, dims = 1:30)
@@ -138,8 +258,8 @@ Seurat::DimPlot(seu.integrated, reduction = "umap", group.by = "Phase")
 library(celldex)
 hpca.se <- celldex::HumanPrimaryCellAtlasData()
 gbm_SingleR <- SingleR::SingleR(test = Seurat::GetAssayData(seu, slot = "data"),
-                                  ref = hpca.se,
-                                  labels = hpca.se$label.main)
+                                ref = hpca.se,
+                                labels = hpca.se$label.main)
 
 seu.integrated$SingleR_annot <- gbm_SingleR$labels
 seu$SingleR_annot <- gbm_SingleR$labels

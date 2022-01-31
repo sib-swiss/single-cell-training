@@ -79,7 +79,7 @@ Seurat::VlnPlot(seu, features = c("percent.mito",
                                   "percent.globin"))
 ```
 
-You can see that `PBMMC-2` is quite different from the two others, it has a group of cells with very low ribosomal counts and very high globin counts. Maybe these two percentages are negatively correlated? Let's have a look, by plotting the two percentages against each other:
+You can see that `PBMMC-2` is quite different from the two others, it has a group of cells with very low ribosomal counts and one with very high globin counts. Maybe these two percentages are negatively correlated? Let's have a look, by plotting the two percentages against each other:
 
 ```R
 Seurat::FeatureScatter(seu, 
@@ -96,7 +96,7 @@ Seurat::FeatureScatter(seu,
     <img src="../../assets/images/globin_vs_ribo.png" width="500"/>
     </figure>
 
-    Erythrocytes (red blood cells) have a high abundance of hemoglobin transcripts and low abundance of ribosomal transcripts. As they don't have a nucleus, we don't expect them in this set of Bone Marrow **Mononuclear** Cells (BMMCs). 
+    Erythrocytes (red blood cells) have a high abundance of hemoglobin transcripts and low abundance of ribosomal transcripts. These are most likely erythroid cells, i.e. the cells predecessing erythrocytes in the bone marrow. 
 
 We can also evaluate the relative expression of other genes in our dataset, for example, the ones that are most highly expressed. Some very highly expressed genes might point to a technical cause, and we might consider to remove them. Below you will find a simple function to generate a boxplot of relative counts per gene per cell. Load it into your environment and run it on our `seu` object:
 
@@ -159,18 +159,3 @@ VlnPlot(seu, features = c("nFeature_RNA",
                           "percent.mito"))
 ```
 
-### Save the dataset and clear environment
-
-Now, save the dataset so you can use it tomorrow:
-
-```R
-saveRDS(seu, "seu_day1.rds")
-```
-
-Clear your environment:
-
-```R
-rm(list = ls())
-gc()
-.rs.restartR()
-```
