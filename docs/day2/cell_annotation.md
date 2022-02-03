@@ -26,14 +26,15 @@ In the last exercise we saw that probably clustering at a resolution of 0.3 gave
 seu_int <- Seurat::SetIdent(seu_int, value = seu_int$integrated_snn_res.0.3)
 ```
 
+!!! note
+    From now on, grouping (e.g. for plotting) is done by the active identity (set at `@active.ident`) by default.
+
 During cell annotation we will use the original count data (not the integrated data):
 
 ```R
 DefaultAssay(seu_int) <- "RNA"
 ```
 
-!!! note
-    From now on, grouping (e.g. for plotting) is done by the active identity (set at `@active.ident`) by default.
 
 Based on the UMAP we have generated, we can visualize expression for a gene in each cluster:
 
@@ -129,6 +130,24 @@ seu_int <- Seurat::AddModuleScore(seu_int,
     <figure>
       <img src="../../assets/images/violinplot_immune_genes_modules.png" width="500"/>
     </figure>
+
+### Annotating cells according to cycling phase
+
+```R
+s.genes <- Seurat::cc.genes.updated.2019$s.genes
+g2m.genes <- Seurat::cc.genes.updated.2019$g2m.genes
+```
+
+```R
+seu_int <- Seurat::CellCycleScoring(seu_int,
+                                     s.features = s.genes,
+                                     g2m.features = g2m.genes)
+```
+
+```R
+Seurat::DimPlot(seu_int, group.by = "Phase")
+```
+
 
 ### Cell type annotation using `SingleR`
 

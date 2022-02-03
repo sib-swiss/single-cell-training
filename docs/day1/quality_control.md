@@ -137,7 +137,7 @@ As for most 10X based poly-A enriched single cell datasets, we find a relatively
 
 Based on the QC process we went through we can come to the following conclusions:
 
-- There no cells with very high mitochondrial gene counts.
+- There are no cells with very high mitochondrial gene counts.
 - There are some cells with a hemoglobin and low ribosomal counts, and these are probably erythrocytes.
 - There are some cells with a very low and very high number of features. These might point to non-informative cells and doublets respectively. 
 - The 'usual suspect' MALAT1 sometimes makes up a large part of the counts per cell. As we do not see any other suggestions of dying/stressed cells, we leave it in. 

@@ -8,7 +8,10 @@ libxt6 \
 libgl1-mesa-glx \
 libcurl4-openssl-dev \
 libglpk-dev \
-libxml2-dev
+libxml2-dev \
+libproj-dev \
+libudunits2-dev \
+libgdal-dev
 
 COPY install_packages.R ./
 

@@ -11,12 +11,10 @@
 
 ### Find all markers for each cluster
 
-> :fontawesome-solid-ribbon: This part uses the `gbm` dataset
-
-Load the `gbm` dataset you have created yesterday:
+Load the `seu_int` dataset you have created yesterday:
 
 ```R
-gbm <- readRDS("gbm_day2_part2.rds")
+seu_int <- readRDS("seu_int_day2_part2.rds")
 ```
 
 And load the following packages:
@@ -32,7 +30,7 @@ The function `FindAllMarkers` performs a Wilcoxon plot to determine the genes di
 Now run analysis:
 
 ```R
-de_genes <- Seurat::FindAllMarkers(gbm,  min.pct = 0.25)
+de_genes <- Seurat::FindAllMarkers(seu_int,  min.pct = 0.25)
 ```
 
 !!! note "Time for coffee"
@@ -45,99 +43,104 @@ de_genes <- subset(de_genes, de_genes$p_val_adj < 0.05)
 View(de_genes)
 ```
 
-**Exercise:** What are significant marker genes in cluster 6? Are the immune genes in there?
+**Exercise:** What are significant marker genes in cluster 0 and 8? Are the T cell genes in there?
 
 !!! hint
     You can re-load the vector with immune genes with:
 
     ```R
-    immune_genes <- c("GZMA", "CD3E", "CD3D")
+    tcell_genes <- c("IL7R", "LTB", "TRAC", "CD3D")
     ```
 
 ??? done "Answer"
     Running
 
     ```R
-    de_genes[de_genes$gene %in% immune_genes,]
+    de_genes[de_genes$gene %in% tcell_genes,]
     ```
 
     Returns:
     ```
-                  p_val avg_log2FC pct.1 pct.2     p_val_adj cluster gene
-    GZMA 4.015094e-221   2.441962 0.331 0.005 9.781973e-217       6 GZMA
-    CD3E  0.000000e+00   2.113342 0.474 0.006  0.000000e+00       6 CD3E
-    CD3D  0.000000e+00   2.507228 0.519 0.006  0.000000e+00       6 CD3D
+                   p_val avg_log2FC pct.1 pct.2     p_val_adj cluster gene
+    CD3D    0.000000e+00  2.0432771 0.768 0.228  0.000000e+00       0 CD3D
+    TRAC   1.157793e-287  1.6805543 0.618 0.205 2.161947e-283       0 TRAC
+    LTB    1.072643e-266  1.5215326 0.757 0.395 2.002946e-262       0  LTB
+    IL7R   5.112493e-211  1.5236657 0.438 0.114 9.546557e-207       0 IL7R
+    LTB.7   6.554548e-36  1.1405474 0.672 0.465  1.223931e-31       7  LTB
+    TRAC.8 7.568418e-117  1.8472689 0.759 0.273 1.413251e-112       8 TRAC
+    CD3D.8 3.079377e-110  1.7144870 0.800 0.326 5.750121e-106       8 CD3D
+    LTB.8   1.580808e-61  1.6529117 0.774 0.461  2.951843e-57       8  LTB
+    IL7R.2  4.497526e-45  1.1489439 0.458 0.173  8.398231e-41       8 IL7R
+    LTB.11  2.727014e-25  0.8193337 0.750 0.467  5.092153e-21      11  LTB
     ```
 
-    So, yes, the immune genes are highly significant markers for cluster 6.
+    So, yes, the immune genes are highly significant markers for cluster 0 and 8.
 
-### Differential expression between clusters
+### Differential expression between groups of cells
 
-> :fontawesome-solid-ribbon: This part uses the `gbm` dataset
-
-The `FindMarkers` function allows to test for differential gene expression analysis specifically between 2 clusters, i.e. perform pairwise comparisons, eg between cells of cluster 0 vs cluster 2, or between cells annotated as astrocytes and macrophages.
+The `FindMarkers` function allows to test for differential gene expression analysis specifically between 2 groups of cells, i.e. perform pairwise comparisons, eg between cells of cluster 0 vs cluster 2, or between cells annotated as T-cells and B-cells.
 
 First we can set the default cell identity to the cell types defined by `SingleR`:
 
 ```R
-gbm <- Seurat::SetIdent(gbm, value = "SingleR_annot")
+seu_int <- Seurat::SetIdent(seu_int, value = "SingleR_annot")
 ```
 
-Run the differential gene expression analysis (runs for a couple of minutes):
+Run the differential gene expression analysis:
 
 ```R
-DEG_astro_vs_macro <- Seurat::FindMarkers(gbm,
-                                           ident.1 = "Astrocyte",
-                                           ident.2 = "Macrophage",
-                                           group.by = gbm$SingleR_annot,
-                                           test.use = "wilcox")
+deg_cd8_cd4 <- Seurat::FindMarkers(seu_int,
+                                   ident.1 = "CD8+ T cells",
+                                   ident.2 = "CD4+ T cells",
+                                   group.by = seu_int$SingleR_annot,
+                                   test.use = "wilcox")
 ```
 
-**Exercise:** What is the top 10 differentially expressed genes? What does the sign (i.e. positive or negative) mean in the log fold change values? Check your answer by generating a violin plot of a top differentially expressed gene.
+**Exercise:** Are CD8A, CD8B and CD4 in there? What does the sign (i.e. positive or negative) mean in the log fold change values? Are they according to the CD8+ and CD4+ annotations? Check your answer by generating a violin plot of a top differentially expressed gene.
 
 ??? done "Answer"
-    You can look at the top 10 differentially expressed genes with:
+    You can check out the results with:
 
     ```R
-    top_order <- order(DEG_astro_vs_macro$p_val_adj)
-    DEG_astro_vs_macro[top_order[1:10],]
-    ```
-
-    Returning:
-
-    ```
-              p_val avg_log2FC pct.1 pct.2 p_val_adj
-    SLC2A5       0  -1.481971 0.080 0.656         0
-    TNFRSF1B     0  -1.529484 0.041 0.694         0
-    CAMK2N1      0   2.622397 0.907 0.106         0
-    C1QA         0  -4.843247 0.088 0.964         0
-    C1QC         0  -4.374756 0.075 0.943         0
-    C1QB         0  -4.940663 0.099 0.946         0
-    LAPTM5       0  -3.685947 0.075 0.987         0
-    MARCKSL1     0   2.690161 0.911 0.221         0
-    CNN3         0   2.940659 0.818 0.110         0
-    CD53         0  -1.861605 0.035 0.804         0
+    View(deg_cd8_cd4)
     ```
 
     For an explanation of the log fold change have a look at `?Seurat::FindMarkers`. At **Value** it says:
 
     > `avg_logFC`: log fold-chage of the average expression between the two groups. Positive values indicate that the gene is more highly expressed in the first group
 
-    Plotting the top gene `SLC2A5`:
+    To view CD8A, CD8B and CD4:
 
     ```R
-    Seurat::VlnPlot(gbm, features = "SLC2A5")
+    deg_cd8_cd4[c("CD4", "CD8A", "CD8B"),]
+    ```
+
+    Returning:
+
+    ```
+                p_val avg_log2FC pct.1 pct.2    p_val_adj
+    CD4  1.070126e-13 -0.4000835 0.012 0.103 1.998246e-09
+    CD8A 1.409306e-77  1.2956354 0.344 0.008 2.631597e-73
+    CD8B 7.113148e-36  0.8536693 0.479 0.177 1.328238e-31
+    ```
+
+    Indeed, a negative log2FC for CD4 meaning a lower expression in CD8+ T-cells, and a positive log2FC for CD8A and CD8B, meaning a higher expression in CD8+ T-cells.
+
+    Plotting the the genes in the T cells:
+
+    ```R
+    Seurat::VlnPlot(seu_int, 
+                features = c("CD4", "CD8A", "CD8B"),
+                idents = c("CD8+ T cells", "CD4+ T cells"))
     ```
 
     Returning:
 
     <figure>
-      <img src="../../assets/images/violinplot_SLC2A5.png" width="400"/>
+      <img src="../../assets/images/violinplot_CD8_CD4.png" width="600"/>
     </figure>
 
-### Differential expression analysis including batch as covariates
-
-> :fontawesome-solid-disease: This part uses the `pancreas` dataset
+### Differential expression using `limma`
 
 The Wilcoxon test implemented in `FindMarkers` does not allow to test for complex design (eg factorial experiments) or to include batch as a covariate.
 
@@ -145,42 +148,36 @@ We can use `edgeR` or `limma` which are designed for microarray or bulk RNA seq 
 
 We will go back to the pancreas cells sequenced with different technologies, analyze differentially expressed genes between 2 clusters of cells using the technologies as covariates. Similar approaches can be used to analyze differentially expressed genes between conditions, eg sick vs healthy, wild type versus knockout, etc, and including batches in the model if they are present.
 
-We will load the `pancreas.integrated` object we have created yesterday:
+We will load the `all_prob` object we have created yesterday:
 
 ```R
-pancreas.integrated <- readRDS("pancreas.integrated.rds")
+all_prob <- readRDS("all_prob.rds")
 ```
 
 Since we will start wit differential gene expression, we set the default assay back to "RNA". Also, we set the default identity to the cell type:
 
 ```R
-Seurat::DefaultAssay(pancreas.integrated) <- "RNA"
-Seurat::Idents(pancreas.integrated) <- pancreas.integrated$celltype
+Seurat::DefaultAssay(all_prob) <- "RNA"
+Seurat::Idents(all_prob) <- all_prob$orig.ident
 ```
 
 Let's have a look at the UMAP (again), coloured by celltype:
 
 ```R
-Seurat::DimPlot(pancreas.integrated)
+Seurat::DimPlot(all_prob)
 ```
 
-Let's say we are specifically interested to test for differential gene expression between two cell types.
+Let's say we are specifically interested to test for differential gene expression between the tumor and normal samples.
 
 !!! note
     Here we could also test for e.g. healthy versus diseased within a celltype/cluster.
 
 Now we will run differential expression analysis between cell type *delta* and *gamma* using the technology as a covariate by using `limma`.
 
-First, we will subset the `pancreas.integrated` object, only leaving the *delta* and *gamma* cells:
-
-```R
-pancreas.dg <- subset(pancreas.integrated, idents = c("delta", "gamma"))
-```
-
 Get the count matrix and keep only genes that are expressed in at least one cell:
 
 ```R
-counts <- Seurat::GetAssayData(pancreas.dg, slot = "counts")
+counts <- Seurat::GetAssayData(all_prob, slot = "counts")
 counts <- counts[rowSums(counts) != 0,]
 ```
 
@@ -194,8 +191,8 @@ dge <- edgeR::calcNormFactors(dge)
 Generate a design matrix:
 
 ```R
-design <- model.matrix(~ 0 + celltype + tech, data = pancreas.dg@meta.data)
-colnames(design)<-c("delta", "gamma", "celseq2", "fluidigmc1", "smartseq2")
+design <- model.matrix(~ 0 + type, data = all_prob@meta.data)
+colnames(design)<-c("ETV6-RUNX1", "PBMMC")
 ```
 
 Specify which contrasts to check:
@@ -222,6 +219,14 @@ limma::topTable(fit.contrasts, number = 10, sort.by = "P")
 And we can check whether this corresponds to the counts by generating a violin plot:
 
 ```R
-Seurat::VlnPlot(pancreas.dg, "PPY", split.by = "tech")
-Seurat::VlnPlot(pancreas.dg, "RBP4", split.by = "tech")
+Seurat::VlnPlot(all_prob, "CD52", split.by = "tech")
+Seurat::VlnPlot(all_prob, "IGLL1", split.by = "tech")
+```
+
+
+```R
+tum_vs_norm <- FindMarkers(all_prob, 
+                           ident.1 = "ETV6-RUNX1", 
+                           ident.2 = "PBMMC", 
+                           group.by = "type")
 ```

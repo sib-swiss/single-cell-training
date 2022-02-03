@@ -305,12 +305,10 @@ gc()
 
 ### Trajectory analysis with `monocle3`
 
-> :fontawesome-solid-ribbon: This part uses the `gbm` dataset
-
-This part showcases how you can use `monocle3` to perform a trajectory analysis. First load the `gbm` dataset:
+This part showcases how you can use `monocle3` to perform a trajectory analysis. First load the `seu_int` dataset:
 
 ```R
-gbm <- readRDS("gbm_day3.rds")
+seu_int <- readRDS("seu_int_day3.rds")
 ```
 
 Load the required package into your environment:
@@ -322,12 +320,12 @@ library(monocle3)
 Generate a `monocle3` object (with class `cell_data_set`) from our `Seurat` object:
 
 ```R
-feature_names <- as.data.frame(rownames(gbm))
-rownames(feature_names) <- rownames(gbm)
+feature_names <- as.data.frame(rownames(seu_int))
+rownames(feature_names) <- rownames(seu_int)
 colnames(feature_names) <- "gene_short_name"
-gbm_monocl <- monocle3::new_cell_data_set(gbm@assays$RNA@counts,
-                              cell_metadata = gbm@meta.data,
-                              gene_metadata = feature_names)
+seu_int_monocl <- monocle3::new_cell_data_set(seu_int@assays$RNA@counts,
+                                              cell_metadata = seu_int@meta.data,
+                                              gene_metadata = feature_names)
 ```
 
 We pre-process the newly created object. What does it involve? Check:
@@ -339,62 +337,78 @@ We pre-process the newly created object. What does it involve? Check:
 Preprocess the dataset:
 
 ```R
-gbm_monocl <- monocle3::preprocess_cds(gbm_monocl)
+seu_int_monocl <- monocle3::preprocess_cds(seu_int_monocl)
 ```
 
 And check out the elbow plot:
 
 ```R
-monocle3::plot_pc_variance_explained(gbm_monocl)
+monocle3::plot_pc_variance_explained(seu_int_monocl)
 ```
 
 Perform UMAP using the implementation in the `monocle3` package and its default parameters:
 
 ```R
-gbm_monocl <- monocle3::reduce_dimension(gbm_monocl, reduction_method = "UMAP")
+seu_int_monocl <- monocle3::reduce_dimension(seu_int_monocl, reduction_method = "UMAP")
 ```
 
 Plot the `monocle3` UMAP coloring cells according to the cluster ID ran with `Seurat`:
 
 ```R
-monocle3::plot_cells(gbm_monocl, color_cells_by = "RNA_snn_res.0.2")
-monocle3::plot_cells(gbm_monocl, genes = "PMP2") # to plot expression level of a gene
+monocle3::plot_cells(seu_int_monocl, 
+                     color_cells_by = "integrated_snn_res.0.3", 
+                     cell_size = 1, 
+                     show_trajectory_graph = FALSE)
+
+monocle3::plot_cells(seu_int_monocl, genes = "CD79A", 
+                     show_trajectory_graph = FALSE, 
+                     cell_size = 1)
+
 ```
 
 Cluster cells using `monocle3`'s clustering function:
 
 ```R
-gbm_monocl <- monocle3::cluster_cells(gbm_monocl, resolution=0.00025)
-p1 <- monocle3::plot_cells(gbm_monocl, label_cell_groups = F)
-p2 <- monocle3::plot_cells(gbm_monocl, color_cells_by = "RNA_snn_res.0.2", label_cell_groups = F)
-cowplot::plot_grid(p1, p2, ncol = 2) # Are there differences?
+seu_int_monocl <- monocle3::cluster_cells(seu_int_monocl, resolution=0.00025)
+monocle3::plot_cells(seu_int_monocl, label_cell_groups = F)
+monocle3::plot_cells(seu_int_monocl, color_cells_by = "integrated_snn_res.0.3", label_cell_groups = F)
+
 ```
 
 learn graph (i.e. identify trajectory) using `monocle3` UMAP and clustering:
 
 ```R
-gbm_monocl <- monocle3::learn_graph(gbm_monocl)
-monocle3::plot_cells(gbm_monocl)
-monocle3::plot_cells(gbm_monocl, color_cells_by = "RNA_snn_res.0.2")
+seu_int_monocl <- monocle3::learn_graph(seu_int_monocl)
+monocle3::plot_cells(seu_int_monocl)
 ```
 
-Replace `monocle3` cluster id by `Seurat` cluster id if we want to keep the same information:
+**Exercise:** Find the CD34+ B-cell cluster in the monocle UMAP. This cluster has a high expressession of CD79A and expresses CD34.
+
+??? done "Answer"
+    ```R
+    monocle3::plot_cells(seu_int_monocl, genes = c("CD79A", "CD34"),
+                     show_trajectory_graph = FALSE, 
+                     cell_size = 0.7)
+    ```
+
+    Returns:
+
+    <figure>
+     <img src="../../assets/images/umap_bcell_cd34plus.png" width="800"/>
+    </figure>
+
+    Cluster 13 has both a high expression of CD79A and CD34. 
+
+
+
+Select the "initial" cells in the B-cell cluster to calculate pseudotime. The initial cells in this case are the CD34+ B-cells we have just identified. A pop up window will open and you need to click on the "initial" cells (one node per trajectory), then click "Done".
 
 ```R
-gbm_monocl@clusters$UMAP$clusters <- colData(gbm_monocl)$RNA_snn_res.0.2
-names(gbm_monocl@clusters$UMAP$clusters) <- rownames(colData(gbm_monocl))
-gbm_monocl <- monocle3::learn_graph(gbm_monocl)
-monocle3::plot_cells(gbm_monocl, label_cell_groups = F)
+seu_int_monocl<-monocle3::order_cells(seu_int_monocl)#
 ```
 
-Select the "initial" cells to calculate pseudotime. A pop up window will open and you need to click on the "initial" cells (one node per trajectory), then click "Done".
-
 ```R
-gbm_monocl<-monocle3::order_cells(gbm_monocl)#
-```
-
-```R
-monocle3::plot_cells(gbm_monocl,
+monocle3::plot_cells(seu_int_monocl,
            color_cells_by = "pseudotime",
            label_cell_groups=F,
            label_leaves=F,
@@ -402,8 +416,59 @@ monocle3::plot_cells(gbm_monocl,
            graph_label_size=1.5, cell_size = 1)
 ```
 
+In order to find genes which expression is affected by pseudtime, we first have to isolate the B-cell cluster. Therefore, extract all cells in the B-cell cluster with the interactive `choose_cells` function:
+
+```R
+seuB <- choose_cells(seu_int_monocl)
+```
+
+<figure>
+  <img src="../../assets/images/choose_cells.gif" width="800"/>
+</figure>
+
+Check whether you have selected the right cells:
+
+```R
+plot_cells(seuB, show_trajectory_graph = FALSE, cell_size = 1)
+```
+
+Now we can use the cells in this trajectory to test which genes are affected by the trajectory:
+
+```R 
+pr_test <- graph_test(seuB, 
+                      cores=4, 
+                      neighbor_graph = "principal_graph")
+# order by test statistic
+pr_test <- pr_test[order(pr_test$morans_test_statistic, 
+                         decreasing = TRUE),]
+View(pr_test)
+```
+
+There are some interesting genes in there, for example related to cell cycling (MKI67, CKS2), related to B-cell development (CD34, MS4A1) and immunoglobulins (IGLL1 and IGLL5). We can plot those in the UMAP:
+
+```R
+goi <- c("CD34", "MS4A1", "IGLL1", "IGLL5", 
+         "MKI67", "CKS2")
+plot_cells(seuB, label_cell_groups=FALSE, genes = goi,
+           show_trajectory_graph=FALSE, cell_size = 1)
+```
+
+But also against pseudotime:
+
+```R
+seuB@colData$monocle_cluster <- clusters(seuB)
+
+plot_genes_in_pseudotime(subset(seuB, 
+                                rowData(seuB)$gene_short_name %in% goi),
+                         min_expr=0.5, color_cells_by = "monocle_cluster")
+```
+
 Plot a gene's expression vs pseudotime
 
 ```R
-plot_genes_in_pseudotime(subset(gbm_monocl, rowData(gbm_monocl)$gene_short_name=="PMP2"))
+plot_genes_in_pseudotime(subset(seu_int_monocl, rowData(seu_int_monocl)$gene_short_name=="PMP2"))
 ```
+
+<figure>
+  <img src="../../assets/images/exp_pseudotime.png" width="500"/>
+</figure>
