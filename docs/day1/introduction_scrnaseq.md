@@ -100,7 +100,7 @@ sample_info <- read.csv("sample_info_course.csv")
 datadirs <- file.path("course_data", "count_matrices", sample_info$SampleName,
                       "outs", "filtered_feature_bc_matrix")
 names(datadirs) <- gsub("_", "-", sample_info$SampleName)
-datadirs
+datadirs <- datadirs[1:3]
 ```
 
 The object `datadirs` is a named vector specifying the paths of the count directories for each sample:
@@ -161,7 +161,7 @@ The `seu` object we have created has the class `Seurat`. The object contains mul
 
 In addition to the original count table, the `Seurat` object can therefore store a lot of information that is generated during your analysis, like results of a normalization (`@assays$RNA@data`) a PCA or UMAP (`@reductions`) and the clustering (`@graphs`). It also tracks all the commands that have been used to generate the object in its current state (`@commands`). Therefore, while going through the analysis steps, the same object gets more and more of its slots filled. Because most `Seurat` functions return the input object + adjusted slots, we can use this syntax:
 
-```R
+```
 seurat_object <- Seurat::function(seurat_object)
 ```
 

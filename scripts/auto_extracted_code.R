@@ -18,308 +18,327 @@
 ## Code found in: day1/introduction_scrnaseq.md
 library(Seurat)
 
-gbm.data <- Seurat::Read10X(data.dir = "data/gbm_dataset/filtered_feature_bc_matrix/")
+sample_info <- read.csv("sample_info_course.csv")
+datadirs <- file.path("course_data", "count_matrices", sample_info$SampleName,
+"outs", "filtered_feature_bc_matrix")
+names(datadirs) <- gsub("_", "-", sample_info$SampleName)
+datadirs <- datadirs[1:3]
 
-gbm.data[c("PECAM1", "CD8A", "TSPAN1"), 1:30]
+sparse_matrix <- Seurat::Read10X(data.dir = datadirs)
 
-gbm <- Seurat::CreateSeuratObject(counts = gbm.data,
-project = "gbm",
-min.cells = 3,
-min.features = 100)
+sparse_matrix[c("PECAM1", "CD8A", "TSPAN1"), 1:30]
 
-hist(gbm$nCount_RNA)
+seu <- Seurat::CreateSeuratObject(counts = sparse_matrix,
+project = "pbmmc")
 
-hist(gbm@meta.data$nCount_RNA)
+hist(seu$nCount_RNA)
 
-Seurat::FeatureScatter(gbm, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
+hist(seu@meta.data$nCount_RNA)
 
-gbm[["percent.mt"]] <- Seurat::PercentageFeatureSet(gbm, pattern = "^MT-")
+Seurat::FeatureScatter(seu, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
 
-head(gbm@meta.data)
+## Code found in: day1/quality_control.md
+Seurat::VlnPlot(seu, features = c("nCount_RNA",
+"nFeature_RNA"))
 
-Seurat::VlnPlot(gbm, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+# mitochondrial genes
+seu <- Seurat::PercentageFeatureSet(seu, 
+pattern = "^MT-", 
+col.name = "percent.mito")
 
-Seurat::FeatureScatter(gbm, feature1 = "nCount_RNA", feature2 = "percent.mt")
+# ribosomal genes
+seu <- Seurat::PercentageFeatureSet(seu, 
+pattern = "^RP[SL]",
+col.name = "percent.ribo")
 
-gbm <- subset(gbm,
-subset = nFeature_RNA > 500 & nFeature_RNA < 7500 & percent.mt < 20)
+# hemoglobin genes (but not HBP)
+seu <- Seurat::PercentageFeatureSet(seu,
+pattern = "^HB[^(P)]",
+col.name = "percent.globin")
+
+Seurat::VlnPlot(seu, features = c("percent.mito",
+"percent.ribo",
+"percent.globin"))
+
+Seurat::FeatureScatter(seu, 
+feature1 = "percent.globin", 
+feature2 = "percent.ribo")
+
+library(ggplot2)
+library(Matrix)
+
+most_expressed_boxplot <- function(object, ngenes = 20){
+
+# matrix of raw counts
+cts <- GetAssayData(seu, assay = "RNA", slot = "counts")
+
+# get percentage/cell
+cts <- t(cts)/colSums(cts)*100
+medians <- apply(cts, 2, median)
+
+# get top n genes
+most_expressed <- order(medians, decreasing = T)[ngenes:1]
+most_exp_matrix <- as.matrix((cts[,most_expressed]))
+
+# prepare for plotting
+most_exp_df <- stack(as.data.frame(most_exp_matrix))
+colnames(most_exp_df) <- c("perc_total", "gene")
+
+# boxplot with ggplot2
+boxplot <- ggplot(most_exp_df, aes(x=gene, y=perc_total)) +
+geom_boxplot() +
+coord_flip()
+return(boxplot)
+}
+
+most_expressed_boxplot(seu, 20)
+
+seu <- subset(seu, subset = nFeature_RNA > 200 & 
+nFeature_RNA < 5000 &
+percent.mito < 8)
+
+VlnPlot(seu, features = c("nFeature_RNA",
+"percent.mito"))
 
 ## Code found in: day1/normalization_scaling.md
-Seurat::GetAssay(gbm)[1:10,1:10]  
+Seurat::GetAssayData(seu)[1:10,1:10]  
 
-gbm <- Seurat::NormalizeData(gbm,
+seu <- Seurat::NormalizeData(seu,
 normalization.method = "LogNormalize",
 scale.factor = 10000)
 
-gbm <- Seurat::FindVariableFeatures(gbm,
+seu <- Seurat::FindVariableFeatures(seu,
 selection.method = "vst",
 nfeatures = 2000)
 
 # Identify the 10 most highly variable genes
-top10 <- head(Seurat::VariableFeatures(gbm), 10)
+top10 <- head(Seurat::VariableFeatures(seu), 10)
 top10
 
-vf_plot <- Seurat::VariableFeaturePlot(gbm)
+vf_plot <- Seurat::VariableFeaturePlot(seu)
 Seurat::LabelPoints(plot = vf_plot,
 points = top10, repel = TRUE)
 
-gbm <- Seurat::ScaleData(gbm,
-features = rownames(gbm))
+seu <- Seurat::ScaleData(seu,
+features = rownames(seu))
 
-## Code found in: day1/quality_control.md
-Seurat::cc.genes.updated.2019
+seu <- Seurat::SCTransform(seu)
 
-s.genes <- Seurat::cc.genes.updated.2019$s.genes
-g2m.genes <- Seurat::cc.genes.updated.2019$g2m.genes
+DefaultAssay(seu) <- "RNA"
 
-gbm <- Seurat::CellCycleScoring(gbm,
-s.features = s.genes,
-g2m.features = g2m.genes)
-
-head(gbm)
-table(gbm$Phase)
-#   G1  G2M    S
-# 2887  711 1493
-
-Seurat::RidgePlot(gbm, features = c("PCNA", "MKI67"),
-group.by = "orig.ident",
-ncol = 2)
-
-library(scater)
-library(SingleCellExperiment)
-
-cts <- Seurat::GetAssayData(gbm, slot = "counts")
-
-gbm_sce <- SingleCellExperiment::SingleCellExperiment(
-assays = list(counts = cts),
-colData = gbm@meta.data,
-rowData = rownames(gbm)
-)
-class(gbm)
-class(gbm_sce)
-gbm_sce
-
-dissoc_genes <- readLines("data/gbm_dataset/dissocation_genes.txt")
-ribo_genes <- rownames(gbm)[grep(pattern = "^RP[S|L]", rownames(gbm), perl = T)]
-mito_genes <- rownames(gbm)[grep(pattern = "^MT-", rownames(gbm))]
-
-gbm_sce <- scuttle::addPerCellQC(gbm_sce,
-subsets=list(mito_genes=which(rownames(gbm_sce) %in% mito_genes),
-dissoc_genes=which(rownames(gbm_sce) %in% dissoc_genes),
-ribo_genes=which(rownames(gbm_sce) %in% ribo_genes)))
-
-SingleCellExperiment::colData(gbm_sce)
-
-scater::plotColData(gbm_sce, x = "sum", y="detected")
-scater::plotColData(gbm_sce, x = "detected", y="subsets_mito_genes_percent")
-scater::plotColData(gbm_sce, x = "detected", y="subsets_dissoc_genes_percent")
-scater::plotColData(gbm_sce, x = "subsets_mito_genes_percent", y="subsets_ribo_genes_percent")
-
-scater::plotHighestExprs(gbm_sce, exprs_values = "counts", n = 30)
-
-gbm_sce <- scater::logNormCounts(gbm_sce)  # alternative to Seurat's normalization here using scater
-
-vars <- scater::getVarianceExplained(gbm_sce,
-variables = "Phase")
-head(vars)
-
-scater::plotExplanatoryVariables(vars)
-
-saveRDS(gbm, "gbm_day1.rds")
+saveRDS(seu, "seu_day1.rds")
 
 rm(list = ls())
 gc()
 .rs.restartR()
 
 ## Code found in: day2/dimensionality_reduction.md
-gbm <- readRDS("gbm_day1.rds")
+seu <- readRDS("seu_day1.rds")
 
 library(Seurat)
-library(clustree)
 
-gbm <- Seurat::RunPCA(gbm)
+seu <- Seurat::RunPCA(seu)
 
-Seurat::DimPlot(gbm, reduction = "pca")
+Seurat::DimPlot(seu, reduction = "pca")
 
-Seurat::DimPlot(gbm, reduction = "pca", group.by = "Phase")
+Seurat::FeaturePlot(seu, reduction = "pca", group.by = "percent.globin")
 
-Seurat::DimHeatmap(gbm, dims = 1:12, cells = 500, balanced = TRUE)
+Seurat::FeaturePlot(seu, reduction = "pca", group.by = "HBA1")
 
-Seurat::ElbowPlot(gbm, ndims = 40)
+Seurat::DimHeatmap(seu, dims = 1:12, cells = 500, balanced = TRUE)
 
-gbm <- Seurat::RunUMAP(gbm, dims = 1:25)
+Seurat::ElbowPlot(seu, ndims = 40)
 
-Seurat::DimPlot(gbm, reduction = "umap")
+seu <- Seurat::RunUMAP(seu, dims = 1:25)
 
-Seurat::DimPlot(gbm, reduction = "umap", group.by = "Phase")
+Seurat::DimPlot(seu, reduction = "umap")
+
+Seurat::FeaturePlot(seu, features = c("HBA1", "percent.globin", "IGKC", "percent.mito"))
+
+seu <- Seurat::RunUMAP(seu, dims = 1:25, n.neighbors = 5)
+
+seu <- Seurat::RunUMAP(seu, dims = 1:5)
+Seurat::DimPlot(seu, reduction = "umap")
+
+seu <- Seurat::RunUMAP(seu, dims = 1:50) 
+Seurat::DimPlot(seu, reduction = "umap")
+
+## Code found in: day2/integration.md
+Seurat::DimPlot(seu, reduction = "umap")
+
+seu_list <- Seurat::SplitObject(seu, split.by = "orig.ident")
+
+for (i in 1:length(seu_list)) {
+seu_list[[i]] <- Seurat::NormalizeData(seu_list[[i]])
+seu_list[[i]] <- Seurat::FindVariableFeatures(seu_list[[i]], selection.method = "vst", nfeatures = 2000,
+verbose = FALSE)
+}
+
+seu_anchors <- Seurat::FindIntegrationAnchors(object.list = seu_list, dims = 1:30)
+
+seu_int <- Seurat::IntegrateData(anchorset = seu_anchors, dims = 1:30)
+
+Seurat::DefaultAssay(seu_int) <- "integrated"
+
+seu_int <- Seurat::ScaleData(seu_int)
+seu_int <- Seurat::RunPCA(seu_int, npcs = 30)
+seu_int <- Seurat::RunUMAP(seu_int, reduction = "pca", dims = 1:30)
+
+Seurat::DimPlot(seu_int, reduction = "umap")
+
+saveRDS(seu_int, "seu_int.rds")
+
+rm(list = ls())
+gc()
+.rs.restartR()
 
 ## Code found in: day2/clustering.md
-gbm <- Seurat::FindNeighbors(gbm, dims = 1:25)
+seu_int <- Seurat::FindNeighbors(seu_int, dims = 1:25)
 
-gbm <- Seurat::FindClusters(gbm, resolution = seq(0.1, 0.8, by=0.1))
+seu_int <- Seurat::FindClusters(seu_int, resolution = seq(0.1, 0.8, by=0.1))
 
-head(gbm@meta.data)
+head(seu_int@meta.data)
 
 library(clustree)
-clustree::clustree(gbm@meta.data[,grep("RNA_snn_res", colnames(gbm@meta.data))],
-prefix = "RNA_snn_res.")
+clustree::clustree(seu_int@meta.data[,grep("integrated_snn_res", colnames(seu_int@meta.data))],
+prefix = "integrated_snn_res.")
 
-Seurat::DimPlot(gbm, group.by = "RNA_snn_res.0.1")
+Seurat::DimPlot(seu_int, group.by = "integrated_snn_res.0.1")
 
-Seurat::DimPlot(gbm, group.by = "RNA_snn_res.0.2")
+Seurat::DimPlot(seu_int, group.by = "integrated_snn_res.0.3")
 
-saveRDS(gbm, "gbm_day2_part1.rds")
+saveRDS(seu_int, "seu_int_day2_part1.rds")
 
 rm(list = ls())
 gc()
 .rs.restartR()
 
 ## Code found in: day2/cell_annotation.md
-gbm <- readRDS("gbm_day2_part1.rds")
+seu_int <- readRDS("seu_int_day2_part1.rds")
 
 library(celldex)
 library(SingleR)
 
-gbm <- Seurat::SetIdent(gbm, value = gbm$RNA_snn_res.0.2)
+seu_int <- Seurat::SetIdent(seu_int, value = seu_int$integrated_snn_res.0.3)
 
-Seurat::FeaturePlot(gbm, "PMP2")
+DefaultAssay(seu_int) <- "RNA"
 
-immune_genes<-c("GZMA", "CD3E", "CD3D")
-microglia_genes<-c("CCL4", "CCL3", "P2RY12", "C1QB", "CSF1ER", "CY3CR1")
+Seurat::FeaturePlot(seu_int, "HBA1")
 
-Seurat::FeaturePlot(gbm, immune_genes, ncol=2)
+tcell_genes <- c("IL7R", "LTB", "TRAC", "CD3D")
+monocyte_genes <- c("CD14", "CST3", "CD68", "CTSS")
 
-Seurat::VlnPlot(gbm,
-features = immune_genes,
+Seurat::FeaturePlot(seu_int, tcell_genes, ncol=2)
+
+Seurat::VlnPlot(seu_int,
+features = tcell_genes,
 ncol = 2)
 
-Seurat::FeaturePlot(gbm, microglia_genes, ncol=2)
+Seurat::FeaturePlot(seu_int, monocyte_genes, ncol=2)
 
-Seurat::VlnPlot(gbm,
-features = microglia_genes,
+Seurat::VlnPlot(seu_int,
+features = monocyte_genes,
 ncol = 2)
 
-gbm <- Seurat::AddModuleScore(gbm,
-features = list(immune_genes),
-name = "immune_genes")
+seu_int <- Seurat::AddModuleScore(seu_int,
+features = list(tcell_genes),
+name = "tcell_genes")
 
-Seurat::FeaturePlot(gbm, "immune_genes1")
+Seurat::FeaturePlot(seu_int, "tcell_genes1")
 
-Seurat::VlnPlot(gbm,
-"immune_genes1")
+Seurat::VlnPlot(seu_int,
+"tcell_genes1")
 
-hpca.se <- celldex::HumanPrimaryCellAtlasData()
-class(hpca.se)
-table(hpca.se$label.main)
+s.genes <- Seurat::cc.genes.updated.2019$s.genes
+g2m.genes <- Seurat::cc.genes.updated.2019$g2m.genes
 
-gbm_SingleR <- SingleR::SingleR(test = Seurat::GetAssayData(gbm, slot = "data"),
-ref = hpca.se,
-labels = hpca.se$label.main)
+seu_int <- Seurat::CellCycleScoring(seu_int,
+s.features = s.genes,
+g2m.features = g2m.genes)
 
-head(gbm_SingleR)
+Seurat::DimPlot(seu_int, group.by = "Phase")
 
-gbm$SingleR_annot <- gbm_SingleR$labels
+ref <- celldex::NovershternHematopoieticData()
+class(ref)
+table(ref$label.main)
 
-Seurat::DimPlot(gbm, group.by = "SingleR_annot", label = T, repel = T)
+seu_int_SingleR <- SingleR::SingleR(test = Seurat::GetAssayData(seu_int, slot = "data"),
+ref = ref,
+labels = ref$label.main)
 
-mean_scores <- tapply(gbm$immune_genes1, gbm$SingleR_annot, mean)
-mean_scores[order(mean_scores, decreasing = TRUE)[1:6]]
+head(seu_int_SingleR)
 
-saveRDS(gbm, "gbm_day2_part2.rds")
+SingleR::plotScoreHeatmap(seu_int_SingleR)
+SingleR::plotDeltaDistribution(seu_int_SingleR)
 
-rm(list = ls())
-gc()
-.rs.restartR()
+singleR_labels <- seu_int_SingleR$labels
+t <- table(singleR_labels)
+other <- names(t)[t < 10]
+singleR_labels[singleR_labels %in% other] <- NA
 
-## Code found in: day2/integration.md
-pancreas.data <- readRDS(file = "data/pancreas_dataset/pancreas_expression_matrix.rds")
-metadata <- readRDS(file = "data/pancreas_dataset/pancreas_metadata.rds")
+seu_int$SingleR_annot <- singleR_labels
 
-pancreas <- Seurat::CreateSeuratObject(pancreas.data, meta.data = metadata)
+dittoSeq::dittoDimPlot(seu_int, "SingleR_annot", size = 0.7)
 
-pancreas <- Seurat::NormalizeData(pancreas)
-pancreas <- Seurat::FindVariableFeatures(pancreas, selection.method = "vst", nfeatures = 2000)
-pancreas <- Seurat::ScaleData(pancreas)
-pancreas <- Seurat::RunPCA(pancreas, npcs = 30)
-pancreas <- Seurat::RunUMAP(pancreas, reduction = "pca", dims = 1:30)
+dittoSeq::dittoBarPlot(seu_int, var = "SingleR_annot", group.by = "orig.ident")
 
-Seurat::DimPlot(pancreas, reduction = "umap", group.by = "tech")
+dittoSeq::dittoBarPlot(seu_int, 
+var = "SingleR_annot", 
+group.by = "integrated_snn_res.0.3")
 
-Seurat::DimPlot(pancreas, reduction = "umap", group.by = "celltype")
-
-pancreas.list <- Seurat::SplitObject(pancreas, split.by = "tech")
-
-for (i in 1:length(pancreas.list)) {
-pancreas.list[[i]] <- Seurat::NormalizeData(pancreas.list[[i]])
-pancreas.list[[i]] <- Seurat::FindVariableFeatures(pancreas.list[[i]], selection.method = "vst", nfeatures = 2000,
-verbose = FALSE)
-}
-
-pancreas.anchors <- Seurat::FindIntegrationAnchors(object.list = pancreas.list, dims = 1:30)
-
-pancreas.integrated <- Seurat::IntegrateData(anchorset = pancreas.anchors, dims = 1:30)
-
-Seurat::DefaultAssay(pancreas.integrated) <- "integrated"
-
-pancreas.integrated <- Seurat::ScaleData(pancreas.integrated)
-pancreas.integrated <- Seurat::RunPCA(pancreas.integrated, npcs = 30)
-pancreas.integrated <- Seurat::RunUMAP(pancreas.integrated, reduction = "pca", dims = 1:30)
-
-Seurat::DimPlot(pancreas.integrated, reduction = "umap", group.by = "tech")
-Seurat::DimPlot(pancreas.integrated, reduction = "umap", group.by = "celltype", label = TRUE, repel = TRUE)
-
-saveRDS(pancreas.integrated, "pancreas.integrated.rds")
+saveRDS(seu_int, "seu_int_day2_part2.rds")
 
 rm(list = ls())
 gc()
 .rs.restartR()
 
 ## Code found in: day3/differential_gene_expression.md
-gbm <- readRDS("gbm_day2_part2.rds")
+seu_int <- readRDS("seu_int_day2_part2.rds")
 
 library(Seurat)
 library(edgeR)
 library(limma)
 
-de_genes <- Seurat::FindAllMarkers(gbm,  min.pct = 0.25)
+de_genes <- Seurat::FindAllMarkers(seu_int,  min.pct = 0.25)
 
 de_genes <- subset(de_genes, de_genes$p_val_adj < 0.05)
 View(de_genes)
 
-immune_genes <- c("GZMA", "CD3E", "CD3D")
+tcell_genes <- c("IL7R", "LTB", "TRAC", "CD3D")
 
-de_genes[de_genes$gene %in% immune_genes,]
+de_genes[de_genes$gene %in% tcell_genes,]
 
-gbm <- Seurat::SetIdent(gbm, value = "SingleR_annot")
+seu_int <- Seurat::SetIdent(seu_int, value = "SingleR_annot")
 
-DEG_astro_vs_macro <- Seurat::FindMarkers(gbm,
-ident.1 = "Astrocyte",
-ident.2 = "Macrophage",
-group.by = gbm$SingleR_annot,
+deg_cd8_cd4 <- Seurat::FindMarkers(seu_int,
+ident.1 = "CD8+ T cells",
+ident.2 = "CD4+ T cells",
+group.by = seu_int$SingleR_annot,
 test.use = "wilcox")
 
-top_order <- order(DEG_astro_vs_macro$p_val_adj)
-DEG_astro_vs_macro[top_order[1:10],]
+View(deg_cd8_cd4)
 
-Seurat::VlnPlot(gbm, features = "SLC2A5")
+deg_cd8_cd4[c("CD4", "CD8A", "CD8B"),]
 
-pancreas.integrated <- readRDS("pancreas.integrated.rds")
+Seurat::VlnPlot(seu_int, 
+features = c("CD4", "CD8A", "CD8B"),
+idents = c("CD8+ T cells", "CD4+ T cells"))
 
-Seurat::DefaultAssay(pancreas.integrated) <- "RNA"
-Seurat::Idents(pancreas.integrated) <- pancreas.integrated$celltype
+all_prob <- readRDS("all_prob.rds")
 
-Seurat::DimPlot(pancreas.integrated)
+Seurat::DefaultAssay(all_prob) <- "RNA"
+Seurat::Idents(all_prob) <- all_prob$orig.ident
 
-pancreas.dg <- subset(pancreas.integrated, idents = c("delta", "gamma"))
+Seurat::DimPlot(all_prob)
 
-counts <- Seurat::GetAssayData(pancreas.dg, slot = "counts")
+counts <- Seurat::GetAssayData(all_prob, slot = "counts")
 counts <- counts[rowSums(counts) != 0,]
 
 dge <- edgeR::DGEList(counts = counts)
 dge <- edgeR::calcNormFactors(dge)  
 
-design <- model.matrix(~ 0 + celltype + tech, data = pancreas.dg@meta.data)
-colnames(design)<-c("delta", "gamma", "celseq2", "fluidigmc1", "smartseq2")
+design <- model.matrix(~ 0 + type, data = all_prob@meta.data)
+colnames(design)<-c("ETV6-RUNX1", "PBMMC")
 
 contrast.mat <- limma::makeContrasts(delta - gamma,
 levels = design)
@@ -331,8 +350,13 @@ fit.contrasts <- limma::eBayes(fit.contrasts)
 
 limma::topTable(fit.contrasts, number = 10, sort.by = "P")
 
-Seurat::VlnPlot(pancreas.dg, "PPY", split.by = "tech")
-Seurat::VlnPlot(pancreas.dg, "RBP4", split.by = "tech")
+Seurat::VlnPlot(all_prob, "CD52", split.by = "tech")
+Seurat::VlnPlot(all_prob, "IGLL1", split.by = "tech")
+
+tum_vs_norm <- FindMarkers(all_prob, 
+ident.1 = "ETV6-RUNX1", 
+ident.2 = "PBMMC", 
+group.by = "type")
 
 ## Code found in: day3/enrichment_analysis.md
 library(clusterProfiler)
@@ -342,43 +366,35 @@ BiocManager::install("org.Hs.eg.db", update = FALSE)
 library(org.Hs.eg.db)
 AnnotationDbi::keytypes(org.Hs.eg.db)
 
-AC_up_DEG <- subset(DEG_astro_vs_macro,
-DEG_astro_vs_macro$avg_log2FC > 0 &
-DEG_astro_vs_macro$p_val_adj < 0.05)
-AC_up_genes <- rownames(AC_up_DEG)
+tum_down <- subset(tum_vs_norm,
+tum_vs_norm$avg_log2FC < -1 &
+tum_vs_norm$p_val_adj < 0.05)
+tum_down_genes <- rownames(tum_down)
 
-AC_MAC_GO <- clusterProfiler::enrichGO(AC_up_genes, # vector of up regulated genes
-"org.Hs.eg.db", # orgdb= package that contains gene label types correspondances
-keyType = "SYMBOL", # indicate that genes are labeled using symbols
-ont = "BP", # which of the GO categories to test, here the "Biological Processes"
-minGSSize = 50) # exclude gene sets that contain less than 50 genes
+tum_vs_norm_go <- clusterProfiler::enrichGO(tum_down_genes,
+"org.Hs.eg.db",
+keyType = "SYMBOL",
+ont = "BP",
+minGSSize = 50)
 
-View(AC_MAC_GO@result)
+enr_go <- clusterProfiler::simplify(tum_vs_norm_go)
+View(enr_go@result)
 
-enrichplot::emapplot(enrichplot::pairwise_termsim(AC_MAC_GO),
+enrichplot::emapplot(enrichplot::pairwise_termsim(enr_go),
 showCategory = 30, cex_label_category = 0.5)
 
-gmt <- clusterProfiler::read.gmt("data/gbm_dataset/h.all.v7.2.symbols.xls")
-head(gmt)
+gmt <- msigdbr::msigdbr(species = "human", category = "H")
 
-AC_MAC_enrich <- clusterProfiler::enricher(gene = AC_up_genes,
-universe = rownames(gbm),
+tum_vs_norm_enrich <- clusterProfiler::enricher(gene = tum_down_genes,
+universe = rownames(all_prob),
 pAdjustMethod = "BH",
 pvalueCutoff  = 0.05,
 qvalueCutoff  = 0.05,
-TERM2GENE = gmt)
+TERM2GENE = gmt[,c("gs_name", "gene_symbol")])
 
-View(AC_MAC_enrich@result)
+View(tum_vs_norm_enrich@result)
 
-myc_target_genes <- gmt$gene[gmt$term=="HALLMARK_MYC_TARGETS_V1"]
-
-gbm <- Seurat::AddModuleScore(gbm,
-features = list(myc_target_genes=myc_target_genes),
-name = "myc_target_genes")
-
-Seurat::VlnPlot(gbm, "myc_target_genes1", group.by = "SingleR_annot")
-
-saveRDS(gbm, "gbm_day3.rds")
+saveRDS(seu_int, "seu_int_day3.rds")
 
 rm(list = ls())
 gc()
@@ -504,19 +520,17 @@ resolution = 0.6)
 
 deng_SCE$Seurat_clusters <- as.character(Idents(gcdata))  # go from factor to character
 
-deng_SCE <- slingshot::slingshot(deng_SCE,
+sce <- slingshot::slingshot(deng_SCE,
 clusterLabels = 'Seurat_clusters',
 reducedDim = 'PCA',
 start.clus = "2")
 
-head(colData(deng_SCE))
+SlingshotDataSet(sce)
 
-SlingshotDataSet(deng_SCE)
-
-PCAplot_slingshot(deng_SCE, variable = deng_SCE$slingPseudotime_2)
+PCAplot_slingshot(sce, variable = sce$slingPseudotime_2)
 
 ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
-slingPseudotime_1 = deng_SCE$slingPseudotime_1),
+slingPseudotime_1 = sce$slingPseudotime_1),
 aes(x = slingPseudotime_1, y = cell_type2,
 colour = cell_type2)) +
 ggbeeswarm::geom_quasirandom(groupOnX = FALSE) +
@@ -525,7 +539,7 @@ xlab("Slingshot pseudotime") + ylab("Timepoint") +
 ggtitle("Cells ordered by Slingshot pseudotime")
 
 ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
-slingPseudotime_2 = deng_SCE$slingPseudotime_2),
+slingPseudotime_2 = sce$slingPseudotime_2),
 aes(x = slingPseudotime_2, y = cell_type2,
 colour = cell_type2)) +
 ggbeeswarm::geom_quasirandom(groupOnX = FALSE) +
@@ -533,65 +547,98 @@ theme_classic() +
 xlab("Slingshot pseudotime") + ylab("Timepoint") +
 ggtitle("Cells ordered by Slingshot pseudotime")
 
-PCAplot_slingshot(deng_SCE,
+PCAplot_slingshot(sce,
 variable = deng_SCE$Seurat_clusters,
 type = 'lineages',
 col = 'black',
 legend = TRUE)
 
-PCAplot_slingshot(deng_SCE,
+PCAplot_slingshot(sce,
 variable = deng_SCE$cell_type2,
 type = 'lineages',
 col = 'black',
 legend = TRUE)
 
+sce <- slingshot::slingshot(deng_SCE,
+clusterLabels = 'Seurat_clusters',
+reducedDim = 'PCA',
+end.clus = c("0", "3", "5")) ## check which would be the best according to bio
+
 rm(list = ls())
 gc()
 .rs.restartR()
 
-gbm <- readRDS("gbm_day3.rds")
+seu_int <- readRDS("seu_int_day3.rds")
 
 library(monocle3)
 
-feature_names <- as.data.frame(rownames(gbm))
-rownames(feature_names) <- rownames(gbm)
+feature_names <- as.data.frame(rownames(seu_int))
+rownames(feature_names) <- rownames(seu_int)
 colnames(feature_names) <- "gene_short_name"
-gbm_monocl <- monocle3::new_cell_data_set(gbm@assays$RNA@counts,
-cell_metadata = gbm@meta.data,
+seu_int_monocl <- monocle3::new_cell_data_set(seu_int@assays$RNA@counts,
+cell_metadata = seu_int@meta.data,
 gene_metadata = feature_names)
 
 ?preprocess_cds
 
-gbm_monocl <- monocle3::preprocess_cds(gbm_monocl)
+seu_int_monocl <- monocle3::preprocess_cds(seu_int_monocl)
 
-monocle3::plot_pc_variance_explained(gbm_monocl)
+monocle3::plot_pc_variance_explained(seu_int_monocl)
 
-gbm_monocl <- monocle3::reduce_dimension(gbm_monocl, reduction_method = "UMAP")
+seu_int_monocl <- monocle3::reduce_dimension(seu_int_monocl, reduction_method = "UMAP")
 
-monocle3::plot_cells(gbm_monocl, color_cells_by = "RNA_snn_res.0.2")
-monocle3::plot_cells(gbm_monocl, genes = "PMP2") # to plot expression level of a gene
+monocle3::plot_cells(seu_int_monocl, 
+color_cells_by = "integrated_snn_res.0.3", 
+cell_size = 1, 
+show_trajectory_graph = FALSE)
 
-gbm_monocl <- monocle3::cluster_cells(gbm_monocl, resolution=0.00025)
-p1 <- monocle3::plot_cells(gbm_monocl, label_cell_groups = F)
-p2 <- monocle3::plot_cells(gbm_monocl, color_cells_by = "RNA_snn_res.0.2", label_cell_groups = F)
-cowplot::plot_grid(p1, p2, ncol = 2) # Are there differences?
+monocle3::plot_cells(seu_int_monocl, genes = "CD79A", 
+show_trajectory_graph = FALSE, 
+cell_size = 1)
 
-gbm_monocl <- monocle3::learn_graph(gbm_monocl)
-monocle3::plot_cells(gbm_monocl)
-monocle3::plot_cells(gbm_monocl, color_cells_by = "RNA_snn_res.0.2")
 
-gbm_monocl@clusters$UMAP$clusters <- colData(gbm_monocl)$RNA_snn_res.0.2
-names(gbm_monocl@clusters$UMAP$clusters) <- rownames(colData(gbm_monocl))
-gbm_monocl <- monocle3::learn_graph(gbm_monocl)
-monocle3::plot_cells(gbm_monocl, label_cell_groups = F)
+seu_int_monocl <- monocle3::cluster_cells(seu_int_monocl, resolution=0.00025)
+monocle3::plot_cells(seu_int_monocl, label_cell_groups = F)
+monocle3::plot_cells(seu_int_monocl, color_cells_by = "integrated_snn_res.0.3", label_cell_groups = F)
 
-gbm_monocl<-monocle3::order_cells(gbm_monocl)#
 
-monocle3::plot_cells(gbm_monocl,
+seu_int_monocl <- monocle3::learn_graph(seu_int_monocl)
+monocle3::plot_cells(seu_int_monocl)
+
+monocle3::plot_cells(seu_int_monocl, genes = c("CD79A", "CD34"),
+show_trajectory_graph = FALSE, 
+cell_size = 0.7)
+
+seu_int_monocl<-monocle3::order_cells(seu_int_monocl)#
+
+monocle3::plot_cells(seu_int_monocl,
 color_cells_by = "pseudotime",
 label_cell_groups=F,
 label_leaves=F,
 label_branch_points=FALSE,
 graph_label_size=1.5, cell_size = 1)
 
-plot_genes_in_pseudotime(subset(gbm_monocl, rowData(gbm_monocl)$gene_short_name=="PMP2"))
+seuB <- choose_cells(seu_int_monocl)
+
+plot_cells(seuB, show_trajectory_graph = FALSE, cell_size = 1)
+
+pr_test <- graph_test(seuB, 
+cores=4, 
+neighbor_graph = "principal_graph")
+# order by test statistic
+pr_test <- pr_test[order(pr_test$morans_test_statistic, 
+decreasing = TRUE),]
+View(pr_test)
+
+goi <- c("CD34", "MS4A1", "IGLL1", "IGLL5", 
+"MKI67", "CKS2")
+plot_cells(seuB, label_cell_groups=FALSE, genes = goi,
+show_trajectory_graph=FALSE, cell_size = 1)
+
+seuB@colData$monocle_cluster <- clusters(seuB)
+
+plot_genes_in_pseudotime(subset(seuB, 
+rowData(seuB)$gene_short_name %in% goi),
+min_expr=0.5, color_cells_by = "monocle_cluster")
+
+plot_genes_in_pseudotime(subset(seu_int_monocl, rowData(seu_int_monocl)$gene_short_name=="PMP2"))

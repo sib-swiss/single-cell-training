@@ -75,8 +75,7 @@ enrichplot::emapplot(enrichplot::pairwise_termsim(enr_go),
 In stead of testing for gene ontology terms, we can also test for other gene set collections. For example the hallmark collection from [MSigDB](http://www.gsea-msigdb.org/gsea/msigdb/index.jsp):
 
 ```R
-gmt <- clusterProfiler::read.gmt("data/gbm_dataset/h.all.v7.2.symbols.xls")
-head(gmt)
+gmt <- msigdbr::msigdbr(species = "human", category = "H")
 ```
 
 We can use the function `enricher` to test for enrichment of any set of genes. But we would have to test it against a "universe", i.e. the background genes:
@@ -93,7 +92,7 @@ tum_vs_norm_enrich <- clusterProfiler::enricher(gene = tum_down_genes,
 The most signifcantly enriched group of genes is `HALLMARK_G2M_CHECKPOINT`:
 
 ```R
-View(AC_MAC_enrich@result)
+View(tum_vs_norm_enrich@result)
 ```
 
 ### Save the dataset and clear environment
@@ -101,7 +100,7 @@ View(AC_MAC_enrich@result)
 Now, save the dataset so you can use it later today:
 
 ```R
-saveRDS(gbm, "gbm_day3.rds")
+saveRDS(seu_int, "seu_int_day3.rds")
 ```
 
 Clear your environment:

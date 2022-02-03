@@ -497,9 +497,15 @@ goi <- c("CD34", "MS4A1", "IGLL1", "IGLL5",
 plot_cells(seuB, label_cell_groups=FALSE, genes = goi,
            show_trajectory_graph=FALSE, cell_size = 1)
 
-plot_genes_in_pseudotime(subset(seu_int_monocl, 
+seuB@colData$monocle_cluster <- clusters(seuB)
+
+plot_genes_in_pseudotime(subset(seuB, 
                                 rowData(seu_int_monocl)$gene_short_name %in% goi),
-                         min_expr=0.5, color_cells_by = "integrated_snn_res.0.3")
+                         min_expr=0.5, color_cells_by = "monocle_cluster")
+
+plot_genes_in_pseudotime(subset(seuB, 
+                                rowData(seuB)$gene_short_name %in% goi),
+                         min_expr=0.5, color_cells_by = "monocle_cluster")
 
 
 plot_genes_in_pseudotime(subset(seu_int_monocl, 
