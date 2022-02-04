@@ -30,18 +30,32 @@ The function `FindAllMarkers` performs a Wilcoxon plot to determine the genes di
 Now run analysis:
 
 ```R
-de_genes <- Seurat::FindAllMarkers(seu_int,  min.pct = 0.25)
+de_genes <- Seurat::FindAllMarkers(seu_int,  min.pct = 0.25,
+                                   only.pos = TRUE)
 ```
 
 !!! note "Time for coffee"
     This takes a while. Have a break.
 
-We are usually only interested in significant marker genes, so let's filter based on an adjusted p-value smaller than 0.05:
+We can extract the top 3 markers per cluster:
 
 ```R
-de_genes <- subset(de_genes, de_genes$p_val_adj < 0.05)
-View(de_genes)
+library(dplyr)
+top_specific_markers <- de_genes %>%
+  group_by(cluster) %>%
+  top_n(3, avg_log2FC)
 ```
+
+And generate e.g. a dotplot:
+
+```R
+dittoSeq::dittoDotPlot(seu_int, vars = unique(top_specific_markers$gene), 
+                       group.by = "integrated_snn_res.0.3")
+```
+
+<figure>
+    <img src="../../assets/images/dotplot_degenes.png" width="700"/>
+</figure>
 
 **Exercise:** What are significant marker genes in cluster 0 and 8? Are the T cell genes in there?
 
@@ -74,7 +88,7 @@ View(de_genes)
     LTB.11  2.727014e-25  0.8193337 0.750 0.467  5.092153e-21      11  LTB
     ```
 
-    So, yes, the immune genes are highly significant markers for cluster 0 and 8.
+    So, yes, the t-cell genes are highly significant markers for cluster 0 and 8.
 
 ### Differential expression between groups of cells
 
@@ -148,23 +162,23 @@ We can use `edgeR` or `limma` which are designed for microarray or bulk RNA seq 
 
 We will go back to the pancreas cells sequenced with different technologies, analyze differentially expressed genes between 2 clusters of cells using the technologies as covariates. Similar approaches can be used to analyze differentially expressed genes between conditions, eg sick vs healthy, wild type versus knockout, etc, and including batches in the model if they are present.
 
-We will load the `all_prob` object we have created yesterday:
+We will load an objects containing only pro B cells, both from the healthy tissues, and malignant tissues. We can load it like this:
 
 ```R
-all_prob <- readRDS("all_prob.rds")
+proB <- readRDS("proB.rds")
 ```
 
 Since we will start wit differential gene expression, we set the default assay back to "RNA". Also, we set the default identity to the cell type:
 
 ```R
-Seurat::DefaultAssay(all_prob) <- "RNA"
-Seurat::Idents(all_prob) <- all_prob$orig.ident
+Seurat::DefaultAssay(proB) <- "RNA"
+Seurat::Idents(proB) <- proB$orig.ident
 ```
 
 Let's have a look at the UMAP (again), coloured by celltype:
 
 ```R
-Seurat::DimPlot(all_prob)
+Seurat::DimPlot(proB)
 ```
 
 Let's say we are specifically interested to test for differential gene expression between the tumor and normal samples.
@@ -177,7 +191,7 @@ Now we will run differential expression analysis between cell type *delta* and *
 Get the count matrix and keep only genes that are expressed in at least one cell:
 
 ```R
-counts <- Seurat::GetAssayData(all_prob, slot = "counts")
+counts <- Seurat::GetAssayData(proB, slot = "counts")
 counts <- counts[rowSums(counts) != 0,]
 ```
 
@@ -191,14 +205,14 @@ dge <- edgeR::calcNormFactors(dge)
 Generate a design matrix:
 
 ```R
-design <- model.matrix(~ 0 + type, data = all_prob@meta.data)
-colnames(design)<-c("ETV6-RUNX1", "PBMMC")
+design <- model.matrix(~ 0 + type, data = proB@meta.data)
+colnames(design) <- make.names(c("ETV6-RUNX1", "PBMMC"))
 ```
 
 Specify which contrasts to check:
 
 ```R
-contrast.mat <- limma::makeContrasts(delta - gamma,
+contrast.mat <- limma::makeContrasts(ETV6.RUNX1 - PBMMC,
                                      levels = design)
 ```
 
@@ -219,14 +233,15 @@ limma::topTable(fit.contrasts, number = 10, sort.by = "P")
 And we can check whether this corresponds to the counts by generating a violin plot:
 
 ```R
-Seurat::VlnPlot(all_prob, "CD52", split.by = "tech")
-Seurat::VlnPlot(all_prob, "IGLL1", split.by = "tech")
+Seurat::VlnPlot(proB, "CD52", split.by = "tech")
+Seurat::VlnPlot(proB, "IGLL1", split.by = "tech")
 ```
 
+We can run a similar analysis with `Seurat`. Run the code below. We will use the output object for the enrichment analysis. 
 
 ```R
-tum_vs_norm <- FindMarkers(all_prob, 
-                           ident.1 = "ETV6-RUNX1", 
-                           ident.2 = "PBMMC", 
-                           group.by = "type")
+tum_vs_norm <- Seurat::FindMarkers(proB, 
+                                   ident.1 = "ETV6-RUNX1", 
+                                   ident.2 = "PBMMC", 
+                                   group.by = "type")
 ```

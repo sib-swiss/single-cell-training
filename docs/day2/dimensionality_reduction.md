@@ -43,11 +43,15 @@ Seurat::DimPlot(seu, reduction = "pca")
 We can colour the PCA plot according to any factor that is present in `@meta.data`, or for any gene. For example we can take the column `percent.globin`:
 
 ```R
-Seurat::FeaturePlot(seu, reduction = "pca", group.by = "percent.globin")
+Seurat::FeaturePlot(seu, reduction = "pca", features = "percent.globin")
 ```
 
 !!! note 
-    Note that we used a different plotting function here `FeaturePlot`. The difference between `DimPlot` and `FeaturePlot` is that the first allows you to color the points in the plot according to a grouping variable (e.g. sample) while the latter allows you to color the points according to a continuous variable (e.g. gene expression).
+    Note that we used a different plotting function here: `FeaturePlot`. The difference between `DimPlot` and `FeaturePlot` is that the first allows you to color the points in the plot according to a grouping variable (e.g. sample) while the latter allows you to color the points according to a continuous variable (e.g. gene expression).
+
+<figure>
+    <img src="../../assets/images/pca_percent.globin.png" width="500"/>
+</figure>
 
 **Exercise:** Generate a PCA plot where color is according to counts of a gene (i.e. gene expression). For example, you can take `HBA1` (alpha subunit of hemoglobin), or one of the most variable genes (e.g. `IGKC`).
 
@@ -55,8 +59,11 @@ Seurat::FeaturePlot(seu, reduction = "pca", group.by = "percent.globin")
     Generating a PCA plot coloured according to gene expression (here `HBA1`):
 
     ```R
-    Seurat::FeaturePlot(seu, reduction = "pca", group.by = "HBA1")
+    Seurat::FeaturePlot(seu, reduction = "pca", features = "HBA1")
     ```
+    <figure>
+        <img src="../../assets/images/pca_HBA1.png" width="500"/>
+    </figure>
 
 
 We can generate heatmaps according to the correlations with the different dimensions of our PCA:
@@ -70,6 +77,10 @@ The elbowplot can help you in determining how many PCs to use for downstream ana
 ```R
 Seurat::ElbowPlot(seu, ndims = 40)
 ```
+
+<figure>
+    <img src="../../assets/images/elbowplot.png" width="500"/>
+</figure>
 
 The elbow plot ranks principle components based on the percentage of variance explained by each one. Where we observe an "elbow" or flattening curve, the majority of true signal is captured by this number of PCs, eg around 25 PCs for the seu dataset.
 
@@ -86,6 +97,10 @@ To view the UMAP plot:
 ```R
 Seurat::DimPlot(seu, reduction = "umap")
 ```
+
+<figure>
+    <img src="../../assets/images/umap_nonintegrated.png" width="700"/>
+</figure>
 
 **Exercise:** Try to change:
 
@@ -106,10 +121,15 @@ Why does dims = 1:100 not work? When would more precision be needed?
 
     The erythrocytes are probably in the cluster with a higher percentage of globin expression.
 
+    <figure>
+        <img src="../../assets/images/umap_nonintegrated_4panel.png" width="700"/>
+    </figure>
+
     **Answer B**
 
     ```R 
     seu <- Seurat::RunUMAP(seu, dims = 1:25, n.neighbors = 5)
+    Seurat::DimPlot(seu, reduction = "umap")
     ```
 
     The default number of neighbours is 30. It can be of interest to change the number of neighbors if one has subset the data (for instance in the situation where you would only consider the t-cells inyour data set), then maybe the number of neighbors in a cluster would anyway be most of the time lower than 30 then 30 is too much. In the other extreme where your dataset is extremely big an increase in the number of neighbors can be considered.
@@ -119,11 +139,25 @@ Why does dims = 1:100 not work? When would more precision be needed?
     ```R
     seu <- Seurat::RunUMAP(seu, dims = 1:5)
     Seurat::DimPlot(seu, reduction = "umap")
-    ```
+    ``` 
+
+    <figure>
+        <img src="../../assets/images/umap_nonintegrated_dim5.png" width="700"/>
+    </figure>
 
     ```R
     seu <- Seurat::RunUMAP(seu, dims = 1:50) 
     Seurat::DimPlot(seu, reduction = "umap")
     ```
+    <figure>
+        <img src="../../assets/images/umap_nonintegrated_dim50.png" width="700"/>
+    </figure>
 
     Taking dims = 1:100 does not work as in the step RunPCA by default only 50pcs are calculated, so the maximum that we can consider in further steps are 50, if more precision makes sense, for instance, if the genes that is of interest for your study is not present when the RunPCA was calculated, then an increase in the number of components calculated at start might be interesting tobe considered. Taking too few PCs we have a « blob » everything looks connected. Too many PCs tends to separate everything. Personally it is more interesting for me too have maybe 2 clusters separated of epithelial cells that I then group for further downstream analysis rather than having very distinct cells being clustered together. So I would rather take the « elbow » of the elbow plot a bit further to the right.
+
+!!! warning
+    After having done these exercises, change the UMAP back to a UMAP based on the first 25 PCs, in order to replicate the exercises in the following chapters. Do this by:
+
+    ```R
+    seu <- Seurat::RunUMAP(seu, dims = 1:25)
+    ```

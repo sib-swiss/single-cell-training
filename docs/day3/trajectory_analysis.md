@@ -463,12 +463,6 @@ plot_genes_in_pseudotime(subset(seuB,
                          min_expr=0.5, color_cells_by = "monocle_cluster")
 ```
 
-Plot a gene's expression vs pseudotime
-
-```R
-plot_genes_in_pseudotime(subset(seu_int_monocl, rowData(seu_int_monocl)$gene_short_name=="PMP2"))
-```
-
 <figure>
   <img src="../../assets/images/exp_pseudotime.png" width="500"/>
 </figure>

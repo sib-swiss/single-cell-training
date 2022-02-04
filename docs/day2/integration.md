@@ -11,6 +11,10 @@ Let's have a look at the UMAP again. Although cells of different samples are sha
 Seurat::DimPlot(seu, reduction = "umap")
 ```
 
+<figure>
+    <img src="../../assets/images/umap_nonintegrated.png" width="700"/>
+</figure>
+
 To perform the integration, we split our object by sample, resulting into a list with each sample as an element. We perform standard preprocessing (log-normalization), and identify variable features individually for each dataset based on a variance stabilizing transformation (`"vst"`).
 
 ```R
@@ -71,7 +75,7 @@ Seurat::DefaultAssay(seu_int) <- "integrated"
     Returning:
 
     <figure>
-      <img src="../../assets/images/umap_integrated.png" width="400"/>
+      <img src="../../assets/images/umap_integrated.png" width="700"/>
     </figure>
 
 
@@ -80,7 +84,7 @@ Seurat::DefaultAssay(seu_int) <- "integrated"
 Finally, store the integrated dataset as an `.rds` file. We will use it tomorrow:
 
 ```R
-saveRDS(seu_int, "seu_int.rds")
+saveRDS(seu_int, "seu_int_day2_part1.rds")
 ```
 
 Clear your environment:

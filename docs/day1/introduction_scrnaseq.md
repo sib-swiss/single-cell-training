@@ -96,7 +96,7 @@ library(Seurat)
 First, we will load a file specifying the different samples, and create an object specifying the location of the count data:
 
 ```R
-sample_info <- read.csv("sample_info_course.csv")
+sample_info <- read.csv("course_data/sample_info_course.csv")
 datadirs <- file.path("course_data", "count_matrices", sample_info$SampleName,
                       "outs", "filtered_feature_bc_matrix")
 names(datadirs) <- gsub("_", "-", sample_info$SampleName)

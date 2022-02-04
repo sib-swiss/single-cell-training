@@ -79,6 +79,10 @@ Seurat::VlnPlot(seu, features = c("percent.mito",
                                   "percent.globin"))
 ```
 
+<figure>
+    <img src="../../assets/images/violin_percent.png" width="500"/>
+</figure>
+
 You can see that `PBMMC-2` is quite different from the two others, it has a group of cells with very low ribosomal counts and one with very high globin counts. Maybe these two percentages are negatively correlated? Let's have a look, by plotting the two percentages against each other:
 
 ```R
@@ -103,11 +107,12 @@ We can also evaluate the relative expression of other genes in our dataset, for 
 ```R
 library(ggplot2)
 library(Matrix)
+library(Seurat)
 
 most_expressed_boxplot <- function(object, ngenes = 20){
   
   # matrix of raw counts
-  cts <- GetAssayData(seu, assay = "RNA", slot = "counts")
+  cts <- Seurat::GetAssayData(seu, assay = "RNA", slot = "counts")
   
   # get percentage/cell
   cts <- t(cts)/colSums(cts)*100
@@ -130,6 +135,10 @@ most_expressed_boxplot <- function(object, ngenes = 20){
 
 most_expressed_boxplot(seu, 20)
 ```
+
+<figure>
+    <img src="../../assets/images/boxplot_mostexp.png" width="500"/>
+</figure>
 
 As for most 10X based poly-A enriched single cell datasets, we find a relatively high expression of MALAT1. Many researchers choose to remove it, but it can have biological relevance (e.g. [Shaat et al. 2021](https://www.nature.com/articles/s41420-020-00383-y)). 
 
@@ -155,7 +164,7 @@ seu <- subset(seu, subset = nFeature_RNA > 200 &
 To evaluate this did the trick we can visualize those parameters again in a violin plot:
 
 ```R
-VlnPlot(seu, features = c("nFeature_RNA",
-                          "percent.mito"))
+Seurat::VlnPlot(seu, features = c("nFeature_RNA",
+                                  "percent.mito"))
 ```
 

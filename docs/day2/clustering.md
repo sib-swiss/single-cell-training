@@ -6,6 +6,12 @@
 
 ## Exercises
 
+Load the `seu_int` dataset you have created earlier today:
+
+```R
+seu_int <- readRDS("seu_int_day2_part1.rds")
+```
+
 The method implemented in Seurat first constructs a SNN graph based on the euclidean distance in PCA space, and refine the edge weights between any two cells based on the shared overlap in their local neighborhoods (Jaccard similarity). This step is performed using the `FindNeighbors()` function, and takes as input the previously defined dimensionality of the dataset.
 
 !!! note
@@ -35,11 +41,19 @@ clustree::clustree(seu_int@meta.data[,grep("integrated_snn_res", colnames(seu_in
                    prefix = "integrated_snn_res.")
 ```
 
+<figure>
+    <img src="../../assets/images/clustree.png" width="400"/>
+</figure>
+
 You can view the UMAP coloring each cell according to a cluster id like this:
 
 ```R
 Seurat::DimPlot(seu_int, group.by = "integrated_snn_res.0.1")
 ```
+<figure>
+    <img src="../../assets/images/umap_integrated_res.0.1.png" width="500"/>
+</figure>
+
 
 **Exercise:** Visualise clustering based on a few more resolutions. Taking the clustering and the UMAP plots into account what do you consider as a good resolution to perform the clustering?
 
@@ -51,7 +65,7 @@ Seurat::DimPlot(seu_int, group.by = "integrated_snn_res.0.1")
     ```
 
     <figure>
-      <img src="../../assets/images/UMAP_res_0.3.png" width="400"/>
+        <img src="../../assets/images/umap_integrated_res.0.3.png" width="500"/>
     </figure>
 
 **Exercise:** When do the number of neighbors need to be changed? How does changing the method of clustering in `FindClusters` affect the output? Which parameter should be changed?
@@ -61,18 +75,3 @@ Seurat::DimPlot(seu_int, group.by = "integrated_snn_res.0.1")
     
     The method can be changed with algorithm = 2,3 or 4
 
-### Save the dataset and clear environment
-
-Now, save the dataset so you can use it later today:
-
-```R
-saveRDS(seu_int, "seu_int_day2_part1.rds")
-```
-
-Clear your environment:
-
-```R
-rm(list = ls())
-gc()
-.rs.restartR()
-```

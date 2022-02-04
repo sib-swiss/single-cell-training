@@ -7,13 +7,7 @@
 
 ## Exercises
 
-Load the `seu_int` dataset you have created earlier today:
-
-```R
-seu_int <- readRDS("seu_int_day2_part1.rds")
-```
-
-And load the following packages:
+Load the following packages:
 
 ```R
 library(celldex)
@@ -42,6 +36,10 @@ Based on the UMAP we have generated, we can visualize expression for a gene in e
 Seurat::FeaturePlot(seu_int, "HBA1")
 ```
 
+<figure>
+    <img src="../../assets/images/umap_integrated_HBA1.png" width="500"/>
+</figure>
+
 Based on expression of sets of genes you can do a manual cell type annotation. If you know the marker genes for some cell types, you can check whether they are up-regulated in one or the other cluster. Here we have some marker genes for two different cell types:
 
 ```R
@@ -55,6 +53,11 @@ Let's have a look at the expression of the four T cell genes:
 Seurat::FeaturePlot(seu_int, tcell_genes, ncol=2)
 ```
 
+<figure>
+    <img src="../../assets/images/umap_tcell_genes.png" width="700"/>
+</figure>
+
+
 These cells are almost all in cluster 0 and 8. Which becomes clearer when looking at the violin plot:
 
 ```R
@@ -62,6 +65,10 @@ Seurat::VlnPlot(seu_int,
                 features = tcell_genes,
                 ncol = 2)
 ```
+
+<figure>
+    <img src="../../assets/images/violinplot_tcell_genes.png" width="700"/>
+</figure>
 
 **Exercise:** Have a look at the monocyte genes as well. Which clusters contain probably monocytes?
 
@@ -75,7 +82,7 @@ Seurat::VlnPlot(seu_int,
     Returns:
 
     <figure>
-      <img src="../../assets/images/featureplots_monocytes.png" width="500"/>
+      <img src="../../assets/images/umap_monocyte_genes.png" width="700"/>
     </figure>
 
     Corresponding mainly to cluster 2 and 9:
@@ -87,7 +94,7 @@ Seurat::VlnPlot(seu_int,
     ```
 
     <figure>
-      <img src="../../assets/images/violinplots_monocytes.png" width="500"/>
+      <img src="../../assets/images/violinplot_monocyte_genes.png" width="700"/>
     </figure>
 
 We can also automate this with the function `AddModuleScore`. For each cell, an expression score for a group of genes is calcuated:
@@ -117,7 +124,7 @@ seu_int <- Seurat::AddModuleScore(seu_int,
     Returning:
 
     <figure>
-      <img src="../../assets/images/UMAP_immune_genes_modules.png" width="500"/>
+      <img src="../../assets/images/umap_tcell_module.png" width="700"/>
     </figure>
 
     ```R
@@ -128,15 +135,21 @@ seu_int <- Seurat::AddModuleScore(seu_int,
     Which indeed shows these genes are mainly expressed in cluster 6:
 
     <figure>
-      <img src="../../assets/images/violinplot_immune_genes_modules.png" width="500"/>
+      <img src="../../assets/images/violinplot_tcell_module.png" width="700"/>
     </figure>
 
 ### Annotating cells according to cycling phase
+
+Based on the same principle, we can also annotate cell cycling state. The function `CellCycleScore` uses `AddModuleScore` to get a score for the G2/M and S phase (the mitotic phases in which cell is cycling). In addition, `CellCycleScore` assigns each cell to either the G2/M, S or G1 phase. 
+
+First  we extract the built-in genes for cell cycling:
 
 ```R
 s.genes <- Seurat::cc.genes.updated.2019$s.genes
 g2m.genes <- Seurat::cc.genes.updated.2019$g2m.genes
 ```
+
+Now we run the function:
 
 ```R
 seu_int <- Seurat::CellCycleScoring(seu_int,
@@ -144,10 +157,25 @@ seu_int <- Seurat::CellCycleScoring(seu_int,
                                      g2m.features = g2m.genes)
 ```
 
+And we can visualize the annotations:
+
 ```R
 Seurat::DimPlot(seu_int, group.by = "Phase")
 ```
 
+<figure>
+  <img src="../../assets/images/umap_integrated_phase.png" width="700"/>
+</figure>
+
+Based on your application, you can try to regress out the cell cycling scores at the step of scaling. Reasons for doing that could be:
+
+- Merging cycling and non-cycling cells of the same type in one cluster
+- Merging G2/M and S phase in one cluster
+
+!!! note
+    Note that correcting for cell cycling is performed at the scaling step. It will therefore only influence analyses that use scaled data, like dimensionality reduction and clustering. For e.g. differential gene expression testing, we use the raw original counts (not scaled). 
+
+Here, we choose not to regress out either of them. Because we are looking at developing cells, we might be interested to keep cycling cells seperated. In addition, the G2/M and S phases seem to be in the same clusters. More info on correcting for cell cycling [here](https://satijalab.org/seurat/articles/cell_cycle_vignette.html). 
 
 ### Cell type annotation using `SingleR`
 
@@ -158,6 +186,9 @@ ref <- celldex::NovershternHematopoieticData()
 class(ref)
 table(ref$label.main)
 ```
+
+!!! note
+    You will be asked whether to create the directory `/home/rstudio/.cache/R/ExperimentHub`. Type `yes` as a response. 
 
 !!! note
     You can find more information on different reference datasets at the [`celldex` documentation](https://bioconductor.org/packages/3.14/data/experiment/vignettes/celldex/inst/doc/userguide.html)
@@ -180,8 +211,19 @@ Visualize singleR score quality scores:
 
 ```R
 SingleR::plotScoreHeatmap(seu_int_SingleR)
+```
+
+<figure>
+  <img src="../../assets/images/scoreheatmap_singler.png" width="700"/>
+</figure>
+
+```R
 SingleR::plotDeltaDistribution(seu_int_SingleR)
 ```
+
+<figure>
+  <img src="../../assets/images/delta_singler.png" width="700"/>
+</figure>
 
 There are some annotations that contain only a few cells. They are usually not of interest, and they clogg our plots. Therefore we remove them from the annotation:
 
@@ -204,11 +246,19 @@ We can plot the annotations in the UMAP. Here, we use a different package for pl
 dittoSeq::dittoDimPlot(seu_int, "SingleR_annot", size = 0.7)
 ```
 
+<figure>
+  <img src="../../assets/images/umap_singler_annot.png" width="700"/>
+</figure>
+
 We can check out how many cells per sample we have for each annotated cell type:
 
 ```R
 dittoSeq::dittoBarPlot(seu_int, var = "SingleR_annot", group.by = "orig.ident")
 ```
+
+<figure>
+  <img src="../../assets/images/barplot_singler_sample.png" width="500"/>
+</figure>
 
 **Exercise:** Compare our manual annotation (based on the set of T cell genes) to the annotation with `SingleR`. Do they correspond?
 
@@ -227,7 +277,7 @@ dittoSeq::dittoBarPlot(seu_int, var = "SingleR_annot", group.by = "orig.ident")
     This returns:
 
     <figure>
-      <img src="../../assets/images/barplot_cluster_singler.png" width="700"/>
+      <img src="../../assets/images/barplot_singler_cluster.png" width="700"/>
     </figure>
 
     Here, you can see that cluster 0 and 8 contain cells annotated as T cells (CD4+ and CD8+).

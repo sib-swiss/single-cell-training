@@ -12,12 +12,12 @@ BiocManager::install(c("scran", "scater", "SingleR",
                        "DelayedMatrixStats",
                        "limma", "S4Vectors", "SingleCellExperiment",
                        "SummarizedExperiment", "batchelor", "Matrix.utils",
-                       "slingshot",
-                       "clustree"))
+                       "slingshot", "dittoSeq",
+                       "clustree"), ask = FALSE)
 
 # Monocle3:
 devtools::install_github("cole-trapnell-lab/leidenbase")
 devtools::install_github("cole-trapnell-lab/monocle3")
 
 install.packages(c("Seurat", "bit64"))
-BiocManager::install("clusterProfiler")
+BiocManager::install(c("clusterProfiler", "celldex"), ask = FALSE)
