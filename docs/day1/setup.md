@@ -91,9 +91,9 @@ Now that we have setup a project and a project directory (it is in `/home/rstudi
 To download and extract the dataset, copy-paste these commands inside the terminal tab:
 
 ```sh
-wget https://single-cell-transcriptomics.s3.eu-central-1.amazonaws.com/scRNAseq_v2.tar.gz
-tar -xvf scRNAseq_v2.tar.gz
-rm scRNAseq_v2.tar.gz
+wget https://single-cell-transcriptomics.s3.eu-central-1.amazonaws.com/course_data.tar.gz
+tar -xvf course_data.tar.gz
+rm course_data.tar.gz
 ```
 
 Have a look at the data directory you have downloaded. It should contain the following:
