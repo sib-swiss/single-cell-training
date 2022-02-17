@@ -71,7 +71,7 @@ Seurat::DimPlot(seu_int, group.by = "integrated_snn_res.0.1")
 **Exercise:** When do the number of neighbors need to be changed? How does changing the method of clustering in `FindClusters` affect the output? Which parameter should be changed?
 
 ??? done "Answer"
-    As FindClusters is an unsupervised clustering method supposedly telling yousomething about your UMAP plot, the two should go along. If one has reasons to change the number of neighbors in the UMAP function, here the same parameter should be adapted.
+    As FindClusters is an unsupervised clustering method on the PCA data and UMAP is a good summary of the PCA dimension selected, clusters and UMAP plot should go along. If one has reasons to change the number of neighbors in the UMAP function, here the same parameter should be adapted.
     
     The method can be changed with algorithm = 2,3 or 4
 
