@@ -130,7 +130,7 @@ seu <- Seurat::ScaleData(seu,
     seu <- Seurat::SCTransform(seu)
     ```
 
-    And it will add an extra assay to the object. `names(seu@assay)` returns:
+    And it will add an extra assay to the object. `names(seu@assays)` returns:
 
     ```
     [1] "RNA" "SCT"

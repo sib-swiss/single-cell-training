@@ -112,7 +112,7 @@ library(Seurat)
 most_expressed_boxplot <- function(object, ngenes = 20){
   
   # matrix of raw counts
-  cts <- Seurat::GetAssayData(seu, assay = "RNA", slot = "counts")
+  cts <- Seurat::GetAssayData(object, assay = "RNA", slot = "counts")
   
   # get percentage/cell
   cts <- t(cts)/colSums(cts)*100
