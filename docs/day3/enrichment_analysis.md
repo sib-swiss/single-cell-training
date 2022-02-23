@@ -39,7 +39,7 @@ library(org.Hs.eg.db)
 AnnotationDbi::keytypes(org.Hs.eg.db)
 ```
 
-Let's select a set of genes that are upregulated in the astrocytes compared to the macrophages:
+Let's select a set of genes that are downregulated in the tumor cells compared to normal:
 
 ```R
 tum_down <- subset(tum_vs_norm,
