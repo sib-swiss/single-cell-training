@@ -160,13 +160,14 @@ The Wilcoxon test implemented in `FindMarkers` does not allow to test for comple
 
 We can use `edgeR` or `limma` which are designed for microarray or bulk RNA seq data and provide a design matrix that includes covariates for example.
 
-We will go back to the pancreas cells sequenced with different technologies, analyze differentially expressed genes between 2 clusters of cells using the technologies as covariates. Similar approaches can be used to analyze differentially expressed genes between conditions, eg sick vs healthy, wild type versus knockout, etc, and including batches in the model if they are present.
-
-We will load an objects containing only pro B cells, both from the healthy tissues, and malignant tissues. We can load it like this:
+We will load an object containing only pro B cells, both from the healthy tissues, and malignant tissues. We can load it like this:
 
 ```R
-proB <- readRDS("proB.rds")
+proB <- readRDS("course_data/proB.rds")
 ```
+
+!!! note 
+    If you want to know how this pro-B cell subset is generated, have a look at the script [here](../../assets/scripts/generate_object_proB.R).
 
 Since we will start wit differential gene expression, we set the default assay back to "RNA". Also, we set the default identity to the cell type:
 
@@ -233,8 +234,8 @@ limma::topTable(fit.contrasts, number = 10, sort.by = "P")
 And we can check whether this corresponds to the counts by generating a violin plot:
 
 ```R
-Seurat::VlnPlot(proB, "CD52", split.by = "tech")
-Seurat::VlnPlot(proB, "IGLL1", split.by = "tech")
+Seurat::VlnPlot(proB, "CD52", split.by = "type")
+Seurat::VlnPlot(proB, "IGLL1", split.by = "type")
 ```
 
 We can run a similar analysis with `Seurat`. Run the code below. We will use the output object for the enrichment analysis. 

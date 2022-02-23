@@ -329,7 +329,7 @@ Seurat::VlnPlot(seu_int,
                 features = c("CD4", "CD8A", "CD8B"),
                 idents = c("CD8+ T cells", "CD4+ T cells"))
 
-proB <- readRDS("proB.rds")
+proB <- readRDS("course_data/proB.rds")
 
 Seurat::DefaultAssay(proB) <- "RNA"
 Seurat::Idents(proB) <- proB$orig.ident
@@ -353,15 +353,23 @@ fit <- limma::lmFit(vm, design = design)
 fit.contrasts <- limma::contrasts.fit(fit, contrast.mat)
 fit.contrasts <- limma::eBayes(fit.contrasts)
 
-limma::topTable(fit.contrasts, number = 10, sort.by = "P")
+limma::topTable(fit.contrasts, number = 100, sort.by = "P")
 
-Seurat::VlnPlot(proB, "CD52", split.by = "tech")
-Seurat::VlnPlot(proB, "IGLL1", split.by = "tech")
+Seurat::VlnPlot(proB, "CD52", split.by = "type")
+Seurat::VlnPlot(proB, "IGLL1", split.by = "type")
 
 tum_vs_norm <- Seurat::FindMarkers(proB, 
                                    ident.1 = "ETV6-RUNX1", 
                                    ident.2 = "PBMMC", 
                                    group.by = "type")
+
+
+tum_vs_norm_limma <- limma::topTable(fit.contrasts, p.value = 0.01, number = 20000)
+intsc <- intersect(rownames(tum_vs_norm), rownames(tum_vs_norm_limma))
+plot(tum_vs_norm[intsc, "avg_log2FC"], tum_vs_norm_limma[intsc, "logFC"])
+plot(-log10(tum_vs_norm[intsc, "p_val_adj"]),
+     -log10(tum_vs_norm_limma[intsc, "adj.P.Val"]))
+abline(0,1)
 
 ## Code found in: day3/enrichment_analysis.md
 library(clusterProfiler)
@@ -567,7 +575,7 @@ rm(list = ls())
 gc()
 .rs.restartR()
 
-seu_int <- readRDS("seu_int_day3.rds")
+seu_int <- readRDS("seu_int_day2_part2.rds")
 
 library(monocle3)
 
@@ -587,7 +595,7 @@ monocle3::plot_pc_variance_explained(seu_int_monocl)
 seu_int_monocl <- monocle3::reduce_dimension(seu_int_monocl, reduction_method = "UMAP")
 
 monocle3::plot_cells(seu_int_monocl, 
-                     color_cells_by = "integrated_snn_res.0.3", 
+                     color_cells_by = "orig.ident", 
                      cell_size = 1, 
                      show_trajectory_graph = FALSE)
 
@@ -631,6 +639,7 @@ View(pr_test)
 
 goi <- c("CD34", "MS4A1", "IGLL1", "IGLL5", 
          "MKI67", "CKS2")
+goi <- c("AHSP", "RHAG", "CD36", "SLC4A1")
 plot_cells(seuB, label_cell_groups=FALSE, genes = goi,
            show_trajectory_graph=FALSE, cell_size = 1)
 

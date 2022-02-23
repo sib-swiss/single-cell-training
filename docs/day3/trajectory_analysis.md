@@ -366,14 +366,24 @@ monocle3::plot_cells(seu_int_monocl, genes = "CD79A",
 
 ```
 
+<figure>
+  <img src="../../assets/images/umap_monocle.png" width="500"/>
+</figure>
+
+<figure>
+  <img src="../../assets/images/umap_monocle_CD79A.png" width="500"/>
+</figure>
+
 Cluster cells using `monocle3`'s clustering function:
 
 ```R
 seu_int_monocl <- monocle3::cluster_cells(seu_int_monocl, resolution=0.00025)
 monocle3::plot_cells(seu_int_monocl, label_cell_groups = F)
-monocle3::plot_cells(seu_int_monocl, color_cells_by = "integrated_snn_res.0.3", label_cell_groups = F)
-
 ```
+
+<figure>
+  <img src="../../assets/images/umap_monocle3_clustered.png" width="500"/>
+</figure>
 
 learn graph (i.e. identify trajectory) using `monocle3` UMAP and clustering:
 
@@ -381,6 +391,10 @@ learn graph (i.e. identify trajectory) using `monocle3` UMAP and clustering:
 seu_int_monocl <- monocle3::learn_graph(seu_int_monocl)
 monocle3::plot_cells(seu_int_monocl)
 ```
+
+<figure>
+  <img src="../../assets/images/umap_monocle_trajectory.png" width="500"/>
+</figure>
 
 **Exercise:** Find the CD34+ B-cell cluster in the monocle UMAP. This cluster has a high expressession of CD79A and expresses CD34.
 

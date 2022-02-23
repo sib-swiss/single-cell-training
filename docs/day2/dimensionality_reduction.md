@@ -72,6 +72,10 @@ We can generate heatmaps according to the correlations with the different dimens
 Seurat::DimHeatmap(seu, dims = 1:12, cells = 500, balanced = TRUE)
 ```
 
+<figure>
+    <img src="../../assets/images/pca_heatmap.png" width="700"/>
+</figure>
+
 The elbowplot can help you in determining how many PCs to use for downstream analysis such as UMAP:
 
 ```R
@@ -131,6 +135,10 @@ Why does dims = 1:100 not work? When would more precision be needed?
     seu <- Seurat::RunUMAP(seu, dims = 1:25, n.neighbors = 5)
     Seurat::DimPlot(seu, reduction = "umap")
     ```
+
+    <figure>
+        <img src="../../assets/images/umap_nonintegrated_neighb5.png" width="700"/>
+    </figure>
 
     The default number of neighbours is 30. It can be of interest to change the number of neighbors if one has subset the data (for instance in the situation where you would only consider the t-cells inyour data set), then maybe the number of neighbors in a cluster would anyway be most of the time lower than 30 then 30 is too much. In the other extreme where your dataset is extremely big an increase in the number of neighbors can be considered.
 

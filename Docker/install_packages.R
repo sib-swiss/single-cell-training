@@ -1,23 +1,45 @@
-# Packages to install:
+#!/usr/bin/env Rscript
 
 # CRAN packages:
-install.packages(c("ggplot2", "BiocManager", "sctransform",
+cran_packages <- c("ggplot2", "BiocManager", "sctransform",
                    "devtools", "cowplot", "matrixStats",
-                   "ggbeeswarm", "ggnewscale", "msigdbr"),
-                   repos = "http://cran.us.r-project.org")
+                   "ggbeeswarm", "ggnewscale", "msigdbr",
+                   "Seurat", "bit64", "Matrix.utils")
+
+for (p in cran_packages) {
+    install.packages(p, repos = "http://cran.us.r-project.org");
+
+    if (! library(p, character.only = TRUE, logical.return = TRUE)) {
+        write(paste0("Installation of package ",
+                     p,
+                     " exited with non-zero exit status"),
+                     stdout())
+        quit(status = 1, save = "no")
+    }
+}
 
 # Bioconductor packages:
-BiocManager::install(c("scran", "scater", "SingleR",
-                       "celldex", "BiocGenerics", "DelayedArray",
-                       "DelayedMatrixStats",
-                       "limma", "S4Vectors", "SingleCellExperiment",
-                       "SummarizedExperiment", "batchelor", "Matrix.utils",
-                       "slingshot", "dittoSeq",
-                       "clustree"), ask = FALSE)
+bioc_packages <- c("AnnotationDbi",
+                    "SingleR", "clusterProfiler", "celldex",
+                    "dittoSeq", "DelayedArray",
+                    "DelayedMatrixStats",
+                    "limma", "SingleCellExperiment",
+                    "SummarizedExperiment",
+                    "slingshot", "batchelor",
+                    "clustree", "edgeR")
+
+for (p in bioc_packages) {
+    BiocManager::install(p, ask = FALSE);
+
+    if (! library(p, character.only = TRUE, logical.return = TRUE)) {
+        write(paste0("Installation of package ",
+                     p,
+                     " exited with non-zero exit status"),
+                     stdout())
+        quit(status = 1, save = "no")
+    }
+}
 
 # Monocle3:
 devtools::install_github("cole-trapnell-lab/leidenbase")
 devtools::install_github("cole-trapnell-lab/monocle3")
-
-install.packages(c("Seurat", "bit64"))
-BiocManager::install(c("clusterProfiler", "celldex"), ask = FALSE)
