@@ -31,7 +31,14 @@ Have a look in the directory `course_data/reads` and `reference`. In the `reads`
 
 The input you need to run `cellranger count` are the sequence reads and a reference. Here, we have prepared a reference only with chromosome 21 and 22, but in 'real life' you would of course get the full reference genome of your species. The reference has a specific format. You can download precomputed human and mouse references from the [10X website](https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest). If your species of interest is not one of those, you will have to generate it yourself. For that, have a look [here](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/tutorial_mr).
 
-Have a look at the documentation of [`cellranger count`](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/count) (scroll down to *Command-line argument reference*), fill out the missing arguments (at `FIXME`) in the script below, and run it:
+Have a look at the documentation of [`cellranger count`](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/count) (scroll down to *Command-line argument reference*).
+
+You can find the input files here:
+
+- reads: `/home/rstudio/course_data/reads/` (from the downloaded tar package in your home directory)
+- pre-indexed reference: `/group_work/cellranger_index`
+
+Fill out the missing arguments (at `FIXME`) in the script below, and run it:
 
 ```sh
 cellranger count \
@@ -56,9 +63,9 @@ cellranger count \
     cellranger count \
     --id=ETV6-RUNX1_1 \
     --sample=ETV6-RUNX1_1 \
-    --transcriptome=cellranger_index \
-    --fastqs=course_data/reads \
-    --localcores=4
+    --transcriptome=/group_work/cellranger_index \
+    --fastqs=/home/rstudio/course_data/reads/ \
+    --localcores=4 
     ```
 
 Have a look out the output directory (i.e. `~/ETV6-RUNX1_1/outs`). The analysis report (`web_summary.html`) is usually a good place to start. 
