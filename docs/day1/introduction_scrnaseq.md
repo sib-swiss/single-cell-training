@@ -82,7 +82,7 @@ Have a look out the output directory (i.e. `~/ETV6-RUNX1_1/outs`). The analysis 
 ??? done "Answer"
     Not really. First of all there is a warning: `Fraction of RNA read bases with Q-score >= 30 is low`. This means that there is a low base quality of the reads. A low base quality gives results in more sequencing error and therefore possibly lower performance while mapping the reads to genes. However, a Q-score of 30 still represents 99.9% accuracy. 
 
-    What should worry us more is the **number of reads per cell** (363) and the **sequencing saturation** (7.9%). In most cases you should aim for 30.000 - 50.000 reads per cell, and a sequencing saturation >~70% (depending on the application). We therefore don't have enough reads per cell. However, as you might remember, this was a subset of reads (1 million) mapped against chromosome 21 & 22, while the original dataset contains 210,987,037 reads. You can check out the original report at `course_data/count_matrices/ETV6-RUNX1_1/outs/web_summary.html`.
+    What should worry us more is the **number of reads per cell** (363) and the **sequencing saturation** (7.9%). In most cases you should aim for 30.000 - 50.000 reads per cell (depending on the application). We therefore don't have enough reads per cell. However, as you might remember, this was a subset of reads (1 million) mapped against chromosome 21 & 22, while the original dataset contains 210,987,037 reads. You can check out the original report at `course_data/count_matrices/ETV6-RUNX1_1/outs/web_summary.html`.
     
     For more info on sequencing saturation, have a look [here](
     https://kb.10xgenomics.com/hc/en-us/articles/115002474263-How-much-sequencing-saturation-should-I-aim-for-). 
