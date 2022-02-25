@@ -1,9 +1,6 @@
 
 # SIB course Single Cell Transcriptomics
 
-!!! warning
-    This course version is currently under construction. The latest stable course version is of November 2021. You can find it [here](https://sib-swiss.github.io/single-cell-training/2021.11/)
-
 ## Teachers
 
 - Tania Wyss [:custom-orcid:](https://orcid.org/0000-0003-2641-0895)
