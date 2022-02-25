@@ -14,7 +14,13 @@
 
 ## Material
 
+Introduction to scRNA-seq and techniques: 
+
 [:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/introduction_scRNAseq.pdf){: .md-button }
+
+scRNA-seq with 10x genomics: 
+
+[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/10x_genomics_single_cell.pdf){: .md-button }
 
 - Single cell introductory [video on iBiology](https://www.youtube.com/watch?v=k9VFNLLQP8c)
 - Seurat [website](https://satijalab.org/seurat/)
@@ -31,11 +37,17 @@ Have a look in the directory `course_data/reads` and `reference`. In the `reads`
 
 The input you need to run `cellranger count` are the sequence reads and a reference. Here, we have prepared a reference only with chromosome 21 and 22, but in 'real life' you would of course get the full reference genome of your species. The reference has a specific format. You can download precomputed human and mouse references from the [10X website](https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest). If your species of interest is not one of those, you will have to generate it yourself. For that, have a look [here](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/tutorial_mr).
 
+To be able to run cellranger in the compute environment, first run:
+
+```sh
+export PATH=/group_work/cellranger-6.1.2:$PATH
+```
+
 Have a look at the documentation of [`cellranger count`](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/count) (scroll down to *Command-line argument reference*).
 
 You can find the input files here:
 
-- reads: `/home/rstudio/course_data/reads/` (from the downloaded tar package in your home directory)
+- reads: `/home/rstudio/single_cell_course/course_data/reads/` (from the downloaded tar package in your home directory)
 - pre-indexed reference: `/group_work/cellranger_index`
 
 Fill out the missing arguments (at `FIXME`) in the script below, and run it:
@@ -64,7 +76,7 @@ cellranger count \
     --id=ETV6-RUNX1_1 \
     --sample=ETV6-RUNX1_1 \
     --transcriptome=/group_work/cellranger_index \
-    --fastqs=/home/rstudio/course_data/reads/ \
+    --fastqs=/home/rstudio/single_cell_course/course_data/reads \
     --localcores=4 
     ```
 
