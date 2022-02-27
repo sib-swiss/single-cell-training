@@ -17,11 +17,11 @@ Load the `seu_int` dataset you have created yesterday:
 seu_int <- readRDS("seu_int_day2_part2.rds")
 ```
 
-And load the following packages:
+And load the following packages (install them if they are missing):
 
 ```R
 library(Seurat)
-library(edgeR)
+library(edgeR) # BiocManager::install("edgeR")
 library(limma)
 ```
 
@@ -37,9 +37,13 @@ de_genes <- Seurat::FindAllMarkers(seu_int,  min.pct = 0.25,
 !!! note "Time for coffee"
     This takes a while. Have a break.
 
-We can extract the top 3 markers per cluster:
+Subset the table to only keep the significant genes, and you can save it as a csv file if you wish to explore it further. Then extract the top 3 markers per cluster:
 
 ```R
+de_genes <- subset(de_genes, de_genes$p_val_adj<0.05)
+write.csv(de_genes, "de_genes_FindAllMarkers.csv", row.names = F, quote = F)
+
+
 library(dplyr)
 top_specific_markers <- de_genes %>%
   group_by(cluster) %>%
@@ -88,7 +92,7 @@ dittoSeq::dittoDotPlot(seu_int, vars = unique(top_specific_markers$gene),
     LTB.11  2.727014e-25  0.8193337 0.750 0.467  5.092153e-21      11  LTB
     ```
 
-    So, yes, the t-cell genes are highly significant markers for cluster 0 and 8.
+    So, yes, the T-cell genes are highly significant markers for cluster 0 and 8.
 
 ### Differential expression between groups of cells
 
@@ -100,7 +104,7 @@ First we can set the default cell identity to the cell types defined by `SingleR
 seu_int <- Seurat::SetIdent(seu_int, value = "SingleR_annot")
 ```
 
-Run the differential gene expression analysis:
+Run the differential gene expression analysis and subset the table to keep the significant genes:
 
 ```R
 deg_cd8_cd4 <- Seurat::FindMarkers(seu_int,
@@ -108,6 +112,7 @@ deg_cd8_cd4 <- Seurat::FindMarkers(seu_int,
                                    ident.2 = "CD4+ T cells",
                                    group.by = seu_int$SingleR_annot,
                                    test.use = "wilcox")
+deg_cd8_cd4 <- subset(deg_cd8_cd4, deg_cd8_cd4$p_val_adj<0.05)
 ```
 
 **Exercise:** Are CD8A, CD8B and CD4 in there? What does the sign (i.e. positive or negative) mean in the log fold change values? Are they according to the CD8+ and CD4+ annotations? Check your answer by generating a violin plot of a top differentially expressed gene.
@@ -138,9 +143,9 @@ deg_cd8_cd4 <- Seurat::FindMarkers(seu_int,
     CD8B 7.113148e-36  0.8536693 0.479 0.177 1.328238e-31
     ```
 
-    Indeed, a negative log2FC for CD4 meaning a lower expression in CD8+ T-cells, and a positive log2FC for CD8A and CD8B, meaning a higher expression in CD8+ T-cells.
+    Indeed, because we compared ident.1 = "CD8+ T cells" to ident.2 = "CD4+ T cells", a negative log2FC for the CD4 gene indicates a lower expression in CD8+ T-cells than in CD4+ T-cells, while a positive log2FC for the CD8A and CD8B genes indicates a higher expression in CD8+ T-cells.
 
-    Plotting the the genes in the T cells:
+    Plotting the genes in these two T-cell groups only:
 
     ```R
     Seurat::VlnPlot(seu_int, 
@@ -156,20 +161,35 @@ deg_cd8_cd4 <- Seurat::FindMarkers(seu_int,
 
 ### Differential expression using `limma`
 
-The Wilcoxon test implemented in `FindMarkers` does not allow to test for complex design (eg factorial experiments) or to include batch as a covariate.
+The Wilcoxon test implemented in `FindMarkers` does not allow you to test for complex design (eg factorial experiments) or to include batch as a covariate. It doesn't allow you to run paired-sample T tests for example. 
 
-We can use `edgeR` or `limma` which are designed for microarray or bulk RNA seq data and provide a design matrix that includes covariates for example.
+For more complex designs, we can use `edgeR` or `limma` which are designed for microarray or bulk RNA seq data and provide a design matrix that includes covariates for example, or sample IDs for paired analyses.
 
-We will load an object containing only pro B cells, both from the healthy tissues, and malignant tissues. We can load it like this:
+We will load an object containing only pro B cells, both from healthy tissues (PBMMC), and malignant tissues (ETV6-RUNX1). 
+
+!!! warning 
+    Please NOTE that in the original design of this data set, the healthy and malignant tissues were not  patient-matched, i.e. the real design was not the one of paired healthy and malignant tissues. However, for demonstration purposes, we will show you how to run a paired analysis, and do as if the PBMMC-1 and ETV6-RUNX1-1 samples both came from the same patient 1, the PBMMC-2 and ETV6-RUNX1-2 samples both came from the same patient 2, etc...
+
+
+We can load the object and explore its UMAP and meta.data like this:
 
 ```R
 proB <- readRDS("course_data/proB.rds")
+
+DimPlot(proB, group.by = "orig.ident")
+
+table(proB@meta.data$type)
+# ETV6-RUNX1      PBMMC 
+#      2000       1021
+
+head(proB@meta.data)
+
 ```
 
 !!! note 
     If you want to know how this pro-B cell subset is generated, have a look at the script [here](../../assets/scripts/generate_object_proB.R).
 
-Since we will start wit differential gene expression, we set the default assay back to "RNA". Also, we set the default identity to the cell type:
+Since we will start with differential gene expression, we set the default assay back to "RNA". Also, we set the default identity to the cell type:
 
 ```R
 Seurat::DefaultAssay(proB) <- "RNA"
@@ -189,11 +209,12 @@ Let's say we are specifically interested to test for differential gene expressio
 
 Now we will run differential expression analysis between cell type *delta* and *gamma* using the technology as a covariate by using `limma`.
 
-Get the count matrix and keep only genes that are expressed in at least one cell:
+Get the count matrix and keep only genes that are expressed in at least one cell (how many are left?):
 
 ```R
 counts <- Seurat::GetAssayData(proB, slot = "counts")
 counts <- counts[rowSums(counts) != 0,]
+dim(counts)
 ```
 
 Generate a `DGEList` object to use as input for `limma`:
@@ -203,14 +224,24 @@ dge <- edgeR::DGEList(counts = counts)
 dge <- edgeR::calcNormFactors(dge)  
 ```
 
-Generate a design matrix:
+Generate a design matrix, including patient ID to model for a paired analysis. If you need help to generate a design matrix, check out the very nice [edgeR User Guide](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf), sections 3.3 and 3.4.
+Extract the sample ID from the meta.data, then create the design matrix:
 
 ```R
-design <- model.matrix(~ 0 + type, data = proB@meta.data)
-colnames(design) <- make.names(c("ETV6-RUNX1", "PBMMC"))
+proB$patient.id<-gsub("ETV6-RUNX1", "ETV6_RUNX1", proB$orig.ident)
+proB$patient.id<-sapply(strsplit(proB$patient.id, "-"), '[', 2)
+
+design <- model.matrix(~ 0 + type + patient.id , 
+                        data = proB@meta.data)
+
+head(design)
+
+# change column names to more simple group names: 
+colnames(design)[c(1:2)] <- make.names(c("ETV6-RUNX1", "PBMMC"))
+
 ```
 
-Specify which contrasts to check:
+Specify which contrast to analyse:
 
 ```R
 contrast.mat <- limma::makeContrasts(ETV6.RUNX1 - PBMMC,
@@ -226,23 +257,57 @@ fit.contrasts <- limma::contrasts.fit(fit, contrast.mat)
 fit.contrasts <- limma::eBayes(fit.contrasts)
 ```
 
-We can use `topTable` to get the most significantly differentially expressed genes:
+We can use `topTable` to get the most significantly differentially expressed genes, and save the full DE results to an object. How many genes are significant? Are you suprised by this number?
 ```R
 limma::topTable(fit.contrasts, number = 10, sort.by = "P")
+
+limma_de <- limma::topTable(fit.contrasts, number = Inf, sort.by = "P")
+length(which(limma_de$adj.P.Val<0.05))
+
 ```
 
-And we can check whether this corresponds to the counts by generating a violin plot:
+And we can check whether this corresponds to the counts by generating a violin plot, or a gene downregulated in tumor, or a gene upregulated in tumor:
 
 ```R
-Seurat::VlnPlot(proB, "CD52", split.by = "type")
-Seurat::VlnPlot(proB, "IGLL1", split.by = "type")
+Seurat::VlnPlot(proB, "S100A9", split.by = "type")
+Seurat::VlnPlot(proB, "SOCS2", split.by = "type")
 ```
 
-We can run a similar analysis with `Seurat`. Run the code below. We will use the output object for the enrichment analysis. 
+We can run a similar analysis with `Seurat`, but this will not take into account the paired design. Run the code below. 
 
 ```R
 tum_vs_norm <- Seurat::FindMarkers(proB, 
                                    ident.1 = "ETV6-RUNX1", 
                                    ident.2 = "PBMMC", 
                                    group.by = "type")
+tum_vs_norm <- subset(tum_vs_norm, tum_vs_norm$p_val_adj<0.05)
 ```
+
+How many genes are significant? How does the fold change of these genes compare to the fold change of the top genes found by limma?
+
+Keep the `tum_vs_norm` object because we will use this output object for the enrichment analysis in the next section.
+
+
+??? done "Answer"
+    ```R
+    dim(tum_vs_norm) 
+    ```
+    We find 1893 significant genes. If we merge the `FindMarkers` and the `limma` results, keep `limma`'s most significant genes and plot:
+    ```R
+    merge_limma_FindMarkers <- merge(tum_vs_norm, limma_de, by="row.names",
+                               all.x=T)
+    merge_limma_FindMarkers <- subset(merge_limma_FindMarkers,
+                                merge_limma_FindMarkers$adj.P.Val<0.00001)
+
+    par(mar=c(4,4,4,4))
+    plot(merge_limma_FindMarkers$avg_log2FC,
+    merge_limma_FindMarkers$logFC,
+    xlab="log2FC Wilcoxon", ylab="log2FC limma",
+    pch=15, cex=0.5)
+    abline(a=0, b=1, col="red")
+    ```
+    Returning:
+
+    <figure>
+      <img src="../../assets/images/limma_vs_wilcoxon.png" width="600"/>
+    </figure>

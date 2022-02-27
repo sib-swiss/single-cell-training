@@ -18,19 +18,19 @@ library(enrichplot)
 ```
 
 If the `FindMarkers` or `FindAllMarkers` functions were used,
-we have a table containing only the significant genes,
-but we don't have any information for the non-significant
+we obtained a table listing only the significant genes,
+but we don't have any information of fold change for the non-significant
 genes. Therefore, we can use the over-representation analysis
 which is a threshold-based method.
 Using our list of significant genes, we can test
-if any gene set is over-represented in our data or not using a test
+if any gene set is over-represented among significant genes or not using a test
 similar to a Fisher test to compare differences in proportions.
 
 The `clusterProfiler` package provides functions for over-representation
-analysis of Gene Ontology gene sets (among other functions) or KEGG gene sets.
+analysis of Gene Ontology gene sets (among other functions, including functions for actual GSEA) or KEGG gene sets.
 
 Genes can be labeled using different types of labels, eg
-symbol, ensembl ID, Entrez ID. To list the allowed
+symbol, Ensembl ID, Entrez ID. To list the allowed
 label types use:
 
 ```R
@@ -48,9 +48,10 @@ tum_down <- subset(tum_vs_norm,
 tum_down_genes <- rownames(tum_down)
 ```
 
-We can do a gene ontology term enrichment analysis based on this set of genes:
+We can do a Gene Ontology term over-representation analysis based on this set of genes. Make sure you check out the help of this function to understand its arguments:
 
 ```R
+?enrichGO
 tum_vs_norm_go <- clusterProfiler::enrichGO(tum_down_genes,
                                             "org.Hs.eg.db",
                                             keyType = "SYMBOL",
@@ -61,11 +62,17 @@ tum_vs_norm_go <- clusterProfiler::enrichGO(tum_down_genes,
 The results are stored in the `@result` slot:
 
 ```R
+View(tum_vs_norm_go@result)
+```
+
+Some GO terms seem redundant because they contain many of the same genes, which is a characteristic of Gene Ontology gene sets. We can simplify this list by removing redundant gene sets:
+
+```R
 enr_go <- clusterProfiler::simplify(tum_vs_norm_go)
 View(enr_go@result)
 ```
 
-We can quite easily generate an enrichment map with the `enrichplot` package:
+We can quite easily generate a plot called an enrichment map with the `enrichplot` package:
 
 ```R
 enrichplot::emapplot(enrichplot::pairwise_termsim(enr_go),
@@ -76,13 +83,13 @@ enrichplot::emapplot(enrichplot::pairwise_termsim(enr_go),
     <img src="../../assets/images/emapplot_tum_down.png" width="700"/>
 </figure>
 
-In stead of testing for gene ontology terms, we can also test for other gene set collections. For example the hallmark collection from [MSigDB](http://www.gsea-msigdb.org/gsea/msigdb/index.jsp):
+Instead of testing for Gene Ontology terms, we can also test for other gene set collections. For example the Hallmark collection from [MSigDB](http://www.gsea-msigdb.org/gsea/msigdb/index.jsp):
 
 ```R
 gmt <- msigdbr::msigdbr(species = "human", category = "H")
 ```
 
-We can use the function `enricher` to test for enrichment of any set of genes. But we would have to test it against a "universe", i.e. the background genes:
+We can use the function `enricher` to test for over-representation of any set of genes of the Hallmark collection. We have to include the "universe", i.e. the full list of background, non significant genes, against which to test for differences in proportions:
 
 ```R
 tum_vs_norm_enrich <- clusterProfiler::enricher(gene = tum_down_genes,
@@ -93,8 +100,8 @@ tum_vs_norm_enrich <- clusterProfiler::enricher(gene = tum_down_genes,
                                                 TERM2GENE = gmt[,c("gs_name", "gene_symbol")])
 ```
 
-The most signifcantly enriched group of genes is `HALLMARK_G2M_CHECKPOINT`:
+When using the genes down-regulated in tumor, among the over-represented Hallmark gene sets, we have `HALLMARK_G2M_CHECKPOINT`, which includes genes involved in the G2/M checkpoint in the progression through the cell division cycle.
 
 ```R
-View(tum_vs_norm_enrich@result)
+View(tum_vs_norm_enrich@result[which(tum_vs_norm_enrich@result$p.adjust<0.05),])
 ```
