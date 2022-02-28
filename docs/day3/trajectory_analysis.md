@@ -451,6 +451,10 @@ monocle3::plot_cells(seu_int_monocl,
            graph_label_size=1.5, cell_size = 1)
 ```
 
+<figure>
+  <img src="../../assets/images/umap_monocle_pseudotime.png" width="500"/>
+</figure>
+
 In order to find genes which expression is affected by pseudtime, we first have to isolate the B-cell cluster. Therefore, extract all cells in the B-cell cluster with the interactive `choose_cells` function:
 
 ```R
@@ -487,6 +491,11 @@ goi <- c("CD34", "MS4A1", "IGLL1", "IGLL5",
 plot_cells(seuB, label_cell_groups=FALSE, genes = goi,
            show_trajectory_graph=FALSE, cell_size = 1)
 ```
+
+<figure>
+  <img src="../../assets/images/umaps_bcells_goi.png" width="500"/>
+</figure>
+
 
 But also against pseudotime:
 
