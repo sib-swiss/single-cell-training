@@ -185,7 +185,7 @@ Single cells have often undergone sampling and/or dissociation and/or sorting. T
 We will start with calculating the percentage of counts coming from transcript types:
 
 - **Mitochondrial genes**: If a cell membrane is damaged, it looses free RNA quicker compared to mitochondrial RNA, because the latter is part of the mitochondrion. A high relative amount of mitochondrial counts can therefore point to damaged cells ([Lun et al. 2016](https://f1000research.com/articles/5-2122)). 
-- **Ribosomal genes**: They do not point to specific issues, but it can be good to have a look at their relative abundance. Sometimes, they might even have a biological relevance (e.g. [Caron et al. 2020](https://www.nature.com/articles/s41598-020-64929-x)).
+- **Ribosomal genes**: Are not rRNA (ribosomal RNA) but is mRNA that code for ribosomal proteins. They do not point to specific issues, but it can be good to have a look at their relative abundance. They can have biological relevance (e.g. [Caron et al. 2020](https://www.nature.com/articles/s41598-020-64929-x)).
 - **Hemoglobin genes**: these transcripts are very abundant in erythrocytes. Depending on your application, you can expect 'contamination' of erythrocytes and select against it. 
 
 In order to have an idea about the relative counts of these type of genes in our dataset, we can calculate their expression as relative counts in each cell. We do that by selecting genes based on patterns (e.g. `^MT-` matches with all gene names starting with `MT`, i.e. mitochondrial genes):
