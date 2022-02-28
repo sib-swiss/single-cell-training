@@ -207,10 +207,10 @@ seu <- Seurat::PercentageFeatureSet(seu,
                                     col.name = "percent.globin")
 ```
 
-**Exercise:** Run the commands and check out the metadata data frame at `sc@meta.data`. What has changed?
+**Exercise:** Run the commands and check out the metadata data frame at `seu@meta.data`. What has changed?
 
 ??? done "Answer"
-    If we type `head(sc@meta.data)` it returns:
+    If we type `head(seu@meta.data)` it returns:
 
     ```
                                orig.ident nCount_RNA nFeature_RNA percent.mito percent.ribo percent.globin
