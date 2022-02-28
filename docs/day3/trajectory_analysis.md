@@ -323,7 +323,7 @@ gc()
 This part showcases how you can use `monocle3` to perform a trajectory analysis. First load the `seu_int` dataset:
 
 ```R
-seu_int <- readRDS("seu_int_day3.rds")
+seu_int <- readRDS("seu_int_day2_part2.rds")
 ```
 
 Load the required package into your environment:
@@ -335,10 +335,16 @@ library(monocle3)
 Generate a `monocle3` object (with class `cell_data_set`) from our `Seurat` object:
 
 ```R
-feature_names <- as.data.frame(rownames(seu_int))
-rownames(feature_names) <- rownames(seu_int)
+# get matrix and filter for minimum number of cells and features (the latter is a fix for backward compatibility)
+mat_tmp <- seu_int@assays$RNA@counts
+seu_tmp <- CreateSeuratObject(mat_tmp, min.cells = 3,
+                              min.features = 100)
+
+feature_names <- as.data.frame(rownames(seu_tmp))
+rownames(feature_names) <- rownames(seu_tmp)
 colnames(feature_names) <- "gene_short_name"
-seu_int_monocl <- monocle3::new_cell_data_set(seu_int@assays$RNA@counts,
+
+seu_int_monocl <- monocle3::new_cell_data_set(seu_tmp@assays$RNA@counts,
                                               cell_metadata = seu_int@meta.data,
                                               gene_metadata = feature_names)
 ```

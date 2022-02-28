@@ -105,3 +105,12 @@ When using the genes down-regulated in tumor, among the over-represented Hallmar
 ```R
 View(tum_vs_norm_enrich@result[which(tum_vs_norm_enrich@result$p.adjust<0.05),])
 ```
+### Clear environment
+
+Clear your environment:
+
+```R
+rm(list = ls())
+gc()
+.rs.restartR()
+```
