@@ -22,10 +22,25 @@ library(ggbeeswarm)
 
 > :material-transit-connection-variant: This part uses the `Deng` dataset
 
-Read in data. It is an object of class `SingleCellExperiment`.
+First, download the dataset from github within your  **Terminal** tab as on Day 1:
+
+<figure>
+  <img src="../../assets/images/select_terminal_tab.png" width="300"/>
+</figure>
+
+
+Type the following commands within the Terminal tab:
+
+```sh
+cd course_data/
+wget https://github.com/hemberg-lab/nrg-paper-figures/blob/master/deng-reads.rds?raw=true
+mv deng-reads.rds\?raw\=true deng-reads.rds
+```
+
+Then, within R, import the rds file. the 'Deng' dataset is an object of class `SingleCellExperiment`.
 
 ```R
-deng_SCE <- readRDS("data/deng_dataset/deng-reads.rds")
+deng_SCE <- readRDS("course_data/deng-reads.rds")
 ```
 
 Perform the first steps of the analysis. The deng_SCE object contains cells that were isolated at different stages of mouse embryogenesis, from the zygote stage to the late blastula.
