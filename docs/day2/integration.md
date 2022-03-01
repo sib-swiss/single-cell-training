@@ -1,7 +1,7 @@
-
+<!-- 
 ## Material
 
-[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/Integration_only.pdf){: .md-button }
+[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/Integration_only.pdf){: .md-button } -->
 
 ## Exercises
 
