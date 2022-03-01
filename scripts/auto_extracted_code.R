@@ -447,6 +447,10 @@ TERM2GENE = gmt[,c("gs_name", "gene_symbol")])
 
 View(tum_vs_norm_enrich@result[which(tum_vs_norm_enrich@result$p.adjust<0.05),])
 
+rm(list = ls())
+gc()
+.rs.restartR()
+
 ## Code found in: day3/trajectory_analysis.md
 library(SingleCellExperiment)
 library(scater)
@@ -615,14 +619,20 @@ rm(list = ls())
 gc()
 .rs.restartR()
 
-seu_int <- readRDS("seu_int_day3.rds")
+seu_int <- readRDS("seu_int_day2_part2.rds")
 
 library(monocle3)
 
-feature_names <- as.data.frame(rownames(seu_int))
-rownames(feature_names) <- rownames(seu_int)
+# get matrix and filter for minimum number of cells and features (the latter is a fix for backward compatibility)
+mat_tmp <- seu_int@assays$RNA@counts
+seu_tmp <- CreateSeuratObject(mat_tmp, min.cells = 3,
+min.features = 100)
+
+feature_names <- as.data.frame(rownames(seu_tmp))
+rownames(feature_names) <- rownames(seu_tmp)
 colnames(feature_names) <- "gene_short_name"
-seu_int_monocl <- monocle3::new_cell_data_set(seu_int@assays$RNA@counts,
+
+seu_int_monocl <- monocle3::new_cell_data_set(seu_tmp@assays$RNA@counts,
 cell_metadata = seu_int@meta.data,
 gene_metadata = feature_names)
 

@@ -337,8 +337,8 @@ Generate a `monocle3` object (with class `cell_data_set`) from our `Seurat` obje
 ```R
 # get matrix and filter for minimum number of cells and features (the latter is a fix for backward compatibility)
 mat_tmp <- seu_int@assays$RNA@counts
-seu_tmp <- CreateSeuratObject(mat_tmp, min.cells = 3,
-                              min.features = 100)
+seu_tmp <- Seurat::CreateSeuratObject(mat_tmp, min.cells = 3,
+                                      min.features = 100)
 
 feature_names <- as.data.frame(rownames(seu_tmp))
 rownames(feature_names) <- rownames(seu_tmp)
@@ -423,7 +423,7 @@ monocle3::plot_cells(seu_int_monocl)
     ```R
     monocle3::plot_cells(seu_int_monocl, genes = c("CD79A", "CD34"),
                      show_trajectory_graph = FALSE, 
-                     cell_size = 0.7)
+                     cell_size = 0.7, group_label_size = 4)
     ```
 
     Returns:
@@ -432,7 +432,7 @@ monocle3::plot_cells(seu_int_monocl)
      <img src="../../assets/images/umap_bcell_cd34plus.png" width="800"/>
     </figure>
 
-    Cluster 13 has both a high expression of CD79A and CD34. 
+    The left part of cluster 7 has both a high expression of CD79A and CD34. 
 
 
 
