@@ -19,11 +19,11 @@
 
 | block   	| start    	| end      	| subject                             	|
 |---------	|----------	|----------	|-------------------------------------	|
-| block 1 	| 9:00 AM  	| 10:30 AM 	| [Dimensionality reduction](day2/dimensionality_reduction.md)	|
+| block 1 	| 9:00 AM  	| 10:30 AM 	| [Integration](day2/integration.md) and [Dimensionality reduction](day2/dimensionality_reduction.md)	|
 |         	| 10:30 AM 	| 11:00 AM 	| BREAK                               	|
-| block 2 	| 11:00 AM 	| 12:30 PM 	| [Cell annotation](day2/cell_annotation.md)  |
+| block 2 	| 11:00 AM 	| 12:30 PM 	| Further exercises  |
 |         	| 12:30 PM 	| 1:30 PM  	| BREAK                               	|
-| block 3 	| 1:30 PM  	| 3:00 PM  	| [Integration](day2/integration.md)              	|
+| block 3 	| 1:30 PM  	| 3:00 PM  	| [Cell annotation](day2/cell_annotation.md)      	|
 |         	| 3:00 PM  	| 3:30 PM  	| BREAK                               	|
 | block 4 	| 3:30 PM  	| 5:00 PM  	| Further exercises	|
 
