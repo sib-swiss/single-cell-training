@@ -66,7 +66,7 @@ Seurat::FeaturePlot(seu, reduction = "pca", features = "percent.globin")
     </figure>
 
 
-We can generate heatmaps according to the correlations with the different dimensions of our PCA:
+We can generate heatmaps according to their principal component scores calculated in the rotation matrix:
 
 ```R
 Seurat::DimHeatmap(seu, dims = 1:12, cells = 500, balanced = TRUE)
