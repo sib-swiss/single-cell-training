@@ -4,6 +4,8 @@ https://leangaurav.medium.com/simplest-https-setup-nginx-reverse-proxy-letsencry
 
 Make sure the IP is correctly associated to the domain (`sib-training-test.ml`)
 
+First host the app over http
+
 On the server, generate the certificates:
 
 ```sh
