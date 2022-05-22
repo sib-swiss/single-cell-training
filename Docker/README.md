@@ -7,13 +7,13 @@ Make sure the IP is correctly associated to the domain (`sib-training-test.ml`)
 On the server, generate the certificates:
 
 ```sh
-docker-compose -f docker-compose-le.yaml up --build
+docker compose -f docker-compose-le.yaml up --build
 ```
 
 Then run: 
 
 
 ```sh
-docker-compose up --build -d nginx
+docker compose up --build -d nginx
 ```
 

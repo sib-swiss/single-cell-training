@@ -1,0 +1,10 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name test.leangaurav.dev;
+    
+    location ~ /.well-known/acme-challenge {
+        allow all;
+        root /tmp/acme_challenge;
+    }
+}
