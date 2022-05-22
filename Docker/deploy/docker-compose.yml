@@ -1,0 +1,26 @@
+version: "3.3"
+
+services:
+  nginx:
+    container_name: 'nginx-service'
+    build:
+      context: .
+      dockerfile: docker/nginx.Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config:/config
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /tmp/acme_challenge:/tmp/acme_challenge
+    links:
+      - rstudio
+    restart: always
+  rstudio:
+    container_name: 'rstudio'
+    image: ${IMAGE}
+    ports:
+      - 8787:8787
+    environment:
+      - BATCH_USER_CREATION
+
