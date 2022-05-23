@@ -451,7 +451,12 @@ rm(list = ls())
 gc()
 .rs.restartR()
 
+## Code found in: day3/advanced_analyses.md
+
+
 ## Code found in: day3/trajectory_analysis.md
+BiocManager::install("scater")
+
 library(SingleCellExperiment)
 library(scater)
 library(slingshot)
@@ -625,7 +630,7 @@ library(monocle3)
 
 # get matrix and filter for minimum number of cells and features (the latter is a fix for backward compatibility)
 mat_tmp <- seu_int@assays$RNA@counts
-seu_tmp <- CreateSeuratObject(mat_tmp, min.cells = 3,
+seu_tmp <- Seurat::CreateSeuratObject(mat_tmp, min.cells = 3,
 min.features = 100)
 
 feature_names <- as.data.frame(rownames(seu_tmp))
@@ -662,7 +667,7 @@ monocle3::plot_cells(seu_int_monocl)
 
 monocle3::plot_cells(seu_int_monocl, genes = c("CD79A", "CD34"),
 show_trajectory_graph = FALSE, 
-cell_size = 0.7)
+cell_size = 0.7, group_label_size = 4)
 
 seu_int_monocl<-monocle3::order_cells(seu_int_monocl)#
 
