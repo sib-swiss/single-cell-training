@@ -2,8 +2,6 @@
 
 # uses codedown: https://github.com/earldouglas/codedown
 
-cd ~/Documents/repositories/single-cell-training
-
 MDFILES=`grep -o "[a-zA-Z0-9_\/]*\.md" mkdocs.yml | tr '\n' ' '`
 
 echo "# Auto-extracted code from markdown files" > scripts/auto_extracted_code.R
