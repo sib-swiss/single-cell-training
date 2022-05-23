@@ -20,8 +20,6 @@ jobs:
       - name: Modifiy the specific files using scripts
         run: |
           bash ./scripts/extract_code.sh
-      - name: Modifiy the specific files using action
-        uses: action-owner/action-repo@ref
       - name: Commit and push changes
         run: |
           git config --global user.name "geertvangeest"
