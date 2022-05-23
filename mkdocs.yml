@@ -17,7 +17,8 @@ nav:
     - Day 3:
       - Differential gene expression: day3/differential_gene_expression.md
       - Enrichment analysis: day3/enrichment_analysis.md
-      - Trajectory analysis: day3/trajectory_analysis.md
+      - Advanced analyses: day3/advanced_analyses.md
+      - Trajectory analysis (extra): day3/trajectory_analysis.md
 
 theme:
   name: material
