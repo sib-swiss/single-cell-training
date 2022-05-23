@@ -4,7 +4,7 @@
 
 MDFILES=`grep -o "[a-zA-Z0-9_\/]*\.md" mkdocs.yml | tr '\n' ' '`
 
-echo "# Auto-extracted code from markdown files" > scripts/auto_extracted_code.R
+echo "# Auto-extracted code DO NOT MANUALLY CHANGE THIS FILE" > scripts/auto_extracted_code.R
 
 for file in `echo $MDFILES`
 do
