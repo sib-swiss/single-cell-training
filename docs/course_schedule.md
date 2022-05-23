@@ -6,7 +6,7 @@
 
 | block   	| start    	| end      	| subject                        	|
 |---------	|----------	|----------	|--------------------------------	|
-| introduction 	| 9:00 AM  	| 9:30 AM 	| [Introduction](day1/general_introduction.md) |
+| introduction 	| 9:15 AM  	| 9:30 AM 	| [Introduction](day1/general_introduction.md) |
 | block 1 	| 9:30 AM  	| 10:30 AM 	| [Introduction scRNAseq](day1/introduction_scrnaseq.md) |
 |         	| 10:30 AM 	| 11:00 AM 	| BREAK                          	|
 | block 2 	| 11:00 AM 	| 12:30 PM 	| [Quality control](day1/quality_control.md) 	     |
@@ -19,7 +19,7 @@
 
 | block   	| start    	| end      	| subject                             	|
 |---------	|----------	|----------	|-------------------------------------	|
-| block 1 	| 9:00 AM  	| 10:30 AM 	| [Integration](day2/integration.md) and [Dimensionality reduction](day2/dimensionality_reduction.md)	|
+| block 1 	| 9:15 AM  	| 10:30 AM 	| [Integration](day2/integration.md) and [Dimensionality reduction](day2/dimensionality_reduction.md)	|
 |         	| 10:30 AM 	| 11:00 AM 	| BREAK                               	|
 | block 2 	| 11:00 AM 	| 12:30 PM 	| Further exercises  |
 |         	| 12:30 PM 	| 1:30 PM  	| BREAK                               	|
@@ -31,7 +31,7 @@
 
 | block   	| start    	| end      	| subject                             	|
 |---------	|----------	|----------	|-------------------------------------	|
-| block 1 	| 9:00 AM  	| 10:30 AM 	| [Differential gene expression](day3/differential_gene_expression.md)	|
+| block 1 	| 9:15 AM  	| 10:30 AM 	| [Differential gene expression](day3/differential_gene_expression.md)	|
 |         	| 10:30 AM 	| 11:00 AM 	| BREAK                               	|
 | block 2 	| 11:00 AM 	| 12:30 PM 	| [Differential gene expression](day3/differential_gene_expression.md)            	|
 |         	| 12:30 PM 	| 1:30 PM  	| BREAK                               	|
