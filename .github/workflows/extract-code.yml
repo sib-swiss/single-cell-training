@@ -23,7 +23,6 @@ jobs:
       - name: Commit and push changes
         run: |
           git config --global user.name "geertvangeest"
-          git config --global user.email "geert.vangeest@gmail.com"
 
           git add -A
           git commit -m "auto-update extracted code"
