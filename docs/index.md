@@ -16,7 +16,7 @@
 
 ## Attribution
 
-Parts of this course are inspired by the [Broad Institute Single Cell Workshop](https://broadinstitute.github.io/2019_scWorkshop/index.html), and courses previously developed by Walid Gharib at SIB. 
+Parts of this course are inspired by the [Broad Institute Single Cell Workshop](https://broadinstitute.github.io/2019_scWorkshop/index.html), the [CRUK CI Introduction to single-cell RNA-seq data analysis course](https://bioinformatics-core-shared-training.github.io/UnivCambridge_ScRnaSeq_Nov2021/) and courses previously developed by Walid Gharib at SIB. 
 
 ## License & copyright
 
