@@ -40,7 +40,7 @@ The input you need to run `cellranger count` are the sequence reads and a refere
 To be able to run cellranger in the compute environment, first run:
 
 ```sh
-export PATH=/group_work/cellranger-6.1.2:$PATH
+export PATH=/data/cellranger-6.1.2:$PATH
 ```
 
 Have a look at the documentation of [`cellranger count`](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/count) (scroll down to *Command-line argument reference*).
@@ -48,7 +48,7 @@ Have a look at the documentation of [`cellranger count`](https://support.10xgeno
 You can find the input files here:
 
 - reads: `/home/rstudio/single_cell_course/course_data/reads/` (from the downloaded tar package in your home directory)
-- pre-indexed reference: `/group_work/cellranger_index`
+- pre-indexed reference: `/data/cellranger_index`
 
 Fill out the missing arguments (at `FIXME`) in the script below, and run it:
 
@@ -75,7 +75,7 @@ cellranger count \
     cellranger count \
     --id=ETV6-RUNX1_1 \
     --sample=ETV6-RUNX1_1 \
-    --transcriptome=/group_work/cellranger_index \
+    --transcriptome=/data/cellranger_index \
     --fastqs=/home/rstudio/single_cell_course/course_data/reads \
     --localcores=4 
     ```
