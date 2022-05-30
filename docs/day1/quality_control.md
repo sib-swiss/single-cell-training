@@ -81,11 +81,11 @@ seu <- Seurat::CreateSeuratObject(counts = sparse_matrix,
 
     ```
     An object of class Seurat 
-    33694 features across 6946 samples within 1 assay 
-    Active assay: RNA (33694 features, 0 variable features)
+    18673 features across 6946 samples within 1 assay 
+    Active assay: RNA (18673 features, 0 variable features)
     ```
 
-    This means that we have 33694 genes (features) in there, and 6946 cells (samples)
+    This means that we have 18673 genes (features) in there, and 6946 cells (samples)
 
 ### The `Seurat` object
 
