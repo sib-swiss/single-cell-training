@@ -231,7 +231,7 @@ There are some annotations that contain only a few cells. They are usually not o
 singleR_labels <- seu_int_SingleR$labels
 t <- table(singleR_labels)
 other <- names(t)[t < 10]
-singleR_labels[singleR_labels %in% other] <- NA
+singleR_labels[singleR_labels %in% other] <- "none"
 ```
 
 In order to visualize it in our UMAP, we have to add the annotation to `seu_int@meta.data`:
