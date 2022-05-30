@@ -405,7 +405,9 @@ tum_vs_norm <- subset(tum_vs_norm, tum_vs_norm$p_val_adj<0.05)
 
 dim(tum_vs_norm) 
 
-merge_limma_FindMarkers <- merge(tum_vs_norm, limma_de, by="row.names",
+merge_limma_FindMarkers <- merge(tum_vs_norm, 
+limma_de, 
+by="row.names",
 all.x=T)
 merge_limma_FindMarkers <- subset(merge_limma_FindMarkers,
 merge_limma_FindMarkers$adj.P.Val<0.00001)
