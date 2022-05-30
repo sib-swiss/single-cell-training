@@ -39,7 +39,9 @@ sparse_matrix <- Seurat::Read10X(data.dir = datadirs)
 sparse_matrix[c("PECAM1", "CD8A", "TSPAN1"), 1:30]
 
 seu <- Seurat::CreateSeuratObject(counts = sparse_matrix,
-project = "pbmmc")
+project = "pbmmc",
+min.cells = 3,
+min.features = 100)
 
 hist(seu$nCount_RNA)
 
@@ -187,15 +189,15 @@ seu_list[[i]] <- Seurat::FindVariableFeatures(seu_list[[i]], selection.method = 
 verbose = FALSE)
 }
 
-seu_anchors <- Seurat::FindIntegrationAnchors(object.list = seu_list, dims = 1:30)
+seu_anchors <- Seurat::FindIntegrationAnchors(object.list = seu_list, dims = 1:25)
 
-seu_int <- Seurat::IntegrateData(anchorset = seu_anchors, dims = 1:30)
+seu_int <- Seurat::IntegrateData(anchorset = seu_anchors, dims = 1:25)
 
 Seurat::DefaultAssay(seu_int) <- "integrated"
 
 seu_int <- Seurat::ScaleData(seu_int)
 seu_int <- Seurat::RunPCA(seu_int, npcs = 30)
-seu_int <- Seurat::RunUMAP(seu_int, reduction = "pca", dims = 1:30)
+seu_int <- Seurat::RunUMAP(seu_int, reduction = "pca", dims = 1:25)
 
 Seurat::DimPlot(seu_int, reduction = "umap")
 
@@ -282,7 +284,7 @@ SingleR::plotDeltaDistribution(seu_int_SingleR)
 singleR_labels <- seu_int_SingleR$labels
 t <- table(singleR_labels)
 other <- names(t)[t < 10]
-singleR_labels[singleR_labels %in% other] <- NA
+singleR_labels[singleR_labels %in% other] <- "none"
 
 seu_int$SingleR_annot <- singleR_labels
 
