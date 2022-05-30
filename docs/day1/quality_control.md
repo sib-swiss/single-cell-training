@@ -62,11 +62,13 @@ sparse_matrix[c("PECAM1", "CD8A", "TSPAN1"), 1:30]
 
 You will see many dots (zeros) and a few integers representing the counts per gene per cell. 
 
-To generate a `Seurat` object, we will run `CreateSeuratObject`:
+To generate a `Seurat` object, we will run `CreateSeuratObject`. Note that while creating the object, we already do some mild filtering; we only import genes that are expressed in at least 3 cells, and we only import cells that have at least 100 different genes expressed:
 
 ```R
 seu <- Seurat::CreateSeuratObject(counts = sparse_matrix,
-                                  project = "pbmmc")
+                                  project = "pbmmc",
+                                  min.cells = 3,
+                                  min.features = 100)
 ```
 
 !!! note "Function notation with `::`"

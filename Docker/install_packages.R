@@ -4,7 +4,7 @@
 cran_packages <- c("ggplot2", "BiocManager", "sctransform",
                    "devtools", "cowplot", "matrixStats",
                    "ggbeeswarm", "ggnewscale", "msigdbr",
-                   "Seurat", "bit64", "Matrix.utils")
+                   "Seurat", "bit64", "Matrix.utils", "scater")
 
 for (p in cran_packages) {
     install.packages(p, repos = "http://cran.us.r-project.org");
