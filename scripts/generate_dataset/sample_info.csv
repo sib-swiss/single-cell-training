@@ -1,0 +1,12 @@
+SampleId,SampleName,SampleGroup,DatasetName,link
+SRR9264343,ETV6-RUNX1_1,ETV6-RUNX1,Caron,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos2/sra-pub-run-15/SRR9264343/SRR9264343.1
+SRR9264344,ETV6-RUNX1_2,ETV6-RUNX1,Caron,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos3/sra-pub-run-19/SRR9264344/SRR9264344.1
+SRR9264345,ETV6-RUNX1_3,ETV6-RUNX1,Caron,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos3/sra-pub-run-20/SRR9264345/SRR9264345.1
+SRR9264346,ETV6-RUNX1_4,ETV6-RUNX1,Caron,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos3/sra-pub-run-21/SRR9264346/SRR9264346.1
+SRR9264347,HHD_1,HHD,Caron,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos3/sra-pub-run-19/SRR9264347/SRR9264347.1
+SRR9264348,HHD_2,HHD,Caron,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos3/sra-pub-run-21/SRR9264348/SRR9264348.1
+SRR9264349,PRE-T_1,PRE-T,Caron,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos3/sra-pub-run-21/SRR9264349/SRR9264349.1
+SRR9264350,PRE-T_2,PRE-T,Caron,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos3/sra-pub-run-19/SRR9264350/SRR9264350.1
+SRR9264351,PBMMC_1,PBMMC,Caron,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos2/sra-pub-run-15/SRR9264351/SRR9264351.1
+SRR9264353,PBMMC_2,PBMMC,Caron,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos2/sra-pub-run-15/SRR9264353/SRR9264353.1
+SRR9264354,PBMMC_3,PBMMC,Caron,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos3/sra-pub-run-20/SRR9264354/SRR9264354.1
