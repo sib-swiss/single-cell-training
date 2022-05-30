@@ -1,10 +1,10 @@
 
-################################ 
-
-       Auto-extracted code 
-DO NOT MANUALLY CHANGE THIS FILE
-
-################################
+####################################
+#                                  #
+#       Auto-extracted code        #
+# DO NOT MANUALLY CHANGE THIS FILE #
+#                                  #
+####################################
 
 
 ## Code found in: index.md
