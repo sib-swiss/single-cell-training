@@ -25,5 +25,5 @@ jobs:
           git config --global user.name "geertvangeest"
 
           git add -A
-          git commit -m "auto-update extracted code"
+          git commit -m "auto-update extracted code" || exit 0
           git push
