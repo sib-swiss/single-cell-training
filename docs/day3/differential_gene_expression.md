@@ -294,10 +294,12 @@ Keep the `tum_vs_norm` object because we will use this output object for the enr
     ```
     We find 1893 significant genes. If we merge the `FindMarkers` and the `limma` results, keep `limma`'s most significant genes and plot:
     ```R
-    merge_limma_FindMarkers <- merge(tum_vs_norm, limma_de, by="row.names",
-                               all.x=T)
+    merge_limma_FindMarkers <- merge(tum_vs_norm, 
+                                     limma_de, 
+                                     by="row.names",
+                                     all.x=T)
     merge_limma_FindMarkers <- subset(merge_limma_FindMarkers,
-                                merge_limma_FindMarkers$adj.P.Val<0.00001)
+                                      merge_limma_FindMarkers$adj.P.Val<0.00001)
 
     par(mar=c(4,4,4,4))
     plot(merge_limma_FindMarkers$avg_log2FC,
