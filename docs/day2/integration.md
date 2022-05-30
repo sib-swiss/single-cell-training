@@ -30,13 +30,13 @@ for (i in 1:length(seu_list)) {
 After this, we prepare the integration by selecting integration anchors:
 
 ```R
-seu_anchors <- Seurat::FindIntegrationAnchors(object.list = seu_list, dims = 1:30)
+seu_anchors <- Seurat::FindIntegrationAnchors(object.list = seu_list, dims = 1:25)
 ```
 
 And finally perform the integration:
 
 ```R
-seu_int <- Seurat::IntegrateData(anchorset = seu_anchors, dims = 1:30)
+seu_int <- Seurat::IntegrateData(anchorset = seu_anchors, dims = 1:25)
 ```
 
 After running `IntegrateData`, the `Seurat` object will contain an additional element of class `Assay` with the integrated (or ‘batch-corrected’) expression matrix. This new `Assay` is called `integrated`, and exists next to the already existing `RNA` element with class `Assay`.
@@ -64,7 +64,7 @@ Seurat::DefaultAssay(seu_int) <- "integrated"
     ```R
     seu_int <- Seurat::ScaleData(seu_int)
     seu_int <- Seurat::RunPCA(seu_int, npcs = 30)
-    seu_int <- Seurat::RunUMAP(seu_int, reduction = "pca", dims = 1:30)
+    seu_int <- Seurat::RunUMAP(seu_int, reduction = "pca", dims = 1:25)
     ```
 
     Plotting the UMAP:
