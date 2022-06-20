@@ -9,4 +9,4 @@ Attendees should have a Wi-Fi enabled computer. An **online R and RStudio enviro
 
 - [R](https://cran.r-project.org/) version > 4.0. 
 - Latest RStudio version, the [free version](https://rstudio.com/products/rstudio/download/) is perfectly fine.
-- The R packages necessary for the course. Find the script to install them [here](../assets/scripts/install_packages.R). 
+- The R packages necessary for the course. Find the script to install them [here](https://github.com/sib-swiss/single-cell-training/blob/master/Docker/install_packages.R). 
