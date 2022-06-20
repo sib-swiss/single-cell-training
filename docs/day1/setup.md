@@ -15,7 +15,7 @@ Choose one of the following:
 
 === "Own installation"
 
-    Install the required packages using the script [`install_packages.R`](../../assets/scripts/install_packages.R)
+    Install the required packages using the script [`install_packages.R`](https://raw.githubusercontent.com/sib-swiss/single-cell-training/master/Docker/install_packages.R)
 
 === "Docker"
 
