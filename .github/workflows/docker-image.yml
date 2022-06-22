@@ -1,7 +1,6 @@
 name: build and push CI
 
 on:
-  workflow_dispatch:
   push:
     tags:
       - 'v*.*'
