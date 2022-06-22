@@ -1,25 +1,15 @@
 #!/usr/bin/env Rscript
 
-# CRAN packages:
-cran_packages <- c("ggplot2", "BiocManager", "sctransform",
+# R script to install requirements for exercises -------------------------------
+
+## a vector of packages to install (edit in this section) ----------------------
+### packages could be either on CRAN or bioconductor
+
+pkgs <- c("ggplot2", "BiocManager", "sctransform",
                    "devtools", "cowplot", "matrixStats",
                    "ggbeeswarm", "ggnewscale", "msigdbr",
-                   "Seurat", "bit64", "Matrix.utils", "scater")
-
-for (p in cran_packages) {
-    install.packages(p, repos = "http://cran.us.r-project.org");
-
-    if (! library(p, character.only = TRUE, logical.return = TRUE)) {
-        write(paste0("Installation of package ",
-                     p,
-                     " exited with non-zero exit status"),
-                     stdout())
-        quit(status = 1, save = "no")
-    }
-}
-
-# Bioconductor packages:
-bioc_packages <- c("AnnotationDbi",
+                   "Seurat", "bit64", "Matrix.utils", "scater",
+                   "AnnotationDbi",
                     "SingleR", "clusterProfiler", "celldex",
                     "dittoSeq", "DelayedArray",
                     "DelayedMatrixStats",
@@ -28,12 +18,21 @@ bioc_packages <- c("AnnotationDbi",
                     "slingshot", "batchelor",
                     "clustree", "edgeR")
 
-for (p in bioc_packages) {
-    BiocManager::install(p, ask = FALSE);
+### if packages need to be installed from github:
+### devtools::install_github("namespace/repo")
 
-    if (! library(p, character.only = TRUE, logical.return = TRUE)) {
+## install Bioconductor --------------------------------------------------------
+if (!require("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+
+## install and check package loading -------------------------------------------
+for (pkg in basename(pkgs)) {
+    BiocManager::install(pkg, ask = FALSE, update = FALSE)
+
+    if (! library(pkg, character.only = TRUE, logical.return = TRUE)) {
         write(paste0("Installation of package ",
-                     p,
+                     pkg,
                      " exited with non-zero exit status"),
                      stdout())
         quit(status = 1, save = "no")
