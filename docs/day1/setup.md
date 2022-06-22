@@ -149,4 +149,4 @@ This data comes from:
 
 Caron M, St-Onge P, Sontag T, Wang YC, Richer C, Ragoussis I, et al. **Single-cell analysis of childhood leukemia reveals a link between developmental states and ribosomal protein expression as a source of intra-individual heterogeneity.** Scientific Reports. 2020;10:1–12. Available from: http://dx.doi.org/10.1038/s41598-020-64929-x
 
-We will use the reads to showcase the use of `cellranger count`. The directory only reads from chromosome 21 and 22 of one sample (`ETV6-RUNX1_1`). The count matrices are output of `cellranger count`, and we will use those for the other exercises in `R`.
+We will use the reads to showcase the use of `cellranger count`. The directory contains only reads from chromosome 21 and 22 of one sample (`ETV6-RUNX1_1`). The count matrices are output of `cellranger count`, and we will use those for the other exercises in `R`.
