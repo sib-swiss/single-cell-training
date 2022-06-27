@@ -1,6 +1,8 @@
 
 ## Material
 
+[:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/Trajectories_july2022.pdf){: .md-button }
+
 - `slingshot` [vignette](https://www.bioconductor.org/packages/release/bioc/vignettes/slingshot/inst/doc/vignette.html)
 - [`monocle3`](https://cole-trapnell-lab.github.io/monocle3/)
 
