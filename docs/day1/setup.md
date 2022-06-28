@@ -11,7 +11,7 @@ Choose one of the following:
 - **renkulab.io** if you want to easily  deploy the environment outside the course
 
 === "Enrolled"
-    Log in to Rstudio server with the provided link and password, your username is `rstudio`.
+    Log in to Rstudio server with the provided link, username and password.
 
 === "Own installation"
 
