@@ -16,7 +16,8 @@ libglpk-dev \
 libxml2-dev \
 libproj-dev \
 libudunits2-dev \
-libgdal-dev
+libgdal-dev \
+tree
 
 COPY install_packages.R ./
 
