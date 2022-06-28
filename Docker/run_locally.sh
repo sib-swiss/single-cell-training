@@ -1,6 +1,5 @@
 docker run \
 --rm \
 -p 8787:8787 \
--e PASSWORD=test \
 -v $PWD:/home/rstudio \
-geertvangeest/single-cell-rstudio:2021.6
+geertvangeest/single-cell-rstudio:latest
