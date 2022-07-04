@@ -20,7 +20,7 @@ Normalized values are stored in the "RNA" assay (as item of the `@assay` slot) o
 **Exercise:** Have a look at the assay data before and after running `NormalizeData()`. Did it change?
 
 !!! hint
-    You can extract assay data with the function `Seurat::GetAssayData`. By default, the slot `data` is used, containing raw counts before normalization, and normalized counts after normalization. Use `Seurat::GetAssayData(seu, slot = "counts")` to get the raw count data after normalization. 
+    You can extract assay data with the function `Seurat::GetAssayData`. By default, the slot `data` is used (inside the slot `assay`), containing normalized counts. Use `Seurat::GetAssayData(seu, slot = "counts")` to get the raw counts. 
 
 ??? done "Answer"
     You can check out some assay data with:
