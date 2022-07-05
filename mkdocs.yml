@@ -4,7 +4,6 @@ nav:
     - Precourse preparations: precourse.md
     - Course schedule: course_schedule.md
     - Day 1:
-      - General introduction: day1/general_introduction.md
       - Setup: day1/setup.md
       - Introduction & cellranger: day1/introduction_cellranger.md
       - Analysis tools and QC: day1/analysis_tools_qc.md
