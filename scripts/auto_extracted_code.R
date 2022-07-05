@@ -16,9 +16,6 @@
 ## Code found in: course_schedule.md
 
 
-## Code found in: day1/general_introduction.md
-
-
 ## Code found in: day1/setup.md
 
 
