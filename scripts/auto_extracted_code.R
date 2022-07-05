@@ -22,7 +22,7 @@
 ## Code found in: day1/setup.md
 
 
-## Code found in: day1/introduction_scrnaseq.md
+## Code found in: day1/introduction_cellranger.md
 
 
 ## Code found in: day1/analysis_tools_qc.md
