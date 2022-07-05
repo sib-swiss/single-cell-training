@@ -5,12 +5,9 @@
 - Explain what kind of information single cell RNA-seq can give you to answer a biological question
 - Describe essential considerations during the design of a single cell RNA-seq experiment
 - Describe the pros and cons of different single cell sequencing methods
-- Load single cell data into R
-- Explain the basic structure of a `Seurat` object and extract count data and metadata
-- Perform a basic quality control by:
-    - Evaluating the percentage of UMIs originating from mitochondrial genes
-    - Detecting doublets
-
+- Use cellranger to:
+    - To align reads and generate count tables
+    - Perform basic QC on alignments and counts
 
 ## Material
 

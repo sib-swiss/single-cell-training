@@ -2,6 +2,8 @@
 
 **After having completed this chapter you will be able to:**
 
+- Load single cell data into R
+- Explain the basic structure of a `Seurat` object and extract count data and metadata
 - Calculate and visualize quality measures based on:
     - mitochondrial genes
     - ribosomal genes

@@ -6,8 +6,8 @@
 
 | block   	| start    	| end      	| subject                        	|
 |---------	|----------	|----------	|--------------------------------	|
-| introduction 	| 9:15 AM  	| 9:30 AM 	| [Introduction](day1/general_introduction.md) |
-| block 1 	| 9:30 AM  	| 10:30 AM 	| [Introduction scRNAseq](day1/introduction_scrnaseq.md) |
+| introduction 	| 9:15 AM  	| 9:30 AM 	| [Introduction](day1/setup.md) |
+| block 1 	| 9:30 AM  	| 10:30 AM 	| [Introduction scRNAseq](day1/introduction_cellranger.md) |
 |         	| 10:30 AM 	| 11:00 AM 	| BREAK                          	|
 | block 2 	| 11:00 AM 	| 12:30 PM 	| [Analysis tools and QC](day1/analysis_tools_qc.md) 	     |
 |         	| 12:30 PM 	| 1:30 PM  	| BREAK                          	|

@@ -6,7 +6,7 @@ nav:
     - Day 1:
       - General introduction: day1/general_introduction.md
       - Setup: day1/setup.md
-      - Introduction scRNAseq: day1/introduction_scrnaseq.md
+      - Introduction & cellranger: day1/introduction_cellranger.md
       - Analysis tools and QC: day1/analysis_tools_qc.md
       - Normalization and scaling: day1/normalization_scaling.md
     - Day 2:
