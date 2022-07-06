@@ -227,11 +227,6 @@ proB$sample <- factor(proB$orig.ident)
 ##first an sce object is needed
 sce_proB <- as.SingleCellExperiment(proB)
 
-#The needed package has to be installed if not already done:
-if (!require("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-BiocManager::install("scuttle")
-
 library(scuttle)
 
 ##aggregateAcrossCells here it is only aggregated by sample, one could imagine
@@ -245,7 +240,6 @@ counts(summed)[1:3,]
 #have a look at the colData of our new object summed, can you see type and 
 #patient.id are there
 head(colData(summed))
-
 ```
 
 Generate a `DGEList` object to use as input for `limma` and filter the genes to remove lowly expressed genes. How many are left?
@@ -261,7 +255,6 @@ y <- y[keep,]
 
 ##see how many genes were kept 
 summary(keep)
-
 ```
 
 Generate a design matrix, including patient ID to model for a paired analysis. If you need help to generate a design matrix, check out the very nice [edgeR User Guide](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf), sections 3.3 and 3.4.
@@ -277,8 +270,6 @@ design
 # change column/rownames names to more simple group names: 
 colnames(design) <- make.names(c("ETV6-RUNX1", "PBMMC","patient2","patient3"))
 rownames(design)<-colData(summed)$sample
-
-
 ```
 
 Specify which contrast to analyse:
@@ -302,12 +293,12 @@ fit.contrasts <- limma::eBayes(fit.contrasts)
 ```
 
 We can use `topTable` to get the most significantly differentially expressed genes, and save the full DE results to an object. How many genes are significant? Are you suprised by this number?
+
 ```R
 # Show the top differentially expressed genes:
 limma::topTable(fit.contrasts, number = 10, sort.by = "P")
 limma_de <- limma::topTable(fit.contrasts, number = Inf, sort.by = "P")
 length(which(limma_de$adj.P.Val<0.05))
-
 ```
 
 And we can check whether this corresponds to the counts by generating a violin plot, or a gene downregulated in tumor, or a gene upregulated in tumor:
@@ -330,7 +321,6 @@ tum_vs_norm <- subset(tum_vs_norm, tum_vs_norm$p_val_adj<0.05)
 How many genes are significant? How does the fold change of these genes compare to the fold change of the top genes found by limma?
 
 Keep the `tum_vs_norm` object because we will use this output object for the enrichment analysis in the next section.
-
 
 ??? done "Answer"
     ```R
