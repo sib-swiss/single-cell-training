@@ -358,35 +358,79 @@ Seurat::Idents(proB) <- proB$orig.ident
 
 Seurat::DimPlot(proB)
 
-counts <- Seurat::GetAssayData(proB, slot = "counts")
-counts <- counts[rowSums(counts) != 0,]
-dim(counts)
+#taking the proB data 
+Seurat::DefaultAssay(proB) <- "RNA"
+Seurat::Idents(proB) <- proB$orig.ident
 
-dge <- edgeR::DGEList(counts = counts)
-dge <- edgeR::calcNormFactors(dge)  
-
+## add the patient id also for paired DGE
 proB$patient.id<-gsub("ETV6-RUNX1", "ETV6_RUNX1", proB$orig.ident)
 proB$patient.id<-sapply(strsplit(proB$patient.id, "-"), '[', 2)
 
-design <- model.matrix(~ 0 + type + patient.id , 
-data = proB@meta.data)
+## Here we do perform pseudo-bulk:
+##first a mandatory column of sample needs to be added to the meta data that is the grouping factor, should be the samples
+proB$sample <- factor(proB$orig.ident)
 
-head(design)
+##first an sce object is needed
+sce_proB <- as.SingleCellExperiment(proB)
 
-# change column names to more simple group names: 
-colnames(design)[c(1:2)] <- make.names(c("ETV6-RUNX1", "PBMMC"))
+#The needed package has to be installed if not already done:
+if (!require("BiocManager", quietly = TRUE))
+install.packages("BiocManager")
+BiocManager::install("scuttle")
+
+library(scuttle)
+
+##aggregateAcrossCells here it is only aggregated by sample, one could imagine
+##to aggregate by sample and by celltype for instance
+summed <- aggregateAcrossCells(sce_proB, 
+id=colData(sce_proB)[,c("sample")])
+
+##have a look at the counts
+counts(summed)[1:3,]
+
+#have a look at the colData of our new object summed, can you see type and 
+#patient.id are there
+head(colData(summed))
+
+
+#As in the standard limma analysis generate a DGE object
+
+y <- DGEList(counts(summed), samples=colData(summed)$sample)
+
+##filter lowly expressed (recommanded for limma)
+keep <- filterByExpr(y, group=summed$type)
+y <- y[keep,]
+
+##see how many genes were kept 
+summary(keep)
+
+
+## Create the design matrix and include the technology as a covariate:
+design <- model.matrix(~0 + summed$type + summed$patient.id)
+
+# Have a look
+design
+
+# change column/rownames names to more simple group names: 
+colnames(design) <- make.names(c("ETV6-RUNX1", "PBMMC","patient2","patient3"))
+rownames(design)<-colData(summed)$sample
+
 
 
 contrast.mat <- limma::makeContrasts(ETV6.RUNX1 - PBMMC,
 levels = design)
 
+
+dge <- edgeR::calcNormFactors(y)  
+
+#Do limma
 vm <- limma::voom(dge, design = design, plot = TRUE)
 fit <- limma::lmFit(vm, design = design)
 fit.contrasts <- limma::contrasts.fit(fit, contrast.mat)
 fit.contrasts <- limma::eBayes(fit.contrasts)
 
+# Show the top differentially expressed genes:
 limma::topTable(fit.contrasts, number = 10, sort.by = "P")
-
 limma_de <- limma::topTable(fit.contrasts, number = Inf, sort.by = "P")
 length(which(limma_de$adj.P.Val<0.05))
 
@@ -402,12 +446,8 @@ tum_vs_norm <- subset(tum_vs_norm, tum_vs_norm$p_val_adj<0.05)
 
 dim(tum_vs_norm) 
 
-merge_limma_FindMarkers <- merge(tum_vs_norm, 
-limma_de, 
-by="row.names",
+merge_limma_FindMarkers <- merge(tum_vs_norm, limma_de, by="row.names",
 all.x=T)
-merge_limma_FindMarkers <- subset(merge_limma_FindMarkers,
-merge_limma_FindMarkers$adj.P.Val<0.00001)
 
 par(mar=c(4,4,4,4))
 plot(merge_limma_FindMarkers$avg_log2FC,
