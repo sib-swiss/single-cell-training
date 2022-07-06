@@ -8,12 +8,6 @@
 
 ## Exercises
 
-Install the package scater:
-
-```R
-BiocManager::install("scater")
-```
-
 Load the following packages:
 
 ```R
