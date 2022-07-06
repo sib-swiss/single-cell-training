@@ -207,37 +207,77 @@ Let's say we are specifically interested to test for differential gene expressio
 !!! note
     Here we could also test for e.g. healthy versus diseased within a celltype/cluster.
 
-Now we will run differential expression analysis between cell type *delta* and *gamma* using the technology as a covariate by using `limma`.
+Now we will run differential expression analysis between tumor and healthy cells using the patient ID as a covariate by using `limma`.
 
-Get the count matrix and keep only genes that are expressed in at least one cell (how many are left?):
+Prepare the pseudobulk count matrix:
 
 ```R
-counts <- Seurat::GetAssayData(proB, slot = "counts")
-counts <- counts[rowSums(counts) != 0,]
-dim(counts)
+#taking the proB data 
+Seurat::DefaultAssay(proB) <- "RNA"
+Seurat::Idents(proB) <- proB$orig.ident
+
+## add the patient id also for paired DGE
+proB$patient.id<-gsub("ETV6-RUNX1", "ETV6_RUNX1", proB$orig.ident)
+proB$patient.id<-sapply(strsplit(proB$patient.id, "-"), '[', 2)
+
+## Here we do perform pseudo-bulk:
+##first a mandatory column of sample needs to be added to the meta data that is the grouping factor, should be the samples
+proB$sample <- factor(proB$orig.ident)
+
+##first an sce object is needed
+sce_proB <- as.SingleCellExperiment(proB)
+
+#The needed package has to be installed if not already done:
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install("scuttle")
+
+library(scuttle)
+
+##aggregateAcrossCells here it is only aggregated by sample, one could imagine
+##to aggregate by sample and by celltype for instance
+summed <- aggregateAcrossCells(sce_proB, 
+                               id=colData(sce_proB)[,c("sample")])
+
+##have a look at the counts
+counts(summed)[1:3,]
+
+#have a look at the colData of our new object summed, can you see type and 
+#patient.id are there
+head(colData(summed))
+
 ```
 
-Generate a `DGEList` object to use as input for `limma`:
+Generate a `DGEList` object to use as input for `limma` and filter the genes to remove lowly expressed genes. How many are left?
 
 ```R
-dge <- edgeR::DGEList(counts = counts)
-dge <- edgeR::calcNormFactors(dge)  
+#As in the standard limma analysis generate a DGE object
+
+y <- DGEList(counts(summed), samples=colData(summed)$sample)
+
+##filter lowly expressed (recommanded for limma)
+keep <- filterByExpr(y, group=summed$type)
+y <- y[keep,]
+
+##see how many genes were kept 
+summary(keep)
+
 ```
 
 Generate a design matrix, including patient ID to model for a paired analysis. If you need help to generate a design matrix, check out the very nice [edgeR User Guide](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf), sections 3.3 and 3.4.
 Extract the sample ID from the meta.data, then create the design matrix:
 
 ```R
-proB$patient.id<-gsub("ETV6-RUNX1", "ETV6_RUNX1", proB$orig.ident)
-proB$patient.id<-sapply(strsplit(proB$patient.id, "-"), '[', 2)
+## Create the design matrix and include the technology as a covariate:
+design <- model.matrix(~0 + summed$type + summed$patient.id)
 
-design <- model.matrix(~ 0 + type + patient.id , 
-                        data = proB@meta.data)
+# Have a look
+design
 
-head(design)
+# change column/rownames names to more simple group names: 
+colnames(design) <- make.names(c("ETV6-RUNX1", "PBMMC","patient2","patient3"))
+rownames(design)<-colData(summed)$sample
 
-# change column names to more simple group names: 
-colnames(design)[c(1:2)] <- make.names(c("ETV6-RUNX1", "PBMMC"))
 
 ```
 
@@ -246,11 +286,15 @@ Specify which contrast to analyse:
 ```R
 contrast.mat <- limma::makeContrasts(ETV6.RUNX1 - PBMMC,
                                      levels = design)
+
 ```
 
-Now `limma` can perform the transformation with `voom`, fit the model, compute the contrasts and compute test statistics with `eBayes`:
+Firt, we perform TMM normalization using edgeR, and then `limma` can perform the transformation with `voom`, fit the model, compute the contrasts and compute test statistics with `eBayes`:
 
 ```R
+dge <- edgeR::calcNormFactors(y)  
+
+#Do limma
 vm <- limma::voom(dge, design = design, plot = TRUE)
 fit <- limma::lmFit(vm, design = design)
 fit.contrasts <- limma::contrasts.fit(fit, contrast.mat)
@@ -259,8 +303,8 @@ fit.contrasts <- limma::eBayes(fit.contrasts)
 
 We can use `topTable` to get the most significantly differentially expressed genes, and save the full DE results to an object. How many genes are significant? Are you suprised by this number?
 ```R
+# Show the top differentially expressed genes:
 limma::topTable(fit.contrasts, number = 10, sort.by = "P")
-
 limma_de <- limma::topTable(fit.contrasts, number = Inf, sort.by = "P")
 length(which(limma_de$adj.P.Val<0.05))
 
@@ -294,13 +338,9 @@ Keep the `tum_vs_norm` object because we will use this output object for the enr
     ```
     We find 1893 significant genes. If we merge the `FindMarkers` and the `limma` results, keep `limma`'s most significant genes and plot:
     ```R
-    merge_limma_FindMarkers <- merge(tum_vs_norm, 
-                                     limma_de, 
-                                     by="row.names",
-                                     all.x=T)
-    merge_limma_FindMarkers <- subset(merge_limma_FindMarkers,
-                                      merge_limma_FindMarkers$adj.P.Val<0.00001)
-
+    merge_limma_FindMarkers <- merge(tum_vs_norm, limma_de, by="row.names",
+                               all.x=T)
+    
     par(mar=c(4,4,4,4))
     plot(merge_limma_FindMarkers$avg_log2FC,
     merge_limma_FindMarkers$logFC,
