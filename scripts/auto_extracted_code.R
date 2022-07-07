@@ -454,9 +454,9 @@ BiocManager::install("org.Hs.eg.db", update = FALSE)
 library(org.Hs.eg.db)
 AnnotationDbi::keytypes(org.Hs.eg.db)
 
-tum_down <- subset(tum_vs_norm,
-tum_vs_norm$avg_log2FC < -1 &
-tum_vs_norm$p_val_adj < 0.05)
+tum_down  <- subset(limma_de,
+limma_de$logFC < -1 
+& limma_de$adj.P.Val <  0.05)
 tum_down_genes <- rownames(tum_down)
 
 ?enrichGO
