@@ -493,8 +493,6 @@ gc()
 
 
 ## Code found in: day3/trajectory_analysis.md
-BiocManager::install("scater")
-
 library(SingleCellExperiment)
 library(scater)
 library(slingshot)
