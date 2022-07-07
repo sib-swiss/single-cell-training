@@ -5,6 +5,9 @@ Participants should already have a basic knowledge in Next Generation Sequencing
 
 ## Software
 
+!!! note "If working independently"
+    If you are not enrolled to the course (i.e. doing it in your own time), you can either choose to install the packages locally, or use docker. See [setup](day1/setup.md) for more details. 
+
 Attendees should have a Wi-Fi enabled computer. An **online R and RStudio environment** will be provided. However, in case you wish to perform the practical exercises on your own computer, please take a moment to install the following before the course:
 
 - [R](https://cran.r-project.org/) version > 4.0. 
