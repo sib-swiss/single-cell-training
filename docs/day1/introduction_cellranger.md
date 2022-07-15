@@ -31,13 +31,16 @@ scRNA-seq with 10x genomics:
 ### Running `cellranger count`
 
 !!! note "If working independently"
-    The exercises below assume that you are enrolled in the course, and have access to the Rstudio server. **These exercises are not essential to run for the rest of the course**, so you can skip them. If you want to do them anyway, you can try to [install `cellranger` locally](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation) (only on Linux or WSL). In addition, you will need to download the references. You can get it by with this code:
+    The exercises below assume that you are enrolled in the course, and have access to the Rstudio server. **These exercises are not essential to run for the rest of the course**, so you can skip them. If you want to do them anyway, you can try to [install `cellranger` locally](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation) (only on Linux or WSL). In addition, you will need to download the references. You can get it by with this code (choose your OS):
 
-    ```sh
-    wget https://single-cell-transcriptomics.s3.eu-central-1.amazonaws.com/cellranger_index.tar.gz
-    tar -xvf cellranger_index.tar.gz
-    rm cellranger_index.tar.gz
-    ```
+    === "Linux/MacOS/WSL"
+        ```sh
+        wget https://single-cell-transcriptomics.s3.eu-central-1.amazonaws.com/cellranger_index.tar.gz
+        tar -xvf cellranger_index.tar.gz
+        rm cellranger_index.tar.gz
+        ```
+    === "Windows"
+        Download using the [link](https://single-cell-transcriptomics.s3.eu-central-1.amazonaws.com/cellranger_index.tar.gz), and unpack in your working directory. 
 
     This will download and extract the index in the current directory. Specify the path to this reference in the exercises accordingly. 
 

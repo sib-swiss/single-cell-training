@@ -99,6 +99,9 @@ tar -xvf course_data.tar.gz
 rm course_data.tar.gz
 ```
 
+!!! note "If on Windows"
+    If you're using Windows, you can directly open the [link](https://single-cell-transcriptomics.s3.eu-central-1.amazonaws.com/course_data.tar.gz) in your browser, and downloading will start automatically. Unpack the tar.gz file in the directory where you want to work in during the course.
+
 Have a look at the data directory you have downloaded. It should contain the following:
 
 ```
