@@ -21,6 +21,7 @@ nav:
 
 theme:
   name: material
+  custom_dir: overrides
   logo: assets/images/SIB_logo.svg
   favicon: assets/images/SIB_logo.svg
 

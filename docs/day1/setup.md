@@ -1,3 +1,6 @@
+!!! info "Questions and answers"
+    If you have any issues, questions or feedback regarding the contents of this website, use the "Questions and Answers" section at the bottom of the page 👇. It requires a [github account](https://github.com/). There is one on every page. 
+
 ## Material
 
 [:fontawesome-solid-file-pdf: Download the presentation](../assets/pdf/introduction.pdf){: .md-button }
