@@ -1,9 +1,6 @@
 
 # SIB course Single Cell Transcriptomics
 
-!!! info "Questions and answers"
-    If you have any issues, questions or feedback regarding the contents of this website, use the "Questions and Answers" section at the bottom of the page 👇. It requires a [github account](https://github.com/). There is one on every page. 
-
 ## Teachers
 
 - Tania Wyss [:custom-orcid:](https://orcid.org/0000-0003-2641-0895)
