@@ -25,7 +25,7 @@ Choose one of the following:
 
     With docker, you can use exactly the same environment as we use in the enrolled course, but than running locally.
 
-    In the video below there's a tutorial on how to set up a docker container for this course. Note that you will need administrator rights, and that if you are using Windows, you need the latest version of Windows 10.
+    In the video below there's a short tutorial on how to set up a docker container for this course. Note that you will need administrator rights, and that if you are using Windows, you need the latest version of Windows 10.
 
     <iframe src="https://player.vimeo.com/video/481620477" width="640" height="360" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
@@ -49,11 +49,17 @@ Choose one of the following:
     http://localhost:8787
     ```
 
-    Copy this URL into your browser, and you will be able to use Rstudio with all required installations.
+    Copy this URL into your browser. If you used the snippet above, the credentials will be:
+    
+    - **Username:** `rstudio`
+    - **Password:** `test`
+    
+    Great! Now you will be able to use Rstudio with all required installations.
 
-    The option `-v` mounts a local directory in your computer to the directory `/home/rstudio` in the docker container ('rstudio' is the default user for Rstudio containers). In that way, you have files available both in the container and on your computer. Use this directory on your computer. Change the first path to a path on your computer that you want to use as a working directory.
+    !!! note "About the options"
+        The option `-v` mounts a local directory in your computer to the directory `/home/rstudio` in the docker container ('rstudio' is the default user for Rstudio containers). In that way, you have files available both in the container and on your computer. Use this directory on your computer. Change the first path to a path on your computer that you want to use as a working directory.
 
-    The part `geertvangeest/single-cell-rstudio:latest` is the image we are going to load into the container. The image contains all the information about software and dependencies needed for this course. When you run this command for the first time it will download the image. Once it's on your computer, it will start immediately.
+        The part `geertvangeest/single-cell-rstudio:latest` is the image we are going to load into the container. The image contains all the information about software and dependencies needed for this course. When you run this command for the first time it will download the image. Once it's on your computer, it will start immediately.
 
 === "renkulab.io"
     To simply run the environment, you can use [renku](https://renkulab.io). You can find the repository (including the image) here: [https://renkulab.io/projects/geert.vangeest/single-cell-training/](https://renkulab.io/projects/geert.vangeest/single-cell-training/). 
