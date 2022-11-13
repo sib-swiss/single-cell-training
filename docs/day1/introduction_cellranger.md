@@ -51,7 +51,7 @@ The input you need to run `cellranger count` are the sequence reads and a refere
 To be able to run cellranger in the compute environment, first run:
 
 ```sh
-export PATH=/data/cellranger-7.0.0:$PATH
+export PATH=/data/cellranger-7.0.1:$PATH
 ```
 
 Have a look at the documentation of [`cellranger count`](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/count) (scroll down to *Command-line argument reference*).
