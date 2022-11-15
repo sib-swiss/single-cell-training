@@ -1,4 +1,4 @@
-# SIB's scRNAseq course, July 2022
+# SIB's scRNAseq course
 # 8791
 # R version 4.1.2
 
@@ -24,7 +24,7 @@
 setwd("/export/scratch/twyss/SIB_scRNAseq_course/July2022/data/")
 
 # ----- Import cellranger output and generate Seurat object
-library(Seurat) # v.4.1.0
+library(Seurat) # v.4.1.1
 library(ggplot2)
 library(Matrix)
 
@@ -268,7 +268,6 @@ table(PBMMC1_so$DF.classifications_0.24_0.005_26,
 #  Singlet       0    1586
 
 # Check number of expressed genes in singlets and doublets:
-VlnPlot(PBMMC1_so, "nFeature_RNA", group.by = "DF.classifications_0.24_0.005_26")
-
+DimPlot(PBMMC1_so, group.by = "DF.classifications_0.24_0.005_26")
 
 
