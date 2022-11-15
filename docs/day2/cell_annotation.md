@@ -132,7 +132,7 @@ seu_int <- Seurat::AddModuleScore(seu_int,
                     "tcell_genes1")
     ```
 
-    Which indeed shows these genes are mainly expressed in cluster 6:
+    Which indeed shows these genes are mainly expressed in clusters 0 and 8:
 
     <figure>
       <img src="../../assets/images/violinplot_tcell_module.png" width="700"/>
