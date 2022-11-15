@@ -1,6 +1,10 @@
 
 # SIB course Single Cell Transcriptomics
 
+<figure>
+    <img src="../../assets/images/umap_nonintegrated_dim50.png" width="700"/>
+</figure>
+
 ## Teachers
 
 - Tania Wyss [:custom-orcid:](https://orcid.org/0000-0003-2641-0895)
