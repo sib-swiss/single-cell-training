@@ -2,7 +2,7 @@
 # SIB course Single Cell Transcriptomics
 
 <figure>
-    <img src="../assets/images/umap_nonintegrated_dim50.png" width="700"/>
+    <img src="assets/images/umap_nonintegrated_dim50.png" width="700"/>
 </figure>
 
 ## Teachers
