@@ -320,6 +320,9 @@ gc()
 
 ### Trajectory analysis with `monocle3`
 
+!!! warning "Not on the cloud server"
+    Currently it's not possible to use the interactive part of `monocole3` on the cloud server. Therefore, these exercises can **only be performed locally**. 
+
 This part showcases how you can use `monocle3` to perform a trajectory analysis. First load the `seu_int` dataset:
 
 ```R
