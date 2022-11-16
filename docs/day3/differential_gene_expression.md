@@ -318,9 +318,7 @@ tum_vs_norm <- Seurat::FindMarkers(proB,
 tum_vs_norm <- subset(tum_vs_norm, tum_vs_norm$p_val_adj<0.05)
 ```
 
-How many genes are significant? How does the fold change of these genes compare to the fold change of the top genes found by limma?
-
-Keep the `tum_vs_norm` object because we will use this output object for the enrichment analysis in the next section.
+**Exercise (extra):** How many genes are significant? How does the fold change of these genes compare to the fold change of the top genes found by limma?
 
 ??? done "Answer"
     ```R
@@ -333,9 +331,9 @@ Keep the `tum_vs_norm` object because we will use this output object for the enr
     
     par(mar=c(4,4,4,4))
     plot(merge_limma_FindMarkers$avg_log2FC,
-    merge_limma_FindMarkers$logFC,
-    xlab="log2FC Wilcoxon", ylab="log2FC limma",
-    pch=15, cex=0.5)
+        merge_limma_FindMarkers$logFC,
+        xlab="log2FC Wilcoxon", ylab="log2FC limma",
+        pch=15, cex=0.5)
     abline(a=0, b=1, col="red")
     ```
     Returning:
@@ -343,3 +341,6 @@ Keep the `tum_vs_norm` object because we will use this output object for the enr
     <figure>
       <img src="../../assets/images/limma_vs_wilcoxon.png" width="600"/>
     </figure>
+
+!!! warning "keep the object"
+    Keep the `tum_vs_norm` object because we will use this output object for the enrichment analysis in the next section.
