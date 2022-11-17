@@ -68,12 +68,12 @@ View(tum_vs_norm_go@result)
 !!! note "The columns `GeneRatio` and `BgRatio`"
     The columns `GeneRatio` and `BgRatio` that are in the `enrichResult` object represent the numbers that are used as input for the Fisher's exact test. 
     
-    The two numbers (M/N) in the `GeneRatio` coumn are:
+    The two numbers (M/N) in the `GeneRatio` column are:
 
     * M: Number of genes of interest (in our case `tum_down_genes`) that are in the GO set
     * N: Number of genes of interest with any GO annoation.
 
-    The two numbers (k/n) in the `BgRatio` coumn are:
+    The two numbers (k/n) in the `BgRatio` column are:
 
     * k: Number of genes in the universe that are in the GO set
     * n: Number of genes in the universe with any GO annoation
