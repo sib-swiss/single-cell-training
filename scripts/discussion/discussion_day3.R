@@ -8,7 +8,6 @@ library(dittoSeq)
 library(dplyr)
 
 # Differential gene expression
-setwd("/export/scratch/twyss/SIB_scRNAseq_course/July2022/data/")
 seu_int <- readRDS("seu_int_day2_part2.rds")
 
 # Use wilcoxon test from Seurat (make sure the default cell identity
@@ -19,8 +18,8 @@ DefaultAssay(seu_int)
 ?FindAllMarkers
 
 # this takes a while:
-# de_genes <- Seurat::FindAllMarkers(seu_int,  min.pct = 0.25,
-#                                    only.pos = TRUE)
+de_genes <- Seurat::FindAllMarkers(seu_int,  min.pct = 0.25,
+                                    only.pos = TRUE)
 head(de_genes) 
 
 # sometimes p>0.05 are included, remove non-significant genes
@@ -36,8 +35,8 @@ library(dplyr)
 # What the function does is to pass the left hand side of the operator 
 # to the first argument of the right hand side of the operator. 
 top_specific_markers <- de_genes %>% 
-  group_by(cluster) %>%
-  top_n(3, avg_log2FC) # select top 3 rows by value
+  dplyr::group_by(cluster) %>%
+  dplyr::top_n(3, avg_log2FC) # select top 3 rows by value
 
 View(top_specific_markers)
 dittoSeq::dittoDotPlot(seu_int, vars = unique(top_specific_markers$gene), 
@@ -74,10 +73,6 @@ Seurat::VlnPlot(seu_int,
 
 
 
-
-
-
-
 # Pseudo-bulk DGE analysis with limma, summing counts per cell:
 ##New script for generating pseudobulk
 ##This script follows the vignette on this page 
@@ -106,18 +101,18 @@ proB$patient.id<-sapply(strsplit(proB$patient.id, "-"), '[', 2)
 proB$sample <- factor(proB$orig.ident)
 
 ##first an sce object is needed
-sce_proB <- as.SingleCellExperiment(proB)
+sce_proB <- Seurat::as.SingleCellExperiment(proB)
 
 #The needed package has to be installed if not already done:
-if (!require("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-BiocManager::install("scuttle")
+# if (!require("BiocManager", quietly = TRUE))
+#   install.packages("BiocManager")
+# BiocManager::install("scuttle")
 
 library(scuttle)
 
 ##aggregateAcrossCells here it is only aggregated by sample, one could imagine
 ##to aggregate by sample and by celltype for instance
-summed <- aggregateAcrossCells(sce_proB, 
+summed <- scuttle::aggregateAcrossCells(sce_proB, 
                                id=colData(sce_proB)[,c("sample")])
 
 ##have a look at the counts
@@ -221,7 +216,7 @@ enrichplot::emapplot(enrichplot::pairwise_termsim(enr_go),
 
 # Test for hallmark gene set over-representation:
 ?msigdbr
-gmt <- msigdbr::msigdbr(species = "human", category = "H")
+gmt <- msigdbr::msigdbr(species = "Homo sapiens", category = "H")
 ?clusterProfiler::read.gmt
 
 tum_vs_norm_enrich <- clusterProfiler::enricher(gene = tum_down_genes,
@@ -241,14 +236,14 @@ head(gene.list)
 #    15.39674   15.33434   14.89301   14.27130   13.70183   13.39202 
 
 set.seed(1234)
-ego<-gseGO(geneList = gene.list,
+ego_1<-gseGO(geneList = gene.list,
            ont="BP",
            OrgDb = "org.Hs.eg.db",
            keyType = "SYMBOL",
            minGSSize = 60,
            eps=1e-60,
            seed=T)
-ego <- clusterProfiler::simplify(ego)
+ego <- clusterProfiler::simplify(ego_1)
 head(ego@result[,c(2:7)])
 #                                 Description setSize enrichmentScore       NES       pvalue     p.adjust
 # GO:0000280                 nuclear division     292      -0.5139084 -2.583266 3.544230e-23 4.377997e-20
@@ -260,6 +255,7 @@ head(ego@result[,c(2:7)])
 
 # barcode plot of the top GO term:
 gseaplot(ego, geneSetID = "GO:0000280", title="GO:0000280: nuclear division")
+
 
 # Trajectory analysis
 library(Seurat)
@@ -310,6 +306,9 @@ head(pca)
 # Add 2 first principal components to SCE object:
 deng_SCE$PC1 <- pca[, 1]
 deng_SCE$PC2 <- pca[, 2]
+
+# To view the meta data as a data frame:
+View(as.data.frame(colData(deng_SCE)))
 
 # PCA plot with cells colored according to developmental stage:
 ggplot(as.data.frame(colData(deng_SCE)), aes(x = PC1, y = PC2, color = cell_type2)) +
@@ -504,12 +503,12 @@ monocle3::plot_cells(seu_int_monocl,
                      cell_size = 1, 
                      show_trajectory_graph = FALSE)
 # Slightly different UMAP between Seurat and Monocle3:
-p1<-DimPlot(seu_int, group.by = "integrated_snn_res.0.3")
+p1<-DimPlot(seu_int, group.by = "integrated_snn_res.0.3", label = T)
 p2<-monocle3::plot_cells(seu_int_monocl, 
                          color_cells_by = "integrated_snn_res.0.3", 
                          cell_size = 0.7, 
                          show_trajectory_graph = FALSE,
-                         label_cell_groups = F)
+                         label_cell_groups = T)
 cowplot::plot_grid(p1,p2, ncol = 2)
 
 # plot B cell marker:
@@ -518,14 +517,15 @@ monocle3::plot_cells(seu_int_monocl, genes = "CD79A",
                      cell_size = 1)
 # Cluster cells using monocle3‘s clustering function:
 ?cluster_cells
-seu_int_monocl <- monocle3::cluster_cells(seu_int_monocl, resolution=0.00025)
+seu_int_monocl <- monocle3::cluster_cells(seu_int_monocl, resolution=0.0002)
+# monocle3::partitions(seu_int_monocl)
 monocle3::plot_cells(seu_int_monocl, label_cell_groups = F)
 
 # learn graph (i.e. identify trajectory) using monocle3 UMAP and clustering:
 seu_int_monocl <- monocle3::learn_graph(seu_int_monocl)
 monocle3::plot_cells(seu_int_monocl)
 
-# Find the CD34+ B-cell cluster in the monocle UMAP. This cluster has a high expressession of CD79A and expresses CD34.
+# Find the CD34+ B-cell cluster in the monocle UMAP. This cluster has a high expression of CD79A and expresses CD34.
 monocle3::plot_cells(seu_int_monocl, genes = c("CD79A", "CD34"),
                      show_trajectory_graph = FALSE, 
                      cell_size = 0.7, group_label_size = 4)
@@ -533,6 +533,8 @@ monocle3::plot_cells(seu_int_monocl, genes = c("CD79A", "CD34"),
 # Select the “initial” cells in the B-cell cluster to calculate pseudotime. 
 # The initial cells in this case are the CD34+ B-cells we have just identified. 
 # A pop up window will open and you need to click on the “initial” cells (one node per trajectory), then click “Done”.
+# seu_int_monocl <- monocle3::learn_graph(seu_int_monocl)
+
 seu_int_monocl<-monocle3::order_cells(seu_int_monocl)
 
 monocle3::plot_cells(seu_int_monocl,
@@ -549,7 +551,9 @@ seuB <- choose_cells(seu_int_monocl)
 class(seuB)
 
 # Check whether you have selected the right cells:
-plot_cells(seuB, show_trajectory_graph = FALSE, cell_size = 1)
+plot_cells(seuB, show_trajectory_graph = T, cell_size = 1)
+plot_cells(seuB)
+
 # Now we can use the cells in this trajectory to test which genes are affected by the trajectory:
 ?graph_test # Moran's I test
 pr_test <- graph_test(seuB, 
@@ -563,7 +567,7 @@ View(pr_test)
 # related to B-cell development 
 # (CD34, MS4A1) and immunoglobulins (IGLL1 and IGLL5). We can plot those in the UMAP:
 goi <- c("CD34", "MS4A1", "IGLL1", "IGLL5", 
-         "MKI67", "CKS2")
+          "MKI67", "CKS2")
 plot_cells(seuB, label_cell_groups=FALSE, genes = goi,
            show_trajectory_graph=FALSE, cell_size = 1)
 
