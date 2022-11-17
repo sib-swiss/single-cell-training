@@ -37,7 +37,7 @@ Seurat::DimPlot(seu, reduction = "umap")
 # Any idea where the erythrocytes probably are in the UMAP?
 Seurat::FeaturePlot(seu, features = c("HBA1", 
                                       "percent.globin", 
-                                      "IGKC", # immunoglobin kappa constant
+                                      "IGKC", # top variable gene, immunoglobin kappa constant (antibody, plasma B cells)
                                       "percent.mito"))
 
 # B. Change the number of neighbors used for the calculation of the UMAP. 
@@ -53,6 +53,8 @@ Seurat::DimPlot(seu, reduction = "umap")  + labs(title="N-neighbors=5")
 seu <- Seurat::RunUMAP(seu, dims = 1:5)
 Seurat::DimPlot(seu, reduction = "umap")
 
+# Check if your small cluster of IGKC+ cells is still well defined:
+Seurat::FeaturePlot(seu, features = "IGKC")
 seu <- Seurat::RunUMAP(seu, dims = 1:50) 
 Seurat::DimPlot(seu, reduction = "umap")
 
@@ -91,8 +93,24 @@ Seurat::DimPlot(seu_int, reduction = "umap")
 
 saveRDS(seu_int, "seu_int_day2_part1.rds")
 
+# Add a dimensional reduction to a Seurat object:
+# the coordinates of each cell in the dim red. are stored in a data.frame in the seurat object:
+head(seu_int@reductions$umap@cell.embeddings)
+
+identical(rownames(seu@reductions$umap@cell.embeddings),
+          rownames(seu_int@reductions$umap@cell.embeddings))
+
+seu_int[["umap_noInt"]] <- Seurat::CreateDimReducObject(embeddings = seu@reductions$umap@cell.embeddings, 
+                                                key = "UMAPnoInt_", assay = DefaultAssay(seu))
+names(seu_int@reductions)
+
+p1<-DimPlot(seu_int, reduction = "umap_noInt") + ggtitle("Before integration")
+p2<-DimPlot(seu_int) + ggtitle("After integration")
+cowplot::plot_grid(p1, p2, ncol = 2)
 
 # Clustering at several resolutions:
+head(seu_int@meta.data)
+
 ?FindNeighbors
 ?FindClusters
 seu_int <- Seurat::FindNeighbors(seu_int, dims = 1:25)
@@ -118,6 +136,8 @@ Seurat::DimPlot(seu_int, group.by = "integrated_snn_res.0.3")
 table(seu_int$integrated_snn_res.0.3,
       seu_int$orig.ident)
 
+seu_int<-readRDS("seu_int_day2_part2.rds")
+
 ####  Manual and automatic cell annotation:
 # Manual with addModuleScore:
 
@@ -129,6 +149,8 @@ DefaultAssay(seu_int) <- "RNA"
 # Manual annotation with marker genes:
 tcell_genes <- c("IL7R", "LTB", "TRAC", "CD3D")
 monocyte_genes <- c("CD14", "CST3", "CD68", "CTSS")
+
+# calculate a score per cell for a group of genes:
 
 Seurat::FeaturePlot(seu_int, tcell_genes, ncol=2)
 # violin plots of distribution of gene expression per cluster:
@@ -154,8 +176,29 @@ seu_int <- Seurat::AddModuleScore(seu_int,
 head(seu_int@meta.data)
 Seurat::FeaturePlot(seu_int, "tcell_genes1", ncol=2)
 Seurat::VlnPlot(seu_int,
-                features = "tcell_genes1",
+                features = tcell_genes,
                 ncol = 2) # cluster 0 and 8
+
+# Use UCell for scoring gene signatures in single cells:
+
+# remotes::install_github("carmonalab/UCell", ref="v1.3")
+# For R version 4.2:
+# BiocManager::install("UCell")
+library(UCell)
+set.seed(123)
+signatures <- list(Immune = c("PTPRC"), 
+                   Macrophage = c("CTSB", "C1QB", "LAPTM5",
+                                   "TYROBP", "PSAP", "C1QA", "HLA-DRA", "CTSD", "NPC2", "FCER1G"), 
+                   Tcell = c("CD3D","CD3E", "CD3G", "CD2"), 
+                   Bcell = c("MS4A1", "CD79A", "CD79B", "CD19", "BANK1"),
+                   Myeloid_cell = c("CD14", "LYZ", "CSF1R", "FCER1G", "SPI1", "LCK-"))
+
+seu_int <- UCell::AddModuleScore_UCell(seu_int, features = signatures, name = NULL,
+                                      ncores = 4)
+head(seu_int@meta.data)
+Seurat::FeatureScatter(seu_int, feature1 = "tcell_genes1", feature2 = "Tcell",
+                       group.by = "integrated_snn_res.0.3")
+
 
 # identify cycling cells:
 # extract the built-in genes for cell cycling:
