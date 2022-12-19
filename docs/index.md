@@ -24,7 +24,7 @@ Parts of this course are inspired by the [Broad Institute Single Cell Workshop](
 
 ## License & copyright
 
-**License:** [CC BY-SA 4.0](https://raw.githubusercontent.com/sib-swiss/single-cell-training/master/LICENCE)
+**License:** [CC BY-SA 4.0](https://github.com/sib-swiss/single-cell-training/blob/master/LICENSE.md)
 
 **Copyright:** [SIB Swiss Institute of Bioinformatics](https://www.sib.swiss/)
 
