@@ -8,7 +8,7 @@
 pkgs <- c("ggplot2", "BiocManager", "sctransform",
                    "devtools", "cowplot", "matrixStats",
                    "ggbeeswarm", "ggnewscale", "msigdbr",
-                   "Seurat", "bit64", "Matrix.utils", "scater",
+                   "Seurat", "bit64", "scater",
                    "AnnotationDbi",
                     "SingleR", "clusterProfiler", "celldex",
                     "dittoSeq", "DelayedArray",
@@ -40,5 +40,6 @@ for (pkg in basename(pkgs)) {
 }
 
 # Monocle3:
+install.packages("https://cran.r-project.org/src/contrib/Archive/Matrix.utils/Matrix.utils_0.9.8.tar.gz", type = "source", repos = NULL)
 devtools::install_github("cole-trapnell-lab/leidenbase")
 devtools::install_github("cole-trapnell-lab/monocle3")
