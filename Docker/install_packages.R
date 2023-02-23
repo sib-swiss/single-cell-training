@@ -7,7 +7,7 @@
 
 pkgs <- c("ggplot2", "BiocManager", "sctransform",
                    "devtools", "cowplot", "matrixStats",
-                   "ggbeeswarm", "ggnewscale", "msigdbr",
+                   "ggbeeswarm", "ggnewscale", "msigdbr", "ggrastr",
                    "Seurat", "bit64", "scater",
                    "AnnotationDbi",
                     "SingleR", "clusterProfiler", "celldex",
