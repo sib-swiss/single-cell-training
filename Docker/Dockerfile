@@ -17,7 +17,9 @@ libxml2-dev \
 libproj-dev \
 libudunits2-dev \
 libgdal-dev \
-tree
+tree \
+libcairo2-dev \
+libxt-dev
 
 COPY install_packages.R ./
 
