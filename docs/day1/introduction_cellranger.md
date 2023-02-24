@@ -83,14 +83,12 @@ cellranger count \
 
 ??? done "Answer"
     
-    **Note** Replace `YOURUSERNAME` with your username.
-
     ```sh
     cellranger count \
     --id=ETV6-RUNX1_1 \
     --sample=ETV6-RUNX1_1 \
     --transcriptome=/data/cellranger_index \
-    --fastqs=/home/YOURUSERNAME/single_cell_course/course_data/reads \
+    --fastqs=/home/rstudio/single_cell_course/course_data/reads \
     --localcores=4 
     ```
 
