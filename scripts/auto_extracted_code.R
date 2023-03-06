@@ -23,6 +23,8 @@
 
 
 ## Code found in: day1/analysis_tools_qc.md
+install.packages("Matrix")
+
 library(Seurat)
 
 sample_info <- read.csv("course_data/sample_info_course.csv")
