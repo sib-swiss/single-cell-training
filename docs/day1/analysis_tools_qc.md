@@ -22,6 +22,15 @@
 
 The next step after the generation of the count matrices with `cellranger count`, is the data analysis. The `R` package `Seurat` is currently the most popular software to do this. To start working with `Seurat` you can load it into your environment like this:
 
+!!! warning "re-install `Matrix` first"
+    The version of the dependency `Matrix` was not installed correctly. Run:
+
+    ```R
+    install.packages("Matrix")
+    ```
+
+    **Before** loading `Seurat`
+
 ```R
 library(Seurat)
 ```
