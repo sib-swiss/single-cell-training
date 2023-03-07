@@ -44,7 +44,7 @@ scRNA-seq with 10x genomics:
 
     This will download and extract the index in the current directory. Specify the path to this reference in the exercises accordingly. 
 
-Have a look in the directory `course_data/reads` and `reference`. In the `reads` directory you will find reads on one sample: `ETV6-RUNX1_1`. In the analysis part of the course we will work with six samples, but due to time and computational limitations we will run `cellranger count` on one of the samples, and only reads originating from chromsome 21 and 22. 
+Have a look in the directory `course_data/reads` and `/data/cellranger_index`. In the `reads` directory you will find reads on one sample: `ETV6-RUNX1_1`. In the analysis part of the course we will work with six samples, but due to time and computational limitations we will run `cellranger count` on one of the samples, and only reads originating from chromsome 21 and 22. 
 
 The input you need to run `cellranger count` are the sequence reads and a reference. Here, we have prepared a reference only with chromosome 21 and 22, but in 'real life' you would of course get the full reference genome of your species. The reference has a specific format. You can download precomputed human and mouse references from the [10X website](https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest). If your species of interest is not one of those, you will have to generate it yourself. For that, have a look [here](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/tutorial_mr).
 
