@@ -39,6 +39,9 @@ library(org.Hs.eg.db)
 AnnotationDbi::keytypes(org.Hs.eg.db)
 ```
 
+!!! info "About OrgDb"
+    For other organisms, you can find available OrgDbs at [bioconductor](http://bioconductor.org/packages/release/BiocViews.html#___OrgDbfor)
+
 Let's select a set of genes that are downregulated in the tumor cells compared to normal:
 
 ```R
