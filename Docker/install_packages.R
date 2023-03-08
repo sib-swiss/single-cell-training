@@ -16,7 +16,7 @@ pkgs <- c("ggplot2", "BiocManager", "sctransform",
                     "limma", "SingleCellExperiment",
                     "SummarizedExperiment",
                     "slingshot", "batchelor",
-                    "clustree", "edgeR")
+                    "clustree", "edgeR", "org.Hs.eg.db")
 
 ### if packages need to be installed from github:
 ### devtools::install_github("namespace/repo")
@@ -39,7 +39,10 @@ for (pkg in basename(pkgs)) {
     }
 }
 
-# Monocle3:
+# installation old Matrix.utils because it's not on CRAN
 install.packages("https://cran.r-project.org/src/contrib/Archive/Matrix.utils/Matrix.utils_0.9.8.tar.gz", type = "source", repos = NULL)
+# adding this because Matrix might be downgraded by above command
+install.packages("Matrix")
+# Monocle3:
 devtools::install_github("cole-trapnell-lab/leidenbase")
 devtools::install_github("cole-trapnell-lab/monocle3")
