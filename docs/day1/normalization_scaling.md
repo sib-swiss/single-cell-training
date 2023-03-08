@@ -101,6 +101,9 @@ Seurat::LabelPoints(plot = vf_plot,
             points = top10, repel = TRUE)
 ```
 
+!!! warning "Make sure the plotting window is large enough"
+    The function `LabelPoints` will throw an error if the plotting window is to small. If you get an error, increase plotting window size in RStudio and try again. 
+
 You can see that most of the highly variables are antibody subunits (starting with IGH, IGL). Not very surprising since we look at bone marrow tissue. We can have a look later in which cells they are expressed. 
 
 ### Scaling
