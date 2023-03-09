@@ -74,11 +74,10 @@ Seurat::VlnPlot(seu_int,
 
 
 # Pseudo-bulk DGE analysis with limma, summing counts per cell:
-##New script for generating pseudobulk
-##This script follows the vignette on this page 
-#http://bioconductor.org/books/3.14/OSCA.multisample/multi-sample-comparisons.html
-#here 591-596 lines are the same as done above
-#taking the proB data 
+# New script for generating pseudobulk
+# This script follows the vignette on this page 
+# http://bioconductor.org/books/3.14/OSCA.multisample/multi-sample-comparisons.html
+# taking the proB data 
 proB <- readRDS("course_data/proB.rds")
 
 DimPlot(proB, group.by = "orig.ident")
@@ -114,7 +113,7 @@ library(scuttle)
 ##to aggregate by sample and by celltype for instance
 summed <- scuttle::aggregateAcrossCells(sce_proB, 
                                id=colData(sce_proB)[,c("sample")])
-
+class(summed)
 ##have a look at the counts
 counts(summed)[1:3,]
 
@@ -162,7 +161,7 @@ limma::topTable(fit.contrasts, number = 10, sort.by = "P")
 limma_de <- limma::topTable(fit.contrasts, number = Inf, sort.by = "P")
 length(which(limma_de$adj.P.Val<0.05))
 
-# 
+# Compare to findMarkers:
 tum_vs_norm <- Seurat::FindMarkers(proB, 
                                    ident.1 = "ETV6-RUNX1", 
                                    ident.2 = "PBMMC", 
@@ -204,7 +203,8 @@ tum_vs_norm_go <- clusterProfiler::enrichGO(gene = tum_down_genes,
                                             OrgDb =  "org.Hs.eg.db",
                                             keyType = "SYMBOL",
                                             ont = "BP",
-                                            minGSSize = 50)
+                                            minGSSize = 50,
+                                            universe=rownames(seu_int))
 View(tum_vs_norm_go@result)
 # remove redundant gene sets:
 enr_go <- clusterProfiler::simplify(tum_vs_norm_go)
@@ -241,7 +241,7 @@ ego_1<-gseGO(geneList = gene.list,
            OrgDb = "org.Hs.eg.db",
            keyType = "SYMBOL",
            minGSSize = 60,
-           eps=1e-60,
+           eps=0,
            seed=T)
 ego <- clusterProfiler::simplify(ego_1)
 head(ego@result[,c(2:7)])
