@@ -1,0 +1,44 @@
+---
+title: "Course schedule"
+---
+
+::: {.callout-note}
+**Apart** from the **starting time** the time schedule is **indicative**. Because we can not plan a course by the minute, in practice the time points will deviate. 
+:::
+
+## Day 1
+
+| block   	| start    	| end      	| subject                        	|
+|---------	|----------	|----------	|--------------------------------	|
+| introduction 	| 9:15 AM  	| 9:30 AM 	| [Introduction](day1/day1-1_setup.qmd) |
+| block 1 	| 9:30 AM  	| 10:30 AM 	| [Introduction scRNAseq](day1/day1-1_setup.qmd) |
+|         	| 10:30 AM 	| 11:00 AM 	| BREAK                          	|
+| block 2 	| 11:00 AM 	| 12:30 PM 	| [Analysis tools and QC](day1/day1-2_analysis_tools_qc.qmd) 	     |
+|         	| 12:30 PM 	| 1:30 PM  	| BREAK                          	|
+| block 3 	| 1:30 PM  	| 3:00 PM  	| [Analysis tools and QC](day1/day1-2_analysis_tools_qc.qmd)             	 |
+|         	| 3:00 PM  	| 3:30 PM  	| BREAK                          	|
+| block 4 	| 3:30 PM  	| 5:00 PM  	| [Normalization and scaling](day1/day1-3_normalization_scaling.qmd)                  |
+
+## Day 2
+
+| block   	| start    	| end      	| subject                             	|
+|---------	|----------	|----------	|-------------------------------------	|
+| block 1 	| 9:15 AM  	| 10:30 AM 	| [Integration](day2/day2-2_integration.qmd) and [Dimensionality reduction](day2/day2-1_dimensionality_reduction.qmd)	|
+|         	| 10:30 AM 	| 11:00 AM 	| BREAK                               	|
+| block 2 	| 11:00 AM 	| 12:30 PM 	| Further exercises  |
+|         	| 12:30 PM 	| 1:30 PM  	| BREAK                               	|
+| block 3 	| 1:30 PM  	| 3:00 PM  	| [Clustering](day2/day2-3_clustering.qmd)     	|
+|         	| 3:00 PM  	| 3:30 PM  	| BREAK                               	|
+| block 4 	| 3:30 PM  	| 5:00 PM  	| [Cell annotation](day2/day2-4_cell_annotation.qmd) 	|
+
+## Day 3
+
+| block   	| start    	| end      	| subject                             	|
+|---------	|----------	|----------	|-------------------------------------	|
+| block 1 	| 9:15 AM  	| 10:30 AM 	| [Differential gene expression](day3/day3-1_differential_gene_expression.qmd)	|
+|         	| 10:30 AM 	| 11:00 AM 	| BREAK                               	|
+| block 2 	| 11:00 AM 	| 12:30 PM 	| [Enrichment analysis](day3/day3-2_enrichment_analysis.qmd)            	|
+|         	| 12:30 PM 	| 1:30 PM  	| BREAK                               	|
+| block 3 	| 1:30 PM  	| 3:00 PM  	| [Trajectory analysis](day3/day3-3_trajectory_analysis.qmd)  |
+|         	| 3:00 PM  	| 3:30 PM  	| BREAK                               	|
+| block 4 	| 3:30 PM  	| 5:00 PM  	| [Advanced analyses](day3/day3-4_advanced_analyses.qmd) 	|

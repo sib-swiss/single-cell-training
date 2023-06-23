@@ -1,0 +1,8 @@
+---
+title: "Advanced analyses"
+---
+
+
+## Material
+
+{{< downloadthis ../assets/pdf/Miscellanous.pdf dname="Miscellanous" label="Download the presentation" icon="filetype-pdf" >}}

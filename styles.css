@@ -1,0 +1,58 @@
+/* css styles */
+/* .important {
+    color: maroon;
+} */
+
+.illustration {
+    border: 1px solid rgb(230, 230, 230);
+}
+
+/* unvisited link */
+a {
+    color: #312783;
+}
+
+.nav-link {
+    color: #009ee3;
+}
+
+a:hover {
+    color: darkgrey;
+}
+
+body {
+    font-family: 'Source Sans Pro'
+}
+
+p {
+    font-family: 'Source Sans Pro'
+}
+
+.navbar-dark .navbar-brand {
+    color: white;
+    
+}
+
+.navbar-dark {
+    background-color: #ae191a;
+}
+
+
+code {
+    color: #ae191a;
+}
+
+pre code {
+    background-color: rgba(233,236,239,.65);
+    border: 1px solid rgba(233,236,239,.65);
+    border-radius: .25rem;
+}
+
+/* .navbar-dark .navbar-nav .nav-link.active {
+    color: white;
+  } */
+
+
+/* header {
+    font-family: 'Lato'
+  } */

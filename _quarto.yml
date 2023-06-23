@@ -1,0 +1,58 @@
+project:
+  type: website
+  execute-dir: project
+
+website:
+  title: "Single cell transcriptomics"
+  favicon: assets/SIB_logo.svg
+  search: true
+  page-navigation: true
+  navbar:
+    background: "#003eaa"
+    left:
+      - href: index.qmd
+        text: Home
+      - href: precourse_preparations.qmd
+      - href: course_schedule.qmd
+      - text: "day 1"
+        menu:
+          - href: "day1/day1-1_setup.qmd"
+          - href: "day1/day1-2_analysis_tools_qc.qmd"
+          - href: "day1/day1-3_normalization_scaling.qmd"
+      - text: "day 2"
+        menu: 
+          - href: "day2/day2-1_dimensionality_reduction.qmd"
+          - href: "day2/day2-2_integration.qmd"
+          - href: "day2/day2-3_clustering.qmd"
+          - href: "day2/day2-4_cell_annotation.qmd"
+      - text: "day 3"
+        menu:
+          - href: "day3/day3-1_differential_gene_expression.qmd"
+          - href: "day3/day3-2_enrichment_analysis.qmd"
+          - href: "day3/day3-3_trajectory_analysis.qmd"
+          - href: "day3/day3-4_advanced_analyses.qmd"
+          
+    right:
+      - icon: github
+        href: https://github.com/sib-swiss/single-cell-training/
+        aria-label: GitHub
+  sidebar:
+    logo: assets/SIB_LogoQ_GBv.svg
+
+format:
+  html:
+    code-link: true
+    theme: 
+      - default
+      - custom.scss
+    toc: true
+    header-includes: |
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro">
+
+execute:
+  freeze: auto 
+  cache: true
+  tidy: true
+
+
+

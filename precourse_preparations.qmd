@@ -1,0 +1,16 @@
+---
+title: "Precourse preparations"
+---
+
+
+## Required competences
+
+Participants should already have a basic knowledge in Next Generation Sequencing (NGS) techniques, or have already followed the course [NGS - Quality control, Alignment, Visualisation](https://sib-swiss.github.io/NGS-introduction-training/2021.11/). Knowledge in RNA sequencing is a plus. A basic knowledge of the R statistical software is required. Test your R skills with the quiz [here](https://docs.google.com/forms/d/e/1FAIpQLSdIyeuabd_ZOWXgI1MWHapmaOMu20L9ESkLDZiWnpmkpujyOg/viewform?usp=sf_link), before registering.
+
+## Software
+
+Attendees should have a Wi-Fi enabled computer. An **online R and RStudio environment** will be provided. However, in case you wish to perform the practical exercises on your own computer, please take a moment to install the following before the course:
+
+- [R](https://cran.r-project.org/) version > 4.0. 
+- Latest RStudio version, the [free version](https://rstudio.com/products/rstudio/download/) is perfectly fine.
+- The R packages necessary for the course. Find the script to install them [here](https://github.com/sib-swiss/single-cell-training/blob/master/Docker/install_packages.R). 
