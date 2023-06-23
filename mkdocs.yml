@@ -28,8 +28,8 @@ theme:
     - announce.dismiss
 
 # Repository
-repo_name: sib-swiss/single-cell-training
-repo_url: https://github.com/sib-swiss/single-cell-training
+repo_name: sib-swiss/single-cell-training-archived
+repo_url: https://github.com/sib-swiss/single-cell-training-archived
 
 markdown_extensions:
   - abbr
