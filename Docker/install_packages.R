@@ -5,38 +5,39 @@
 ## a vector of packages to install (edit in this section) ----------------------
 ### packages could be either on CRAN or bioconductor
 
-pkgs <- c("ggplot2", "BiocManager", "sctransform",
-                   "devtools", "cowplot", "matrixStats",
-                   "ggbeeswarm", "ggnewscale", "msigdbr", "ggrastr",
-                   "Seurat", "bit64", "scater",
-                   "AnnotationDbi",
-                    "SingleR", "clusterProfiler", "celldex",
-                    "dittoSeq", "DelayedArray",
-                    "DelayedMatrixStats",
-                    "limma", "SingleCellExperiment",
-                    "SummarizedExperiment",
-                    "slingshot", "batchelor",
-                    "clustree", "edgeR", "org.Hs.eg.db")
+pkgs <- c("ggplot2", "BiocManager", "sctransform", "dplyr",
+          "scuttle",
+          "devtools", "cowplot", "matrixStats",
+          "ggbeeswarm", "ggnewscale", "msigdbr", "ggrastr",
+          "Seurat", "bit64", "scater",
+          "AnnotationDbi",
+          "SingleR", "clusterProfiler", "celldex",
+          "dittoSeq", "DelayedArray",
+          "DelayedMatrixStats",
+          "limma", "SingleCellExperiment",
+          "SummarizedExperiment",
+          "slingshot", "batchelor",
+          "clustree", "edgeR", "org.Hs.eg.db")
 
 ### if packages need to be installed from github:
 ### devtools::install_github("namespace/repo")
 
 ## install Bioconductor --------------------------------------------------------
 if (!require("BiocManager", quietly = TRUE)) {
-    install.packages("BiocManager")
+  install.packages("BiocManager")
 }
 
 ## install and check package loading -------------------------------------------
 for (pkg in basename(pkgs)) {
-    BiocManager::install(pkg, ask = FALSE, update = FALSE)
-
-    if (! library(pkg, character.only = TRUE, logical.return = TRUE)) {
-        write(paste0("Installation of package ",
-                     pkg,
-                     " exited with non-zero exit status"),
-                     stdout())
-        quit(status = 1, save = "no")
-    }
+  BiocManager::install(pkg, ask = FALSE, update = FALSE)
+  
+  if (! library(pkg, character.only = TRUE, logical.return = TRUE)) {
+    write(paste0("Installation of package ",
+                 pkg,
+                 " exited with non-zero exit status"),
+          stdout())
+    quit(status = 1, save = "no")
+  }
 }
 
 # installation old Matrix.utils because it's not on CRAN

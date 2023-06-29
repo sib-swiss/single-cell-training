@@ -1,5 +1,4 @@
-FROM rocker/rstudio:4.2.2
-#FROM rocker/rstudio:4.0.5
+FROM rocker/rstudio:4.3.1
 
 # Script for to set up multiple users
 # COPY batch_user_creation.sh /rocker_scripts/experimental/batch_user_creation.sh
