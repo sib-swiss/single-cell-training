@@ -15,3 +15,4 @@ _freeze/
 .quarto/
 /.quarto/
 *cache*
+*_files*
