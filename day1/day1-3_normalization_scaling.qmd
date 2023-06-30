@@ -30,6 +30,17 @@ After removing unwanted cells from the dataset, the next step is to normalize th
 By default, Seurat employs a global-scaling normalization method `"LogNormalize"` that normalizes the feature expression measurements for each cell by the total expression, multiplies this by a scale factor (10,000 by default), and log-transforms the result.
 Normalized values are stored in the "RNA" assay (as item of the `@assay` slot) of the seu object.
 
+This is how you can call the function (don't run it yet! Read the exercise first):
+
+```{r}
+#| eval: false
+# Don't run it yet! Read the exercise first
+seu <- Seurat::NormalizeData(seu,
+                     normalization.method = "LogNormalize",
+                     scale.factor = 10000)
+```
+
+
 ::: {.callout-important}
 ## Exercise
 Have a look at the assay data before and after running `NormalizeData()`. Did it change?
@@ -43,55 +54,33 @@ You can extract assay data with the function `Seurat::GetAssayData`. By default,
 # Answer
 You can check out some assay data with:
 
-```R
+```{r}
 Seurat::GetAssayData(seu)[1:10,1:10]  
 ```
 Returning:
     
 ::: {.panel-tabset}
-## "Before normalization"
-
-```
-10 x 10 sparse Matrix of class "dgCMatrix"
-[[ suppressing 10 column names ‘PBMMC-1_AAACCTGCAGACGCAA-1’, ‘PBMMC-1_AAACCTGTCATCACCC-1’, ‘PBMMC-1_AAAGATGCATAAAGGT-1’ ... ]]
-                                
-RP11-34P13.7  . . . . . . . . . .
-FO538757.3    . . . . . . . . . .
-FO538757.2    1 . . . . . 2 . . .
-AP006222.2    . . . . . . . . . .
-RP4-669L17.10 . . . . . . . . . .
-RP5-857K21.4  . . . . . . . . . .
-RP11-206L10.9 . . . . . . . . . .
-LINC00115     . . . . . . . . . .
-FAM41C        . . . . . . . . . .
-RP11-54O7.1   . . . . . . . . . .
-```
-
-## "After normalization"
-
-```
-10 x 10 sparse Matrix of class "dgCMatrix"
-[[ suppressing 10 column names ‘PBMMC-1_AAACCTGCAGACGCAA-1’, ‘PBMMC-1_AAACCTGTCATCACCC-1’, ‘PBMMC-1_AAAGATGCATAAAGGT-1’ ... ]]
-                                            
-RP11-34P13.7  .        . . . . . .        . . .
-FO538757.3    .        . . . . . .        . . .
-FO538757.2    1.641892 . . . . . 1.381104 . . .
-AP006222.2    .        . . . . . .        . . .
-RP4-669L17.10 .        . . . . . .        . . .
-RP5-857K21.4  .        . . . . . .        . . .
-RP11-206L10.9 .        . . . . . .        . . .
-LINC00115     .        . . . . . .        . . .
-FAM41C        .        . . . . . .        . . .
-RP11-54O7.1   .        . . . . . .        . . .
-```
-:::
-::: 
+## Before normalization
 
 ```{r}
+#| echo: false
+Seurat::GetAssayData(seu)[1:10,1:10]  
+```
+
+## After normalization
+
+```{r}
+#| echo: false
 seu <- Seurat::NormalizeData(seu,
                      normalization.method = "LogNormalize",
                      scale.factor = 10000)
+Seurat::GetAssayData(seu)[1:10,1:10]  
 ```
+
+:::
+::: 
+
+
 
 ::: {.callout-note}
 ## Updating `seu`
