@@ -16,3 +16,4 @@ _freeze/
 /.quarto/
 *cache*
 *_files*
+/.luarc.json
