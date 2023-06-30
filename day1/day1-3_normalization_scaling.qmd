@@ -55,8 +55,10 @@ You can extract assay data with the function `Seurat::GetAssayData`. By default,
 You can check out some assay data with:
 
 ```{r}
+#| eval: false
 Seurat::GetAssayData(seu)[1:10,1:10]  
 ```
+
 Returning:
     
 ::: {.panel-tabset}
