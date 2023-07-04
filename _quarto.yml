@@ -17,7 +17,7 @@ website:
       - text: "day 1"
         menu:
           - href: "day1/day1-1_setup.qmd"
-          - href: "day1-1a_cellranger.qmd"
+          - href: "day1/day1-1a_cellranger.qmd"
           - href: "day1/day1-2_analysis_tools_qc.qmd"
           - href: "day1/day1-3_normalization_scaling.qmd"
       - text: "day 2"
