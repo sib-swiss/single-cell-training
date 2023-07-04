@@ -54,7 +54,7 @@ Seurat::FeaturePlot(seu, reduction = "pca", features = "percent.globin")
 Note that we used a different plotting function here: `FeaturePlot`. The difference between `DimPlot` and `FeaturePlot` is that the first allows you to color the points in the plot according to a grouping variable (e.g. sample) while the latter allows you to color the points according to a continuous variable (e.g. gene expression).
 ::: 
 
-::: {callout-important}
+::: {.callout-important}
 ## Exercise
 Generate a PCA plot where color is according to counts of a gene (i.e. gene expression). For example, you can take `HBA1` (alpha subunit of hemoglobin), or one of the most variable genes (e.g. `IGKC`).
 ::: 
