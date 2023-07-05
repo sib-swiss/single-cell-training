@@ -187,17 +187,11 @@ head(proB@meta.data)
 If you want to know how this pro-B cell subset is generated, have a look at the script [here](../../assets/scripts/generate_object_proB.R).
 :::
 
-Since we will start with differential gene expression, we set the default assay back to "RNA". Also, we set the default identity to the cell type:
-
-```{r}
-Seurat::DefaultAssay(proB) <- "RNA"
-Seurat::Idents(proB) <- proB$orig.ident
-```
 
 Let's have a look at the UMAP (again), coloured by celltype:
 
 ```{r}
-Seurat::DimPlot(proB)
+Seurat::DimPlot(proB, group.by = "type")
 ```
 
 Let's say we are specifically interested to test for differential gene expression between the tumor and normal samples.
