@@ -134,8 +134,7 @@ step prior to dimensional reduction techniques like PCA. The `ScaleData()` funct
 This step gives equal weight in downstream analyses, so that highly-expressed genes do not dominate. The results of this are stored in `seu$RNA@scale.data`
 
 ```{r}
-seu <- Seurat::ScaleData(seu,
-                 features = rownames(seu))
+seu <- Seurat::ScaleData(seu)
 ```
 
 
