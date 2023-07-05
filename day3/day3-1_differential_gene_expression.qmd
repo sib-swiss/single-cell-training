@@ -6,8 +6,8 @@ title: "Differential gene expression"
 
 {{< downloadthis ../assets/pdf/DGE_and_enrichment_analysis.pdf dname="DGE_and_enrichment_analysis" label="Download the presentation" icon="filetype-pdf" >}}
 
--   More information on [pseudobulk analysis](https://bioconductor.org/books/release/OSCA/multi-sample-comparisons.html#differential-expression-between-condition)
--   [Muscat](https://bioconductor.org/packages/devel/bioc/vignettes/muscat/inst/doc/analysis.html) for pseudobulk DGE.
+-   More information on [pseudobulk analysis](https://bioconductor.org/books/3.17/OSCA.multisample/multi-sample-comparisons.html)
+-   [Muscat](https://bioconductor.org/packages/release/bioc/html/muscat.html) for pseudobulk DGE.
 -   [Paper](https://www.nature.com/articles/nmeth.4612) on the robustness of different differential expression analysis methods
 
 ## Exercises
