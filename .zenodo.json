@@ -1,33 +1,35 @@
 {
-    "title": "Course material Single cell transcriptomics",
-    "keywords": [
-      "NGS",
-      "RNA-seq",
-      "Single cell",
-      "Seurat",
-      "course",
-      "training"
-    ],
-    "creators": [
-      {
-        "name": "Wyss, Tania",
-        "affiliation": "SIB Swiss Institute of Bioinformatics",
-        "orcid": "0000-0003-2641-0895"
-      },
-      {
-        "name": "Marcone, Rachel",
-        "affiliation": "SIB Swiss Institute of Bioinformatics",
-        "orcid": "0000-0002-5711-8435"
-      },
-      {
-        "name": "van Geest, Geert",
-        "affiliation": "SIB Swiss Institute of Bioinformatics",
-        "orcid": "0000-0002-1561-078X"
-      },
-      {
-        "name": "Palagi, Patricia",
-        "affiliation": "SIB Swiss Institute of Bioinformatics",
-        "orcid": "0000-0001-9062-6303"
-      }
-    ]
-  }
+  "upload_type": "lesson",
+  "title": "Course material Single cell transcriptomics",
+  "license": "cc-by-sa-4.0",
+  "keywords": [
+    "NGS",
+    "RNA-seq",
+    "Single cell",
+    "Seurat",
+    "course",
+    "training"
+  ],
+  "creators": [
+    {
+      "name": "Wyss, Tania",
+      "affiliation": "SIB Swiss Institute of Bioinformatics",
+      "orcid": "0000-0003-2641-0895"
+    },
+    {
+      "name": "Marcone, Rachel",
+      "affiliation": "SIB Swiss Institute of Bioinformatics",
+      "orcid": "0000-0002-5711-8435"
+    },
+    {
+      "name": "van Geest, Geert",
+      "affiliation": "SIB Swiss Institute of Bioinformatics",
+      "orcid": "0000-0002-1561-078X"
+    },
+    {
+      "name": "Palagi, Patricia",
+      "affiliation": "SIB Swiss Institute of Bioinformatics",
+      "orcid": "0000-0001-9062-6303"
+    }
+  ]
+}
