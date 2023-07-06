@@ -1,6 +1,6 @@
 ![build workflow](https://github.com/sib-swiss/single-cell-training/actions/workflows/docker-image.yml/badge.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/sib-swiss/single-cell-training)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6759897.svg)](https://doi.org/10.5281/zenodo.6759897)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5703106.svg)](https://doi.org/10.5281/zenodo.5703106)
 [![License: CC BY-SA 4.0](https://img.shields.io/badge/License-CC_BY--SA_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-sa/4.0/)
 
 This website is hosted at: https://sib-swiss.github.io/single-cell-training/latest/
@@ -20,34 +20,14 @@ Any contribution to this course material is highly appreciated :+1:. Please have
 
 ## How reuse this material
 
-This website is generated with [MkDocs](https://www.mkdocs.org/), with the theme [Material](https://squidfunk.github.io/mkdocs-material/).
-
-To host it locally, install MkDocs:
-```bash
-pip install mkdocs
-```
-
-and Material:
-```bash
-pip install mkdocs-material
-```
-
-Fork this repository and clone it to your local computer. Then, make the repository your current directory and type:
-
-```bash
-mkdocs serve
-```
-
-To host it locally.
-
-Check it out with your browser at [http://localhost:8000/](http://localhost:8000/).
-
-For an automatically generated github page, you can run:
+This website is generated with [quarto](https://quarto.org/). To re-build the website, download and install [Rstudio](https://posit.co/download/rstudio-desktop/) and [Quarto CLI](https://quarto.org/docs/get-started/). Also make sure you have installed the [required packages](Docker/install_packages.R). After that, clone this repository:
 
 ```sh
-mkdocs gh-deploy
+git clone https://github.com/sib-swiss/single-cell-training.git
 ```
 
-This will generate a webpage at:
+Open the project in Rstudio, and run in the terminal:
 
-https://yourname.github.io/reponame
+```R
+quarto preview
+```
