@@ -7,17 +7,18 @@ library(limma)
 library(dittoSeq)
 library(dplyr)
 
-# Differential gene expression
+### Find marker genes ("differential" gene expression)
+setwd("/export/scratch/twyss/SIB_scRNAseq_course/July2023/data/")
 seu_int <- readRDS("seu_int_day2_part2.rds")
 
 # Use wilcoxon test from Seurat (make sure the default cell identity
 # is set to what you want it to be)
 Idents(seu_int) # res 0.3 with clusters 0-12
 # make sure the Default assay is set to RNA:
-DefaultAssay(seu_int)
+DefaultAssay(seu_int)<-"RNA"
 ?FindAllMarkers
 
-# this takes a while:
+# this takes a while! Already run:
 de_genes <- Seurat::FindAllMarkers(seu_int,  min.pct = 0.25,
                                     only.pos = TRUE)
 head(de_genes) 
@@ -71,12 +72,10 @@ Seurat::VlnPlot(seu_int,
 # note on surface markers, eg CD4, which is often low at the mRNA level
 # CITE-seq for surface marker identification at the protein level
 
-
-
 # Pseudo-bulk DGE analysis with limma, summing counts per cell:
-# New script for generating pseudobulk
-# This script follows the vignette on this page 
-# http://bioconductor.org/books/3.14/OSCA.multisample/multi-sample-comparisons.html
+##New script for generating pseudobulk
+##This script follows the vignette on this page 
+# http://bioconductor.org/books/3.17/OSCA.multisample/multi-sample-comparisons.html
 # taking the proB data 
 proB <- readRDS("course_data/proB.rds")
 
@@ -85,6 +84,8 @@ DimPlot(proB, group.by = "orig.ident")
 table(proB@meta.data$type)
 # ETV6-RUNX1      PBMMC 
 #      2000       1021
+
+DimPlot(proB, group.by = "type")
 
 head(proB@meta.data)
 
@@ -114,6 +115,7 @@ library(scuttle)
 summed <- scuttle::aggregateAcrossCells(sce_proB, 
                                id=colData(sce_proB)[,c("sample")])
 class(summed)
+?SingleCellExperiment
 ##have a look at the counts
 counts(summed)[1:3,]
 
@@ -132,7 +134,7 @@ y <- y[keep,]
 ##see how many genes were kept 
 summary(keep)
 
-## Create the design matrix and include the technology as a covariate:
+## Create the design matrix and include the patient ID (or scRNAseq technology, etc) as a covariate:
 design <- model.matrix(~0 + summed$type + summed$patient.id)
 
 # Have a look
@@ -147,13 +149,23 @@ rownames(design)<-colData(summed)$sample
 contrast.mat <- limma::makeContrasts(ETV6.RUNX1 - PBMMC,
                                      levels = design)
 
-
 dge <- edgeR::calcNormFactors(y)  
 
-#Do limma
+# Run limma
+# What is voom doing?
+# Counts are transformed to log2 counts per million reads (CPM), where “per million reads” is defined based on the 
+# normalization factors we calculated with calcNormFactors().
+# A linear model is fitted to the log2 CPM for each gene, and the residuals are calculated.
+# A smoothed curve is fitted to the sqrt(residual standard deviation) by average expression (see red line in plot mean-variance trend plot).
+# The smoothed curve is used to obtain weights for each gene and sample that are passed into limma along with the log2 CPMs.
+
+?voom
 vm <- limma::voom(dge, design = design, plot = TRUE)
+?lmFit
 fit <- limma::lmFit(vm, design = design)
+?contrasts.fit
 fit.contrasts <- limma::contrasts.fit(fit, contrast.mat)
+?eBayes
 fit.contrasts <- limma::eBayes(fit.contrasts)
 
 # Show the top differentially expressed genes:
@@ -161,7 +173,7 @@ limma::topTable(fit.contrasts, number = 10, sort.by = "P")
 limma_de <- limma::topTable(fit.contrasts, number = Inf, sort.by = "P")
 length(which(limma_de$adj.P.Val<0.05))
 
-# Compare to findMarkers:
+# Already run: 
 tum_vs_norm <- Seurat::FindMarkers(proB, 
                                    ident.1 = "ETV6-RUNX1", 
                                    ident.2 = "PBMMC", 
@@ -171,15 +183,12 @@ tum_vs_norm <- subset(tum_vs_norm, tum_vs_norm$p_val_adj<0.05)
 merge_limma_FindMarkers <- merge(tum_vs_norm, limma_de, by="row.names",
                                  all.x=T)
 
-
 par(mar=c(4,4,4,4))
 plot(merge_limma_FindMarkers$avg_log2FC,
      merge_limma_FindMarkers$logFC,
      xlab="log2FC Wilcoxon", ylab="log2FC limma",
      pch=15, cex=0.5)
 abline(a=0, b=1, col="red")
-
-
 
 
 # ---- Enrichment analysis
@@ -199,14 +208,19 @@ tum_down_genes <- rownames(tum_down) # 62 genes
 
 # over-representation analysis (Fisher test) for down-reg genes:
 ?enrichGO
+# Takes a while, already run:
 tum_vs_norm_go <- clusterProfiler::enrichGO(gene = tum_down_genes,
                                             OrgDb =  "org.Hs.eg.db",
                                             keyType = "SYMBOL",
                                             ont = "BP",
-                                            minGSSize = 50,
-                                            universe=rownames(seu_int))
+                                            minGSSize = 50)
 View(tum_vs_norm_go@result)
-# remove redundant gene sets:
+class(tum_vs_norm_go@geneSets)
+head(names(tum_vs_norm_go@geneSets))
+# Check for key word in Description of GO terms:
+tum_vs_norm_go@result[grep("cell cycle", tum_vs_norm_go@result$Description),]
+
+# remove redundant gene sets (already run):
 enr_go <- clusterProfiler::simplify(tum_vs_norm_go)
 View(enr_go@result)
 
@@ -225,7 +239,7 @@ tum_vs_norm_enrich <- clusterProfiler::enricher(gene = tum_down_genes,
                                                 TERM2GENE = gmt[,c("gs_name", "gene_symbol")])
 View(tum_vs_norm_enrich@result[which(tum_vs_norm_enrich@result$p.adjust<0.05),])
 
-
+# Bonus code:
 # GSEA example using gseGO(), with t-statistic of limma output:
 # create ranked list of t-statistics:
 gene.list<-limma_de$t
@@ -236,12 +250,13 @@ head(gene.list)
 #    15.39674   15.33434   14.89301   14.27130   13.70183   13.39202 
 
 set.seed(1234)
+# Already run:
 ego_1<-gseGO(geneList = gene.list,
            ont="BP",
            OrgDb = "org.Hs.eg.db",
            keyType = "SYMBOL",
            minGSSize = 60,
-           eps=0,
+           eps=1e-60,
            seed=T)
 ego <- clusterProfiler::simplify(ego_1)
 head(ego@result[,c(2:7)])
@@ -256,8 +271,32 @@ head(ego@result[,c(2:7)])
 # barcode plot of the top GO term:
 gseaplot(ego, geneSetID = "GO:0000280", title="GO:0000280: nuclear division")
 
+# Bonus code over-representation of KEGG collection
+# Needs convertion of gene symbols to only 3 allowed keyType, eg we will use ncbi-geneid=entrezID
+?enrichKEGG
+# Use bitr to convert the gene symbols in tum_down_genes to entrezID
+tum_down_genes
 
-# Trajectory analysis
+keytypes(org.Hs.eg.db)
+# convert from= "ENSEMBL" to "SYMBOL" and "ENTREZID"
+gene_convert <- clusterProfiler::bitr(as.character(tum_down_genes), 
+                     fromType="SYMBOL", 
+                     toType=c("ENTREZID"), OrgDb="org.Hs.eg.db")
+gene_convert_universe<-clusterProfiler::bitr(as.character(rownames(proB)), 
+                                             fromType="SYMBOL", 
+                                             toType=c("ENTREZID"), OrgDb="org.Hs.eg.db")
+# Check the format of the data frame obtained after conversion:                     
+head(gene_convert)
+dim(gene_convert)
+
+tum_vs_norm_kegg<-clusterProfiler::enrichKEGG(gene = gene_convert$ENTREZID,
+                                              organism = "hsa",
+                                              keyType = "ncbi-geneid",
+                                              universe = gene_convert_universe$ENTREZID)
+View(tum_vs_norm_kegg@result)
+
+
+##### Trajectory analysis
 library(Seurat)
 library(SingleCellExperiment)
 library(scater)
@@ -279,7 +318,8 @@ library(monocle3)
 # mv deng-reads.rds\?raw\=true deng-reads.rds
 
 # Import SingleCellExperiment object:
-deng_SCE <- readRDS("deng-reads.rds")
+deng_SCE <- readRDS("course_data/deng-reads.rds")
+class(deng_SCE)
 
 # Change levels as developmental order:
 deng_SCE$cell_type2 <- factor(deng_SCE$cell_type2,
@@ -317,7 +357,7 @@ ggplot(as.data.frame(colData(deng_SCE)), aes(x = PC1, y = PC2, color = cell_type
   xlab("PC1") + ylab("PC2") + ggtitle("PC biplot")
 
 # Plot PC1 vs cell_type2.
-deng_SCE$pseudotime_PC1 <- rank(deng_SCE$PC1)  # rank cells by their PC1 score
+deng_SCE$pseudotime_PC1 <- base::rank(deng_SCE$PC1)  # rank cells by their PC1 score
 
 # Create a jitter plot of developmental stage against PC1:
 ggplot(as.data.frame(colData(deng_SCE)), aes(x = pseudotime_PC1, y = cell_type2,
@@ -330,9 +370,12 @@ ggplot(as.data.frame(colData(deng_SCE)), aes(x = pseudotime_PC1, y = cell_type2,
 # Run Slingshot 
 ?slingshot::slingshot
 sce <- slingshot::slingshot(deng_SCE, reducedDim = 'PCA')
+# Check how many curves were determined:
+SlingshotDataSet(sce)
 
-
-# custom function to plot the PCA based on a slingshot object:
+# custom function to plot the PCA based on a slingshot object, to color the cells
+# either according to a factor or to a numeric variable, with and without the slingshot
+# lines
   PCAplot_slingshot <- function(sce, draw_lines = TRUE, variable = NULL, legend = FALSE, ...){
     # set palette for factorial variables
     palf <- colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))
@@ -382,6 +425,7 @@ PCAplot_slingshot(sce, variable = sce$slingPseudotime_1, draw_lines = TRUE)
   ggtitle("Cells ordered by Slingshot pseudotime")
 
   
+# Slingshot will use the centroid of the clusters   
 # Generate unsupervised clustering of the cells using seurat: 
 gcdata <- Seurat::CreateSeuratObject(counts = SingleCellExperiment::counts(deng_SCE),
                                          project = "slingshot")
@@ -408,14 +452,15 @@ gcdata <- Seurat::FindNeighbors(gcdata,
 # clustering with resolution of 0.6
 gcdata <- Seurat::FindClusters(object = gcdata,
                                  resolution = 0.6)
+View(gcdata@meta.data) # zygote = cluster 2
   
 # Now we can add these clusters to the SCE object and re-run slingshot providing cluster labels :
 deng_SCE$Seurat_clusters <- as.character(Idents(gcdata))  # go from factor to character
-  
+
 sce <- slingshot::slingshot(deng_SCE,
                               clusterLabels = 'Seurat_clusters',
                               reducedDim = 'PCA',
-                              start.clus = "2")
+                              start.clus = "2") # zygote
   
 # Check how the slingshot object has evolved, it now contains 2 curves:
 SlingshotDataSet(sce)
@@ -423,7 +468,7 @@ SlingshotDataSet(sce)
 # Plot PC1 versus PC2 colored by slingshot pseudotime:
 PCAplot_slingshot(sce, variable = sce$slingPseudotime_2)
   
-# Plot Slingshot pseudotime vs cell stage.
+# Plot Slingshot pseudotime 1 or 2 vs cell stage.
 ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
                     slingPseudotime_1 = sce$slingPseudotime_1),
          aes(x = slingPseudotime_1, y = cell_type2,
@@ -431,7 +476,7 @@ ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
     ggbeeswarm::geom_quasirandom(groupOnX = FALSE) +
     theme_classic() +
     xlab("Slingshot pseudotime") + ylab("Timepoint") +
-    ggtitle("Cells ordered by Slingshot pseudotime")
+    ggtitle("Cells ordered by Slingshot pseudotime 1")
   
 ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
                     slingPseudotime_2 = sce$slingPseudotime_2),
@@ -440,7 +485,7 @@ ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
     ggbeeswarm::geom_quasirandom(groupOnX = FALSE) +
     theme_classic() +
     xlab("Slingshot pseudotime") + ylab("Timepoint") +
-    ggtitle("Cells ordered by Slingshot pseudotime")
+    ggtitle("Cells ordered by Slingshot pseudotime 2")
   
 #  Particularly the later stages, separation seems to improve. Since we have included the Seurat clustering, we can plot the PCA, with colors according to these clusters:
 PCAplot_slingshot(sce,
@@ -459,7 +504,8 @@ PCAplot_slingshot(sce,
 sce <- slingshot::slingshot(deng_SCE,
                             clusterLabels = 'Seurat_clusters',
                             reducedDim = 'PCA',
-                            end.clus = c("0", "3", "5")) ## check which would be the best according to bio
+                            end.clus = c("0", "3", "5")) ## late blastula clusters, 
+                              # check which would be the best cluster according to biology knowledge
 
 # PCA plot with curves ending at 3 clusters:
 PCAplot_slingshot(sce,
@@ -467,6 +513,7 @@ PCAplot_slingshot(sce,
                   type = 'lineages',
                   col = 'black',
                   legend = F)
+
 
 
 # ---- Trajectory with Monocle3 
@@ -482,6 +529,7 @@ feature_names <- as.data.frame(rownames(seu_tmp))
 rownames(feature_names) <- rownames(seu_tmp)
 colnames(feature_names) <- "gene_short_name"
 
+# already ran: (takes a while)
 seu_int_monocl <- monocle3::new_cell_data_set(seu_tmp@assays$RNA@counts,
                                               cell_metadata = seu_int@meta.data,
                                               gene_metadata = feature_names)
@@ -514,10 +562,14 @@ cowplot::plot_grid(p1,p2, ncol = 2)
 # plot B cell marker:
 monocle3::plot_cells(seu_int_monocl, genes = "CD79A", 
                      show_trajectory_graph = FALSE, 
-                     cell_size = 1)
+                     cell_size = 1, norm_method = "log")
 # Cluster cells using monocle3‘s clustering function:
 ?cluster_cells
-seu_int_monocl <- monocle3::cluster_cells(seu_int_monocl, resolution=0.0002)
+# seu_int_monocl <- monocle3::cluster_cells(seu_int_monocl, cluster_method = "leiden", resolution=0.0002)
+# Error in leidenbase::leiden_find_partition(graph_result[["g"]], partition_type = partition_type,  : 
+# REAL() can only be applied to a 'numeric', not a 'NULL'
+seu_int_monocl <- monocle3::cluster_cells(seu_int_monocl, cluster_method = "louvain")
+
 # monocle3::partitions(seu_int_monocl)
 monocle3::plot_cells(seu_int_monocl, label_cell_groups = F)
 
@@ -555,7 +607,8 @@ plot_cells(seuB, show_trajectory_graph = T, cell_size = 1)
 plot_cells(seuB)
 
 # Now we can use the cells in this trajectory to test which genes are affected by the trajectory:
-?graph_test # Moran's I test
+?graph_test # Moran's I test, to test for spatial autocorrelation
+# already ran:
 pr_test <- graph_test(seuB, 
                       cores=4, 
                       neighbor_graph = "principal_graph")
