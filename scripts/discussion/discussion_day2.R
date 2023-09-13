@@ -1,5 +1,7 @@
 # ------ Day 2
 
+setwd("/export/scratch/twyss/SIB_scRNAseq_course/July2023/data/")
+
 # Import seurat object, already filtered, normalized, scaled.
 library(Seurat)
 
@@ -40,36 +42,30 @@ Seurat::FeaturePlot(seu, features = c("HBA1",
                                       "IGKC", # top variable gene, immunoglobin kappa constant (antibody, plasma B cells)
                                       "percent.mito"))
 
+FeaturePlot(seu,features=c("HBA1","percent.globin"),blend=TRUE)
+
 # B. Change the number of neighbors used for the calculation of the UMAP. 
 # Which is the parameter to change and how did it affect the output.
 # What is the default ? In which situation would you lower/increase this ?
 ?RunUMAP
 seu <- Seurat::RunUMAP(seu, dims = 1:25, n.neighbors = 5)
+library(ggplot2)
 Seurat::DimPlot(seu, reduction = "umap")  + labs(title="N-neighbors=5")
 
 # C. The number of dims to extremes dims = 1:5 or dims = 1:50 how did it affect the output ?
 # In your opinion better few PCAs too much or too few ? Why does dims = 1:100 not work? 
 # When would more precision be needed?
 seu <- Seurat::RunUMAP(seu, dims = 1:5)
-Seurat::DimPlot(seu, reduction = "umap") + labs(title="5 PCs")
+Seurat::DimPlot(seu, reduction = "umap")
 
 # Check if your small cluster of IGKC+ cells is still well defined:
 Seurat::FeaturePlot(seu, features = "IGKC")
 seu <- Seurat::RunUMAP(seu, dims = 1:50) 
-Seurat::DimPlot(seu, reduction = "umap") + labs(title="50 PCs")
-
-# What is the PC with the highest loading for IGKC?
-sort(abs(seu@reductions$pca@feature.loadings["IGKC",]), decreasing = T)
+Seurat::DimPlot(seu, reduction = "umap")
 
 # Go back to a UMAP with 30 neighbors and 25 dims
 seu <- Seurat::RunUMAP(seu, dims = 1:25)
-
-# To customize the colors and size of the dots in the UMAP:
-p1<- DimPlot(seu, group.by="orig.ident", cols=c("red", "chartreuse4", "cornflowerblue"))
-p2<- DimPlot(seu, group.by="orig.ident", 
-        cols=alpha(c("red", "chartreuse4", "cornflowerblue"),0.1),
-        pt.size=2) # + labs(title="Sample ID")
-cowplot::plot_grid(p1, p2, nrow = 1)
+Seurat::DimPlot(seu, reduction = "umap")
 
 # Integration: only if necessary (visual separation of samples on UMAP):
 Seurat::DimPlot(seu, reduction = "umap")
@@ -103,11 +99,9 @@ Seurat::DimPlot(seu_int, reduction = "umap")
 saveRDS(seu_int, "seu_int_day2_part1.rds")
 
 # Add a dimensional reduction to a Seurat object:
-# the coordinates of each cell in the dim. red. are stored in a data.frame in the seurat object:
+# the coordinates of each cell in the dim red. are stored in a data.frame in the seurat object:
 head(seu_int@reductions$umap@cell.embeddings)
 
-# The rownames of the UMAP coordinate data frame have to be the same and in the same order as in the 
-# Seurat object to which you want to add the dim. red. coordinates, check with:
 identical(rownames(seu@reductions$umap@cell.embeddings),
           rownames(seu_int@reductions$umap@cell.embeddings))
 
@@ -121,9 +115,8 @@ cowplot::plot_grid(p1, p2, ncol = 2)
 
 # Clustering at several resolutions:
 head(seu_int@meta.data)
-DefaultAssay(seu_int)
 
-?FindNeighbors # k.param=20, number of neighbors selected
+?FindNeighbors
 ?FindClusters
 seu_int <- Seurat::FindNeighbors(seu_int, dims = 1:25)
 seu_int <- Seurat::FindClusters(seu_int, resolution = seq(0.1, 0.8, by=0.1))
@@ -131,6 +124,11 @@ seu_int <- Seurat::FindClusters(seu_int, resolution = seq(0.1, 0.8, by=0.1))
 # Cluster ID of each cell is added to meta.data with the last
 # resolution used as default ID:
 head(seu_int@meta.data)
+head(Idents(seu_int))
+Idents(seu_int) <- "orig.ident"
+DimPlot(seu_int)
+
+DimPlot(seu_int,group.by="orig.ident")
 
 # subdivision of clusters:
 library(clustree)
@@ -148,13 +146,13 @@ Seurat::DimPlot(seu_int, group.by = "integrated_snn_res.0.3")
 table(seu_int$integrated_snn_res.0.3,
       seu_int$orig.ident)
 
-seu_int<-saveRDS(seu_int, "seu_int_day2_part2.rds")
+seu_int<-readRDS("seu_int_day2_part2.rds")
 
 ####  Manual and automatic cell annotation:
 # Manual with addModuleScore:
-seu_int<-readRDS("seu_int_day2_part2.rds")
 
 # Keep res 0.3 as the default cell ID:  
+Idents(seu_int)<-"integrated_snn_res.0.3"
 seu_int <- Seurat::SetIdent(seu_int, value = seu_int$integrated_snn_res.0.3)
 # go back to RNA assay as default:
 DefaultAssay(seu_int) <- "RNA"
@@ -176,6 +174,12 @@ Seurat::VlnPlot(seu_int,
                 group.by = "integrated_snn_res.0.1",
                 ncol = 2)
 
+Seurat::VlnPlot(seu_int,
+                features = tcell_genes,
+                group.by = "integrated_snn_res.0.1",
+                split.by="orig.ident",
+                ncol = 2)
+
 # Monocyte genes:
 Seurat::FeaturePlot(seu_int, monocyte_genes, ncol=2)
 Seurat::VlnPlot(seu_int,
@@ -189,7 +193,7 @@ seu_int <- Seurat::AddModuleScore(seu_int,
 head(seu_int@meta.data)
 Seurat::FeaturePlot(seu_int, "tcell_genes1", ncol=2)
 Seurat::VlnPlot(seu_int,
-                features = "tcell_genes1",
+                features = tcell_genes,
                 ncol = 2) # cluster 0 and 8
 
 # Use UCell for scoring gene signatures in single cells:
@@ -199,9 +203,6 @@ Seurat::VlnPlot(seu_int,
 # BiocManager::install("UCell")
 library(UCell)
 set.seed(123)
-# Requires the default assay to be "RNA":
-DefaultAssay(seu_int)<-"RNA"
-
 signatures <- list(Immune = c("PTPRC"), 
                    Macrophage = c("CTSB", "C1QB", "LAPTM5",
                                    "TYROBP", "PSAP", "C1QA", "HLA-DRA", "CTSD", "NPC2", "FCER1G"), 
@@ -221,12 +222,12 @@ Seurat::FeatureScatter(seu_int, feature1 = "tcell_genes1", feature2 = "Tcell",
 
 s.genes <- Seurat::cc.genes.updated.2019$s.genes
 g2m.genes <- Seurat::cc.genes.updated.2019$g2m.genes
+
 # add cycling state to meta.data:
 seu_int <- Seurat::CellCycleScoring(seu_int,
                                     s.features = s.genes,
                                     g2m.features = g2m.genes)
 
-head(seu_int@meta.data)
 Seurat::DimPlot(seu_int, group.by = "Phase")
 
 # Automatic annotation using reference gene expression profiles (with SingleR)
@@ -297,3 +298,6 @@ saveRDS(seu_int, "seu_int_day2_part2.rds")
 rm(list = ls())
 gc()
 .rs.restartR()
+
+
+

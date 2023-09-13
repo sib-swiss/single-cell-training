@@ -1,6 +1,6 @@
 # SIB's scRNAseq course
 # 8791
-# R version 4.2.2
+# R version 4.3.1
 
 # Correction of exercises
 
@@ -10,26 +10,24 @@
 # to generate filtered feature matrix counts
 # used own docker container for demo (twyss.cellranger_5.0_orca2)
 # (on Terminal)
-# export PATH=/data/cellranger-7.1.0:$PATH
 # cellranger count --help
 
 # cellranger count \
-#  --id=ETV6-RUNX1_1 \
-#  --sample=ETV6-RUNX1_1 \
-#  --transcriptome=/data/cellranger_index \
-#  --fastqs=/home/YOURUSERNAME/course_data/reads \
-#  --localcores=4 
- 
+# --id=ETV6-RUNX1_1 \
+# --sample=ETV6-RUNX1_1 \
+# --transcriptome=/data/cellranger_index \
+# --fastqs=/home/YOURUSERNAME/single_cell_course/course_data/reads \
+# --localcores=4 
 
 
 #### Analysis within R (R console)
-# setwd("/export/scratch/twyss/SIB_scRNAseq_course/March2023/data/")
+setwd("/export/scratch/twyss/SIB_scRNAseq_course/July2023/data/")
 
 # ----- Import cellranger output and generate Seurat object
-library(Seurat) # v.4.3.0
+library(Seurat) # v.4.1.1
 library(ggplot2)
-library(Matrix) # need v.1.5.3
- 
+library(Matrix)
+
 # import Sample info and path to cellranger output for each sample:
 ?Read10X
 
@@ -64,9 +62,9 @@ sparse_matrix[c("PECAM1", "CD8A", "TSPAN1"), 1:30]
 # cells with at least 100 genes:
 seu <- Seurat::CreateSeuratObject(counts = sparse_matrix,
                                   project = "pbmmc",
-                                  min.cells = 3, # or min.cells = 0 if all genes must be kept
+                                  min.cells = 3,
                                   min.features = 100)
-seu # filtered genes and all cells included
+seu # all genes and all cells included, no filtering done
 # 18673 features across 6946 samples within 1 assay 
 
 # Checking the structure of the object:
@@ -76,7 +74,7 @@ table(seu@active.ident)
 head(seu@meta.data)
 class(seu@meta.data)
 
-# Variables stored in the columns of the meta.data can be used as the variables
+# Variables stored in the columns of the meta.data can be used as normal variables
 # in a data frame, to plot, etc
 # Access meta.data variables either using $ or @meta.data$
 hist(seu$nCount_RNA, 
@@ -97,7 +95,6 @@ Seurat::FeatureScatter(seu, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
 # available in meta.data)
 Seurat::VlnPlot(seu, features = c("nCount_RNA",
                                   "nFeature_RNA"))
-?Seurat::PercentageFeatureSet
 # check for ribosomal, mitochondrial and hemoglobin genes:
 # mitochondrial genes
 seu <- Seurat::PercentageFeatureSet(seu, 
@@ -240,7 +237,6 @@ PBMMC1_so<-seurat_functions(Read10X("course_data/count_matrices/PBMMC_1/outs/fil
 # PBMMC2_so<-seurat_functions(Read10X("course_data/count_matrices/PBMMC_2/outs/filtered_feature_bc_matrix/"))
 # ...
 
-# Indicate expected % of doublets:
 # https://kb.10xgenomics.com/hc/en-us/articles/360001378811-What-is-the-maximum-number-of-cells-that-can-be-profiled-
 percent.doublet<-0.016
 
@@ -271,5 +267,7 @@ table(PBMMC1_so$DF.classifications_0.24_0.005_26,
 #  Doublet      21      5
 #  Singlet       0    1586
 
-# Check where the doublets are located in the 2D representation :
+# Check number of expressed genes in singlets and doublets:
 DimPlot(PBMMC1_so, group.by = "DF.classifications_0.24_0.005_26")
+
+
