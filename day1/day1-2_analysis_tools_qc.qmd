@@ -22,6 +22,8 @@ title: "Analysis tools and QC"
 
 {{< downloadthis ../assets/pdf/analysis_tools_qc.pdf dname="analysis_tools_qc" label="Download the presentation" icon="filetype-pdf" >}}
 
+{{< video https://youtu.be/YT7xeHVnTw4?si=YkNt4QOpgqMrLulb >}}
+
 ## Exercises
 
 ### Loading scRNAseq data

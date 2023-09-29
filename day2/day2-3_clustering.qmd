@@ -6,6 +6,8 @@ title: "Clustering"
 
 {{< downloadthis ../assets/pdf/scRNAseq_clustering_RM.pdf dname="scRNAseq_clustering_RM" label="Download the presentation" icon="filetype-pdf" >}}
 
+{{< video https://youtu.be/kqcvqqZp3Jo?si=T1lHw0z-4wv6BvF- >}}
+
 - Evaluation of [clustering methods](https://f1000research.com/articles/7-1141)
 
 ## Exercises

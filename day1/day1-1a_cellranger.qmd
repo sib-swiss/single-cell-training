@@ -20,7 +20,11 @@ Introduction to scRNA-seq and techniques:
 
 {{< downloadthis ../assets/pdf/introduction_scRNAseq.pdf dname="introduction_scRNAseq" label="Download the presentation" icon="filetype-pdf" >}}
 
+{{< video https://youtu.be/_ND6pEsf5Kg?si=BXzovujSUkWJ7x4h >}}
+
 {{< downloadthis ../assets/pdf/10x_genomics_single_cell.pdf dname="10x_genomics_single_cell" label="Download the presentation" icon="filetype-pdf" >}}
+
+{{< video https://youtu.be/bP780yNt4XA?si=TOMg9O7NWF3UFG72 >}}
 
 - Single cell introductory [video on iBiology](https://www.youtube.com/watch?v=k9VFNLLQP8c)
 - Seurat [website](https://satijalab.org/seurat/)
@@ -31,7 +35,7 @@ Introduction to scRNA-seq and techniques:
 - [Review](https://www.nature.com/articles/s41596-020-00409-w?proof=t) by Tallulah Andrews
 - [Paper](https://www.biorxiv.org/content/10.1101/749473v3.full) on correlation between mRNA and protein level in single cells
 
-### Running `cellranger count`
+## Running `cellranger count`
 
 ::: {.callout-note}
 ## If working independently

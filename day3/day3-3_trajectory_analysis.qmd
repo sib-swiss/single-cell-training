@@ -7,6 +7,8 @@ title: "Trajectory analysis"
 
 {{< downloadthis ../assets/pdf/Trajectories.pdf dname="Trajectories" label="Download the presentation" icon="filetype-pdf" >}}
 
+{{< video https://youtu.be/FNrjzFUMOzU?si=G-ETBiHkkMe6eWfQ >}}
+
 - `slingshot` [vignette](https://www.bioconductor.org/packages/release/bioc/vignettes/slingshot/inst/doc/vignette.html)
 - [`monocle3`](https://cole-trapnell-lab.github.io/monocle3/)
 

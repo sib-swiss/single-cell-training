@@ -7,6 +7,8 @@ title: "Cell annotation"
 
 {{< downloadthis ../assets/pdf/cell_type_annotation.pdf dname="cell_type_annotation" label="Download the presentation" icon="filetype-pdf" >}}
 
+{{< video https://youtu.be/dNO7W7qkKBM?si=xkLBHjT8V25AEzIx >}}
+
 - [Review on automated cell annotation](https://www.sciencedirect.com/science/article/pii/S2001037021000192)
 
 ## Exercises
