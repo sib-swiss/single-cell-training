@@ -257,7 +257,8 @@ Now we can plot the distribution of these percentages in a violin plot:
 ```{r}
 Seurat::VlnPlot(seu, features = c("percent.mito",
                                   "percent.ribo",
-                                  "percent.globin"))
+                                  "percent.globin"),
+                layer = "counts")
 ```
 
 You can see that `PBMMC-2` is quite different from the two others, it has a group of cells with very low ribosomal counts and one with very high globin counts. Maybe these two percentages are negatively correlated? Let's have a look, by plotting the two percentages against each other:
@@ -338,7 +339,8 @@ To evaluate this did the trick we can visualize those parameters again in a viol
 
 ```{r}
 Seurat::VlnPlot(seu, features = c("nFeature_RNA",
-                                  "percent.mito"))
+                                  "percent.mito"),
+                layer = "counts")
 ```
 
 ```{r}
