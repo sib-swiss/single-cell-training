@@ -201,7 +201,8 @@ While generating the `Seurat` object, there were already some quality measures c
 
 ```{r}
 Seurat::VlnPlot(seu, features = c("nCount_RNA",
-                                  "nFeature_RNA"))
+                                  "nFeature_RNA"),
+                layer = "counts")
 ```
 
 You can see that there is quite a wide range for both. A cell with low number of detected features or counts might not give you a lot of information, while a high number of detected features/counts might point to doublets.
@@ -288,7 +289,7 @@ library(Seurat)
 most_expressed_boxplot <- function(object, ngenes = 20){
   
   # matrix of raw counts
-  cts <- Seurat::GetAssayData(object, assay = "RNA", slot = "counts")
+  cts <- Seurat::GetAssayData(object, assay = "RNA", layer = "counts")
   
   # get percentage/cell
   cts <- t(cts)/colSums(cts)*100
