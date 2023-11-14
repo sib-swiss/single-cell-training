@@ -43,14 +43,14 @@ To view how clusters sub-divide at increasing resolution:
 
 ```{r}
 library(clustree)
-clustree::clustree(seu@meta.data[,grep("integrated_snn_res", colnames(seu@meta.data))],
-                   prefix = "integrated_snn_res.")
+clustree::clustree(seu@meta.data[,grep("RNA_snn_res", colnames(seu@meta.data))],
+                   prefix = "RNA_snn_res.")
 ```
 
 You can view the UMAP coloring each cell according to a cluster id like this:
 
 ```{r}
-Seurat::DimPlot(seu, group.by = "integrated_snn_res.0.1")
+Seurat::DimPlot(seu, group.by = "RNA_snn_res.0.1")
 ```
 
 ::: {.callout-important}
@@ -63,7 +63,7 @@ Visualise clustering based on a few more resolutions. Taking the clustering and 
 Of course, there is no 'optimal' resolution, but based on resolution of 0.3, the tree stays relatively stable for a few resolution steps, and it seems that clustering fits the UMAP well:
 
 ```{r}
-Seurat::DimPlot(seu, group.by = "integrated_snn_res.0.3")
+Seurat::DimPlot(seu, group.by = "RNA_snn_res.0.3")
 ```
 :::
 

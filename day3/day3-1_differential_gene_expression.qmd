@@ -67,7 +67,7 @@ And generate e.g. a dotplot:
 ```{r}
 dittoSeq::dittoDotPlot(seu,
                        vars = unique(top_specific_markers$gene), 
-                       group.by = "integrated_snn_res.0.3")
+                       group.by = "RNA_snn_res.0.3")
 ```
 
 ::: callout-important

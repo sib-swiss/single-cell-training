@@ -11,7 +11,7 @@ title: "Integration"
 ```{r}
 #| echo: false
 seu <- readRDS("seu_day2-1.rds")
-library(Seurat)
+suppressPackageStartupMessages({library(Seurat)}) 
 ```
 
 Let's have a look at the UMAP again. Although cells of different samples are shared amongst 'clusters', you can still see seperation within the clusters:

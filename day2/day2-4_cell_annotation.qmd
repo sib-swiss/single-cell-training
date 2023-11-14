@@ -31,7 +31,7 @@ library(SingleR)
 In the last exercise we saw that probably clustering at a resolution of 0.3 gave the most sensible results. Let's therefore set the default identity of each cell based on this clustering:
 
 ```{r}
-seu <- Seurat::SetIdent(seu, value = seu$integrated_snn_res.0.3)
+seu <- Seurat::SetIdent(seu, value = seu$RNA_snn_res.0.3)
 ```
 
 ::: {.callout-note}
@@ -245,7 +245,7 @@ Compare our manual annotation (based on the set of T cell genes) to the annotati
 :::
 
 ::: {.callout-hint}
-You can for example use the plotting function `dittoBarPlot` to visualize the cell types according to cluster (use `integrated_snn_res.0.3` in stead of `orig.ident`))
+You can for example use the plotting function `dittoBarPlot` to visualize the cell types according to cluster (use `RNA_snn_res.0.3` in stead of `orig.ident`))
 :::
 
 ::: {.callout-tip collapse="true"}
@@ -255,7 +255,7 @@ We can have a look at the mean module score for each `SingleR` annotation like t
 ```{r}
 dittoSeq::dittoBarPlot(seu, 
                        var = "SingleR_annot", 
-                       group.by = "integrated_snn_res.0.3")
+                       group.by = "RNA_snn_res.0.3")
 ```
 
 Here, you can see that cluster 0 and 8 contain cells annotated as T cells (CD4+ and CD8+).

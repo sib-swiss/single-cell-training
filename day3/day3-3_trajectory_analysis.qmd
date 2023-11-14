@@ -392,7 +392,7 @@ Plot the `monocle3` UMAP coloring cells according to the cluster ID ran with `Se
 ```{r}
 #| eval: false
 monocle3::plot_cells(seu_monocl, 
-                     color_cells_by = "integrated_snn_res.0.3", 
+                     color_cells_by = "RNA_snn_res.0.3", 
                      cell_size = 1, 
                      show_trajectory_graph = FALSE)
 
