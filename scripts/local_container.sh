@@ -3,4 +3,4 @@ docker run \
 --name rstudio_admin \
 -e PASSWORD=test123 \
 -v $PWD:/home/rstudio \
-geertvangeest/single-cell-rstudio:2022.2
+geertvangeest/single-cell-rstudio:2023.11

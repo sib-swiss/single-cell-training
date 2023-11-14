@@ -18,3 +18,4 @@ _freeze/
 *_files*
 /.luarc.json
 ~$*
+.sh_history

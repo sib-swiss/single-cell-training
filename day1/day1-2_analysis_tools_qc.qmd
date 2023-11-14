@@ -1,5 +1,7 @@
 ---
 title: "Analysis tools and QC"
+project:
+  execute-dir: project
 ---
 
 ::: {.callout-note}
