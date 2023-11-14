@@ -12,48 +12,45 @@ title: "Clustering"
 
 ## Exercises
 
-Load the `seu_int` dataset you have created earlier today:
+Load the `seu` dataset you have created earlier today:
 
 ```{r}
-seu_int <- readRDS("seu_day2-2.rds")
+seu <- readRDS("seu_day2-2.rds")
 ```
 
 The method implemented in Seurat first constructs a SNN graph based on the euclidean distance in PCA space, and refine the edge weights between any two cells based on the shared overlap in their local neighborhoods (Jaccard similarity). This step is performed using the `FindNeighbors()` function, and takes as input the previously defined dimensionality of the dataset.
 
-::: {.callout-note}
-We use the integrated object (`seu_int`) and the assay `integrated`. Unsure? Check `DefaultAssay(seu_int)`, and set it by `DefaultAssay(seu_int) <- "integrated"`. 
-:::
 
 ```{r}
 #| output: false
-seu_int <- Seurat::FindNeighbors(seu_int, dims = 1:25)
+seu <- Seurat::FindNeighbors(seu, dims = 1:25, reduction = "integrated.cca")
 ```
 
 To cluster the cells, Seurat next implements modularity optimization techniques such as the Louvain algorithm (default) or SLM [SLM, Blondel et al., Journal of Statistical Mechanics], to iteratively group cells together, with the goal of optimizing the standard modularity function. The `FindClusters()` function implements this procedure, and contains a resolution parameter that sets the ‘granularity’ of the downstream clustering, with increased values leading to a greater number of clusters.
 
 ```{r}
 #| output: false
-seu_int <- Seurat::FindClusters(seu_int, resolution = seq(0.1, 0.8, by=0.1))
+seu <- Seurat::FindClusters(seu, resolution = seq(0.1, 0.8, by=0.1))
 ```
 
 Cluster id of each cell is added to the metadata object, as a new column for each resolution tested:
 
 ```{r}
-head(seu_int@meta.data)
+head(seu@meta.data)
 ```
 
 To view how clusters sub-divide at increasing resolution:
 
 ```{r}
 library(clustree)
-clustree::clustree(seu_int@meta.data[,grep("integrated_snn_res", colnames(seu_int@meta.data))],
+clustree::clustree(seu@meta.data[,grep("integrated_snn_res", colnames(seu@meta.data))],
                    prefix = "integrated_snn_res.")
 ```
 
 You can view the UMAP coloring each cell according to a cluster id like this:
 
 ```{r}
-Seurat::DimPlot(seu_int, group.by = "integrated_snn_res.0.1")
+Seurat::DimPlot(seu, group.by = "integrated_snn_res.0.1")
 ```
 
 ::: {.callout-important}
@@ -66,7 +63,7 @@ Visualise clustering based on a few more resolutions. Taking the clustering and 
 Of course, there is no 'optimal' resolution, but based on resolution of 0.3, the tree stays relatively stable for a few resolution steps, and it seems that clustering fits the UMAP well:
 
 ```{r}
-Seurat::DimPlot(seu_int, group.by = "integrated_snn_res.0.3")
+Seurat::DimPlot(seu, group.by = "integrated_snn_res.0.3")
 ```
 :::
 
@@ -85,6 +82,6 @@ The method can be changed with algorithm = 2,3 or 4
 ```{r}
 #| echo: false
 
-saveRDS(seu_int, "seu_day2-3.rds")
+saveRDS(seu, "seu_day2-3.rds")
 ```
 
