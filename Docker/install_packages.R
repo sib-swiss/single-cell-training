@@ -47,3 +47,5 @@ install.packages("Matrix")
 # Monocle3:
 devtools::install_github("cole-trapnell-lab/leidenbase")
 devtools::install_github("cole-trapnell-lab/monocle3")
+# Presto for fast wicoxon rank sum test:
+remotes::install_github("immunogenomics/presto")
