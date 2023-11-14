@@ -19,3 +19,6 @@ _freeze/
 /.luarc.json
 ~$*
 .sh_history
+.wget-hsts
+de_genes_FindAllMarkers.csv
+
