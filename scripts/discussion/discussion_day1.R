@@ -1,6 +1,6 @@
 # SIB's scRNAseq course
-# 8791
-# R version 4.3.1
+# 8722
+# R version 4.3.2
 
 # Correction of exercises
 
@@ -8,23 +8,26 @@
 
 # First step: cellranger count
 # to generate filtered feature matrix counts
-# used own docker container for demo (twyss.cellranger_5.0_orca2)
-# (on Terminal)
+# (Use Terminal !)
 # cellranger count --help
+
+# --id = output folder name (user defined)
+# --sample = Prefix of the filenames of FASTQs to select
+
 
 # cellranger count \
 # --id=ETV6-RUNX1_1 \
 # --sample=ETV6-RUNX1_1 \
 # --transcriptome=/data/cellranger_index \
-# --fastqs=/home/YOURUSERNAME/single_cell_course/course_data/reads \
+# --fastqs=/home/rstudio/single_cell_course/course_data/reads \
 # --localcores=4 
 
 
 #### Analysis within R (R console)
-setwd("/export/scratch/twyss/SIB_scRNAseq_course/July2023/data/")
+setwd("/export/scratch/twyss/SIB_scRNAseq_course/november2023/data/")
 
 # ----- Import cellranger output and generate Seurat object
-library(Seurat) # v.4.1.1
+library(Seurat) # v.5.0.0
 library(ggplot2)
 library(Matrix)
 
@@ -127,9 +130,10 @@ most_expressed_boxplot <- function(object, ngenes = 20){ # 2 arguments, 1 seurat
   # default of number of genes to plot
   
   # matrix of raw counts
-  cts <- Seurat::GetAssayData(object, assay = "RNA", slot = "counts")
+  # cts <- Seurat::GetAssayData(object, assay = "RNA", slot = "counts")
+   cts <- Seurat::GetAssayData(object, assay = "RNA", layer = "counts")
   
-  # get percentage/cell
+   # get percentage/cell
   cts <- t(cts)/colSums(cts)*100
   medians <- apply(cts, 2, median)
   
@@ -171,7 +175,7 @@ seu <- Seurat::NormalizeData(seu,
                              normalization.method = "LogNormalize",
                              scale.factor = 10000)
 # check data after normalization:
-Seurat::GetAssayData(seu)[1:10,1:10]  
+Seurat::GetAssayData(seu, layer="data")[1:10,1:10]  
 
 # Find variable genes (for PCA):
 seu <- Seurat::FindVariableFeatures(seu,
@@ -211,7 +215,7 @@ gc()
 .rs.restartR()
 
 
-#### Bonus: DoubletFinder
+#### Bonus: DoubletFinder: only works with Seurat v4!!
 library(DoubletFinder) # remotes::install_github('chris-mcginnis-ucsf/DoubletFinder')
 
 # https://bioconductor.org/books/release/OSCA/doublet-detection.html
