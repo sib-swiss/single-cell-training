@@ -92,7 +92,7 @@ Seurat::VlnPlot(seu_int,
 
 :::
 
-We can also automate this with the function `AddModuleScore`. For each cell, an expression score for a group of genes is calcuated:
+We can also automate this with the function `AddModuleScore`. For each cell, an expression score for a group of genes is calculated:
 
 ```{r}
 #| output: false
