@@ -16,7 +16,7 @@ title: "Cell annotation"
 ```{r}
 #| echo: false
 #| output: false
-seu_int <- readRDS("seu_day2-3.rds")
+seu_int <- readRDS("~/seu_day2-3.rds")
 library(Seurat)
 ```
 
@@ -96,9 +96,15 @@ We can also automate this with the function `AddModuleScore`. For each cell, an 
 
 ```{r}
 #| output: false
+
+# need to join layers before running AddModuleScore
+# this will probably be fixed in next releases
+seu_int[["joined"]] <- JoinLayers(seu_int[["RNA"]])
+
 seu_int <- Seurat::AddModuleScore(seu_int,
-                              features = list(tcell_genes),
-                              name = "tcell_genes")
+                                  features = list(tcell_genes),
+                                  name = "tcell_genes",
+                                  assay = "joined")
 ```
 
 ::: {.callout-important}
@@ -145,9 +151,12 @@ Now we run the function:
 
 ```{r}
 #| output: false
+
+# performing on assay 'joined' (this function uses AddModuleScore)
 seu_int <- Seurat::CellCycleScoring(seu_int,
-                                     s.features = s.genes,
-                                     g2m.features = g2m.genes)
+                                    s.features = s.genes,
+                                    g2m.features = g2m.genes,
+                                    assay = "joined")
 ```
 
 And we can visualize the annotations:
@@ -190,9 +199,10 @@ Now `SingleR` compares our normalized count data to a reference set, and finds t
 
 ```{r}
 #| output: false
-seu_int_SingleR <- SingleR::SingleR(test = Seurat::GetAssayData(seu_int, slot = "data"),
-                                ref = ref,
-                                labels = ref$label.main)
+seu_int_SingleR <- SingleR::SingleR(test = Seurat::GetAssayData(seu_int,
+                                                                assay = "joined"),
+                                    ref = ref,
+                                    labels = ref$label.main)
 ```
 
 See what's in there by using `head`:
@@ -253,8 +263,8 @@ We can have a look at the mean module score for each `SingleR` annotation like t
 
 ```{r}
 dittoSeq::dittoBarPlot(seu_int, 
-                   var = "SingleR_annot", 
-                   group.by = "integrated_snn_res.0.3")
+                       var = "SingleR_annot", 
+                       group.by = "integrated_snn_res.0.3")
 ```
 
 Here, you can see that cluster 0 and 8 contain cells annotated as T cells (CD4+ and CD8+).
