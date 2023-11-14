@@ -16,7 +16,7 @@ title: "Cell annotation"
 ```{r}
 #| echo: false
 #| output: false
-seu_int <- readRDS("~/seu_day2-3.rds")
+seu_int <- readRDS("seu_day2-3.rds")
 library(Seurat)
 ```
 
@@ -100,11 +100,11 @@ We can also automate this with the function `AddModuleScore`. For each cell, an 
 # need to join layers before running AddModuleScore
 # this will probably be fixed in next releases
 seu_int[["joined"]] <- JoinLayers(seu_int[["RNA"]])
+DefaultAssay(seu_int) <- "joined"
 
 seu_int <- Seurat::AddModuleScore(seu_int,
                                   features = list(tcell_genes),
-                                  name = "tcell_genes",
-                                  assay = "joined")
+                                  name = "tcell_genes")
 ```
 
 ::: {.callout-important}
@@ -152,11 +152,9 @@ Now we run the function:
 ```{r}
 #| output: false
 
-# performing on assay 'joined' (this function uses AddModuleScore)
 seu_int <- Seurat::CellCycleScoring(seu_int,
                                     s.features = s.genes,
-                                    g2m.features = g2m.genes,
-                                    assay = "joined")
+                                    g2m.features = g2m.genes)
 ```
 
 And we can visualize the annotations:
@@ -199,8 +197,7 @@ Now `SingleR` compares our normalized count data to a reference set, and finds t
 
 ```{r}
 #| output: false
-seu_int_SingleR <- SingleR::SingleR(test = Seurat::GetAssayData(seu_int,
-                                                                assay = "joined"),
+seu_int_SingleR <- SingleR::SingleR(test = Seurat::GetAssayData(seu_int),
                                     ref = ref,
                                     labels = ref$label.main)
 ```
