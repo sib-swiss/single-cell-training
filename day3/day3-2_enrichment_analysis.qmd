@@ -132,7 +132,8 @@ We can quite easily generate a plot called an enrichment map with the `enrichplo
 
 ```{r}
 enrichplot::emapplot(enrichplot::pairwise_termsim(enr_go),
-                     showCategory = 30, cex_label_category = 0.5)
+                     showCategory = 30,
+                     cex.params = list(category_label = 0.5))
 ```
 
 Instead of testing for Gene Ontology terms, we can also test for other gene set collections. For example the Hallmark collection from [MSigDB](http://www.gsea-msigdb.org/gsea/msigdb/index.jsp):
