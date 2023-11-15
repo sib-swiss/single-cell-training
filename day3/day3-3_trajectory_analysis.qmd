@@ -331,7 +331,8 @@ seu_int <- readRDS("seu_day2-4.rds")
 Load the required package into your environment:
 
 ```{r}
-suppressPackageStartupMessages({library(monocle3)}) 
+#| output: false
+library(monocle3)
 ```
 
 Generate a `monocle3` object (with class `cell_data_set`) from our `Seurat` object:
@@ -345,7 +346,7 @@ colnames(feature_names) <- "gene_short_name"
 # initiate monocle object from seurat count table 
 seu_int_monocl <- monocle3::new_cell_data_set(Seurat::GetAssayData(seu_int,
                                                                    assay = "joined",
-                                                                   slot = "counts"),
+                                                                   layer = "counts"),
                                               cell_metadata = seu_int@meta.data,
                                               gene_metadata = feature_names)
 ```
@@ -372,6 +373,8 @@ monocle3::plot_pc_variance_explained(seu_int_monocl)
 Perform UMAP using the implementation in the `monocle3` package and its default parameters:
 
 ```{r}
+#| output: false
+#| message: false
 seu_int_monocl <- monocle3::reduce_dimension(seu_int_monocl, reduction_method = "UMAP")
 ```
 
@@ -472,7 +475,8 @@ seuB <- seu_int_monocl[, names(cls)[cls %in% c(10, 3, 11)]]
 Check whether you have selected the right cells:
 
 ```{r}
-plot_cells(seuB, show_trajectory_graph = FALSE, cell_size = 1)
+plot_cells(seuB, show_trajectory_graph = FALSE, cell_size = 1,
+           color_cells_by = "pseudotime")
 ```
 
 Now we can use the cells in this trajectory to test which genes are affected by the trajectory:
@@ -489,7 +493,16 @@ pr_test <- graph_test(seuB,
 # order by test statistic
 pr_test <- pr_test[order(pr_test$morans_test_statistic, 
                          decreasing = TRUE),]
-head(pr_test)
+```
+
+```{r}
+#| echo: false
+head(pr_test) |> knitr::kable()
+```
+
+```{r}
+#| eval: false
+View(pr_test)
 ```
 
 There are some interesting genes in there, for example related to cell cycling (MKI67, CKS2), related to B-cell development (CD34, MS4A1) and immunoglobulins (IGLL1 and IGLL5). We can plot those in the UMAP:
