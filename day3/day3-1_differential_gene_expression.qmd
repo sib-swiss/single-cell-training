@@ -175,11 +175,9 @@ We can load the object and explore its UMAP and meta.data like this:
 ```{r}
 proB <- readRDS("course_data/proB.rds")
 
-DimPlot(proB, group.by = "orig.ident")
+Seurat::DimPlot(proB, group.by = "orig.ident")
 
 table(proB@meta.data$type)
-# ETV6-RUNX1      PBMMC 
-#      2000       1021
 
 head(proB@meta.data)
 
@@ -220,22 +218,29 @@ proB$patient.id<-sapply(strsplit(proB$patient.id, "-"), '[', 2)
 ##first a mandatory column of sample needs to be added to the meta data that is the grouping factor, should be the samples
 proB$sample <- factor(proB$orig.ident)
 
-##first an sce object is needed
-sce_proB <- as.SingleCellExperiment(proB)
+# aggergate the cells per sampple
+bulk <- Seurat::AggregateExpression(proB, group.by = "sample",
+                                    return.seurat = TRUE,
+                                    assay = "RNA")
 
-##aggregateAcrossCells here it is only aggregated by sample, one could imagine
-##to aggregate by sample and by celltype for instance
-summed <- aggregateAcrossCells(sce_proB, 
-                               id=colData(sce_proB)[,c("sample")])
+# create a metadata data frame based on the aggregated cells
+meta_data <- unique(proB@meta.data[, c("orig.ident",
+                                            "sample", "type",
+                                            "patient.id")])
+rownames(meta_data) <- meta_data$orig.ident
+bulk@meta.data <- meta_data[colnames(bulk), ]
+
 ```
 
 ```{r}
 ##have a look at the counts
-counts(summed)[1:3,]
+counts <- Seurat::GetAssayData(bulk, layer = "counts") |> as.matrix()
+
+head(counts)
 
 #have a look at the colData of our new object summed, can you see type and 
 #patient.id are there
-head(colData(summed))
+head(bulk@meta.data)
 ```
 
 Generate a `DGEList` object to use as input for `limma` and filter the genes to remove lowly expressed genes. How many are left?
@@ -243,10 +248,10 @@ Generate a `DGEList` object to use as input for `limma` and filter the genes to 
 ```{r}
 #As in the standard limma analysis generate a DGE object
 
-y <- DGEList(counts(summed), samples=colData(summed)$sample)
+y <- edgeR::DGEList(counts, samples = bulk@meta.data)
 
 ##filter lowly expressed (recommanded for limma)
-keep <- filterByExpr(y, group=summed$type)
+keep <- edgeR::filterByExpr(y, group = bulk$type)
 y <- y[keep,]
 
 ##see how many genes were kept 
@@ -257,14 +262,14 @@ Generate a design matrix, including patient ID to model for a paired analysis. I
 
 ```{r}
 ## Create the design matrix and include the technology as a covariate:
-design <- model.matrix(~0 + summed$type + summed$patient.id)
+design <- model.matrix(~0 + y$samples$type + y$samples$patient.id)
 
 # Have a look
 design
 
 # change column/rownames names to more simple group names: 
 colnames(design) <- make.names(c("ETV6-RUNX1", "PBMMC","patient2","patient3"))
-rownames(design)<-colData(summed)$sample
+rownames(design) <- rownames(y$samples)
 ```
 
 Specify which contrast to analyse:
