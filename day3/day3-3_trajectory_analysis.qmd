@@ -33,7 +33,7 @@ library(Seurat)
 First, download the dataset from github within your  **Terminal** tab as on Day 1:
 
 <figure>
-  <img src="../assets/images/select_terminal_tab.png" width="300"/>
+<img src="../assets/images/select_terminal_tab.png" width="300"/>
 </figure>
 
 
@@ -154,7 +154,7 @@ PCAplot_slingshot <- function(sce, draw_lines = TRUE, variable = NULL, legend = 
   paln <- colorRampPalette(RColorBrewer::brewer.pal(9, "Blues"))
   # extract pca from SingleCellExperiment object
   pca <- SingleCellExperiment::reducedDims(sce)$PCA
-
+  
   if(is.null(variable)){
     col <- "black"
   }
@@ -169,7 +169,7 @@ PCAplot_slingshot <- function(sce, draw_lines = TRUE, variable = NULL, legend = 
     colpal <- paln(50)
     colors <- colpal[cut(variable,breaks=50)]
   }
-
+  
   # draw the plot
   plot(pca, bg = colors, pch = 21)
   # draw lines
@@ -179,7 +179,7 @@ PCAplot_slingshot <- function(sce, draw_lines = TRUE, variable = NULL, legend = 
   # add legend
   if(legend & is.factor(variable)){
     legend("bottomright", pt.bg = colpal,legend = levels(variable),pch=21)
-
+    
   }
 }
 ```
@@ -240,9 +240,9 @@ Now we can add these clusters to the `slingshot` function:
 deng_SCE$Seurat_clusters <- as.character(Idents(gcdata))  # go from factor to character
 
 sce <- slingshot::slingshot(deng_SCE,
-                                 clusterLabels = 'Seurat_clusters',
-                                 reducedDim = 'PCA',
-                                 start.clus = "2")
+                            clusterLabels = 'Seurat_clusters',
+                            reducedDim = 'PCA',
+                            start.clus = "2")
 ```
 
 Check how the slingshot object has evolved
@@ -262,8 +262,8 @@ Plot Slingshot pseudotime vs cell stage.
 ```{r}
 ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
                   slingPseudotime_1 = sce$slingPseudotime_1),
-        aes(x = slingPseudotime_1, y = cell_type2,
-        colour = cell_type2)) +
+       aes(x = slingPseudotime_1, y = cell_type2,
+           colour = cell_type2)) +
   ggbeeswarm::geom_quasirandom(groupOnX = FALSE) +
   theme_classic() +
   xlab("Slingshot pseudotime") + ylab("Timepoint") +
@@ -271,8 +271,8 @@ ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
 
 ggplot(data.frame(cell_type2 = deng_SCE$cell_type2,
                   slingPseudotime_2 = sce$slingPseudotime_2),
-        aes(x = slingPseudotime_2, y = cell_type2,
-        colour = cell_type2)) +
+       aes(x = slingPseudotime_2, y = cell_type2,
+           colour = cell_type2)) +
   ggbeeswarm::geom_quasirandom(groupOnX = FALSE) +
   theme_classic() +
   xlab("Slingshot pseudotime") + ylab("Timepoint") +
@@ -305,9 +305,9 @@ Instead of providing an initial cluster, think of an end cluster that would fit 
 
 ```{r}
 sce <- slingshot::slingshot(deng_SCE,
-                             clusterLabels = 'Seurat_clusters',
-                             reducedDim = 'PCA',
-                             end.clus = c("0", "3", "5")) ## check which would be the best according to bio
+                            clusterLabels = 'Seurat_clusters',
+                            reducedDim = 'PCA',
+                            end.clus = c("0", "3", "5")) ## check which would be the best according to bio
 ```
 :::
 
@@ -322,10 +322,10 @@ gc()
 
 ### Trajectory analysis with `monocle3`
 
-This part showcases how you can use `monocle3` to perform a trajectory analysis. First load the `seu_int` dataset:
+This part showcases how you can use `monocle3` to perform a trajectory analysis. First load the `seu` dataset:
 
 ```{r}
-seu_int <- readRDS("seu_day2-4.rds")
+seu <- readRDS("seu_day2-4.rds")
 ```
 
 Load the required package into your environment:
@@ -339,16 +339,15 @@ Generate a `monocle3` object (with class `cell_data_set`) from our `Seurat` obje
 
 ```{r}
 # create gene metadata data.frame
-feature_names <- as.data.frame(rownames(seu_int))
-rownames(feature_names) <- rownames(seu_int)
+feature_names <- as.data.frame(rownames(seu))
+rownames(feature_names) <- rownames(seu)
 colnames(feature_names) <- "gene_short_name"
 
 # initiate monocle object from seurat count table 
-seu_int_monocl <- monocle3::new_cell_data_set(Seurat::GetAssayData(seu_int,
-                                                                   assay = "joined",
-                                                                   layer = "counts"),
-                                              cell_metadata = seu_int@meta.data,
-                                              gene_metadata = feature_names)
+seu_monocl <- monocle3::new_cell_data_set(Seurat::GetAssayData(seu,
+                                                               layer = "counts"),
+                                          cell_metadata = seu@meta.data,
+                                          gene_metadata = feature_names)
 ```
 
 We pre-process the newly created object. What does it involve? Check:
@@ -361,13 +360,13 @@ We pre-process the newly created object. What does it involve? Check:
 Preprocess the dataset:
 
 ```{r}
-seu_int_monocl <- monocle3::preprocess_cds(seu_int_monocl)
+seu_monocl <- monocle3::preprocess_cds(seu_monocl)
 ```
 
 And check out the elbow plot:
 
 ```{r}
-monocle3::plot_pc_variance_explained(seu_int_monocl)
+monocle3::plot_pc_variance_explained(seu_monocl)
 ```
 
 Perform UMAP using the implementation in the `monocle3` package and its default parameters:
@@ -375,23 +374,23 @@ Perform UMAP using the implementation in the `monocle3` package and its default 
 ```{r}
 #| output: false
 #| message: false
-seu_int_monocl <- monocle3::reduce_dimension(seu_int_monocl, reduction_method = "UMAP")
+seu_monocl <- monocle3::reduce_dimension(seu_monocl, reduction_method = "UMAP")
 ```
 
 Plot the `monocle3` UMAP coloring cells according to the cluster ID, marker gene or annotation that were stored in the `Seurat` object:
 
 ```{r}
-monocle3::plot_cells(seu_int_monocl, 
-                     color_cells_by = "integrated_snn_res.0.3", 
+monocle3::plot_cells(seu_monocl, 
+                     color_cells_by = "RNA_snn_res.0.3", 
                      cell_size = 1, 
                      show_trajectory_graph = FALSE)
 
-monocle3::plot_cells(seu_int_monocl, genes = "CD79A", 
+monocle3::plot_cells(seu_monocl, genes = "CD79A", 
                      cell_size = 1,
                      show_trajectory_graph = FALSE,
                      scale_to_range = FALSE)
 
-monocle3::plot_cells(seu_int_monocl, 
+monocle3::plot_cells(seu_monocl, 
                      color_cells_by = "SingleR_annot", 
                      cell_size = 1, 
                      show_trajectory_graph = FALSE)
@@ -401,19 +400,19 @@ monocle3::plot_cells(seu_int_monocl,
 Cluster cells using `monocle3`'s clustering function:
 
 ```{r}
-seu_int_monocl <- monocle3::cluster_cells(seu_int_monocl, resolution=0.00025)
-monocle3::plot_cells(seu_int_monocl, label_cell_groups = F)
+seu_monocl <- monocle3::cluster_cells(seu_monocl, resolution=0.00025)
+monocle3::plot_cells(seu_monocl, label_cell_groups = F)
 ```
 
 learn graph (i.e. identify trajectory) using `monocle3` UMAP and clustering:
 
 ```{r}
 #| output: false
-seu_int_monocl <- monocle3::learn_graph(seu_int_monocl)
+seu_monocl <- monocle3::learn_graph(seu_monocl)
 ```
 
 ```{r}
-monocle3::plot_cells(seu_int_monocl)
+monocle3::plot_cells(seu_monocl)
 ```
 
 ::: {.callout-important}
@@ -424,9 +423,9 @@ Find the CD34+ B-cell cluster in the monocle UMAP. This cluster has a high expre
 ::: {.callout-tip collapse="true"}
 
 ```{r}
-monocle3::plot_cells(seu_int_monocl, genes = c("CD79A", "CD34"),
-                 show_trajectory_graph = FALSE, 
-                 cell_size = 0.7, group_label_size = 4)
+monocle3::plot_cells(seu_monocl, genes = c("CD79A", "CD34"),
+                     show_trajectory_graph = FALSE, 
+                     cell_size = 0.7, group_label_size = 4)
 ```
 
 Cluster 11 has both a high expression of CD79A and CD34. 
@@ -437,38 +436,38 @@ Select the "initial" cells in the B-cell cluster to calculate pseudotime. The in
 
 ```{r}
 #| eval: false
-seu_int_monocl <- monocle3::order_cells(seu_int_monocl)
+seu_monocl <- monocle3::order_cells(seu_monocl)
 ```
 
 ```{r}
 #| echo: false
-seu_int_monocl <- monocle3::order_cells(seu_int_monocl, root_pr_nodes = c("Y_156", "Y_195", "Y_215", "Y_223", "Y_231"))
+seu_monocl <- monocle3::order_cells(seu_monocl, root_pr_nodes = c("Y_156", "Y_195", "Y_215", "Y_223", "Y_231"))
 ```
 
 ```{r}
-monocle3::plot_cells(seu_int_monocl,
-           color_cells_by = "pseudotime",
-           label_cell_groups=F,
-           label_leaves=F,
-           label_branch_points=FALSE,
-           graph_label_size=1.5, cell_size = 1)
+monocle3::plot_cells(seu_monocl,
+                     color_cells_by = "pseudotime",
+                     label_cell_groups=F,
+                     label_leaves=F,
+                     label_branch_points=FALSE,
+                     graph_label_size=1.5, cell_size = 1)
 ```
 
 In order to find genes which expression is affected by pseudtime, we first have to isolate the B-cell cluster. Therefore, extract all cells in the B-cell cluster with the interactive `choose_cells` function:
 
 ```{r}
 #| eval: false
-seuB <- choose_cells(seu_int_monocl)
+seuB <- choose_cells(seu_monocl)
 ```
 
 ```{r}
 #| echo: false
-cls <- clusters(seu_int_monocl) 
-seuB <- seu_int_monocl[, names(cls)[cls %in% c(10, 3, 11)]]
+cls <- clusters(seu_monocl) 
+seuB <- seu_monocl[, names(cls)[cls %in% c(10, 3, 11)]]
 ```
 
 <figure>
-  <img src="../assets/images/choose_cells.gif" width="500"/>
+<img src="../assets/images/choose_cells.gif" width="500"/>
 </figure>
 
 

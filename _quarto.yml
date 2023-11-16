@@ -1,6 +1,10 @@
 project:
   type: website
   execute-dir: project
+  render:
+    - "*.qmd"
+    - "!CONTRIBUTIONG.md"
+    - "!LICENSE.md"
 
 website:
   title: "Single cell transcriptomics"

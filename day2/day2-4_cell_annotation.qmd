@@ -16,7 +16,7 @@ title: "Cell annotation"
 ```{r}
 #| echo: false
 #| output: false
-seu_int <- readRDS("seu_day2-3.rds")
+seu <- readRDS("seu_day2-3.rds")
 library(Seurat)
 ```
 
@@ -31,7 +31,7 @@ library(SingleR)
 In the last exercise we saw that probably clustering at a resolution of 0.3 gave the most sensible results. Let's therefore set the default identity of each cell based on this clustering:
 
 ```{r}
-seu_int <- Seurat::SetIdent(seu_int, value = seu_int$integrated_snn_res.0.3)
+seu <- Seurat::SetIdent(seu, value = seu$RNA_snn_res.0.3)
 ```
 
 ::: {.callout-note}
@@ -41,14 +41,14 @@ From now on, grouping (e.g. for plotting) is done by the active identity (set at
 During cell annotation we will use the original count data (not the integrated data):
 
 ```{r}
-DefaultAssay(seu_int) <- "RNA"
+DefaultAssay(seu) <- "RNA"
 ```
 
 
 Based on the UMAP we have generated, we can visualize expression for a gene in each cluster:
 
 ```{r}
-Seurat::FeaturePlot(seu_int, "HBA1")
+Seurat::FeaturePlot(seu, "HBA1")
 ```
 
 Based on expression of sets of genes you can do a manual cell type annotation. If you know the marker genes for some cell types, you can check whether they are up-regulated in one or the other cluster. Here we have some marker genes for two different cell types:
@@ -61,13 +61,13 @@ monocyte_genes <- c("CD14", "CST3", "CD68", "CTSS")
 Let's have a look at the expression of the four T cell genes:
 
 ```{r}
-Seurat::FeaturePlot(seu_int, tcell_genes, ncol=2)
+Seurat::FeaturePlot(seu, tcell_genes, ncol=2)
 ```
 
 These cells are almost all in cluster 0 and 8. Which becomes clearer when looking at the violin plot:
 
 ```{r}
-Seurat::VlnPlot(seu_int,
+Seurat::VlnPlot(seu,
                 features = tcell_genes,
                 ncol = 2)
 ```
@@ -81,11 +81,11 @@ Have a look at the monocyte genes as well. Which clusters contain probably monoc
 ## Answer
 
 ```{r}
-Seurat::FeaturePlot(seu_int, monocyte_genes, ncol=2)
+Seurat::FeaturePlot(seu, monocyte_genes, ncol=2)
 ```
 
 ```{r}
-Seurat::VlnPlot(seu_int,
+Seurat::VlnPlot(seu,
                 features = monocyte_genes,
                 ncol = 2)
 ```
@@ -96,20 +96,14 @@ We can also automate this with the function `AddModuleScore`. For each cell, an 
 
 ```{r}
 #| output: false
-
-# need to join layers before running AddModuleScore
-# this will probably be fixed in next releases
-seu_int[["joined"]] <- JoinLayers(seu_int[["RNA"]])
-DefaultAssay(seu_int) <- "joined"
-
-seu_int <- Seurat::AddModuleScore(seu_int,
-                                  features = list(tcell_genes),
-                                  name = "tcell_genes")
+seu <- Seurat::AddModuleScore(seu,
+                              features = list(tcell_genes),
+                              name = "tcell_genes")
 ```
 
 ::: {.callout-important}
 ## Exercise
-After running `AddModuleScore`, a column was added to `seu_int@meta.data`.
+After running `AddModuleScore`, a column was added to `seu@meta.data`.
 
 **A.** What is the name of that column? What kind of data is in there?
 
@@ -124,13 +118,13 @@ After running `AddModuleScore`, a column was added to `seu_int@meta.data`.
 **B.** You can plot the UMAP with
 
 ```{r}
-Seurat::FeaturePlot(seu_int, "tcell_genes1")
+Seurat::FeaturePlot(seu, "tcell_genes1")
 ```
 
 Which indeed shows these genes are mainly expressed in clusters 0 and 8:
 
 ```{r}
-Seurat::VlnPlot(seu_int,
+Seurat::VlnPlot(seu,
                 "tcell_genes1")
 ```
 
@@ -152,15 +146,15 @@ Now we run the function:
 ```{r}
 #| output: false
 
-seu_int <- Seurat::CellCycleScoring(seu_int,
-                                    s.features = s.genes,
-                                    g2m.features = g2m.genes)
+seu <- Seurat::CellCycleScoring(seu,
+                                s.features = s.genes,
+                                g2m.features = g2m.genes)
 ```
 
 And we can visualize the annotations:
 
 ```{r}
-Seurat::DimPlot(seu_int, group.by = "Phase")
+Seurat::DimPlot(seu, group.by = "Phase")
 ```
 
 Based on your application, you can try to regress out the cell cycling scores at the step of scaling. Reasons for doing that could be:
@@ -197,52 +191,52 @@ Now `SingleR` compares our normalized count data to a reference set, and finds t
 
 ```{r}
 #| output: false
-seu_int_SingleR <- SingleR::SingleR(test = Seurat::GetAssayData(seu_int),
-                                    ref = ref,
-                                    labels = ref$label.main)
+seu_SingleR <- SingleR::SingleR(test = Seurat::GetAssayData(seu),
+                                ref = ref,
+                                labels = ref$label.main)
 ```
 
 See what's in there by using `head`:
 
 ```{r}
-head(seu_int_SingleR)
+head(seu_SingleR)
 ```
 
 Visualize singleR score quality scores:
 
 ```{r}
-SingleR::plotScoreHeatmap(seu_int_SingleR)
+SingleR::plotScoreHeatmap(seu_SingleR)
 ```
 
 ```{r}
-SingleR::plotDeltaDistribution(seu_int_SingleR)
+SingleR::plotDeltaDistribution(seu_SingleR)
 ```
 
 There are some annotations that contain only a few cells. They are usually not of interest, and they clogg our plots. Therefore we remove them from the annotation:
 
 ```{r}
-singleR_labels <- seu_int_SingleR$labels
+singleR_labels <- seu_SingleR$labels
 t <- table(singleR_labels)
 other <- names(t)[t < 10]
 singleR_labels[singleR_labels %in% other] <- "none"
 ```
 
-In order to visualize it in our UMAP, we have to add the annotation to `seu_int@meta.data`:
+In order to visualize it in our UMAP, we have to add the annotation to `seu@meta.data`:
 
 ```{r}
-seu_int$SingleR_annot <- singleR_labels
+seu$SingleR_annot <- singleR_labels
 ```
 
 We can plot the annotations in the UMAP. Here, we use a different package for plotting (`dittoSeq`) as it has a bit better default coloring, and some other plotting functionality we will use later on.
 
 ```{r}
-dittoSeq::dittoDimPlot(seu_int, "SingleR_annot", size = 0.7)
+dittoSeq::dittoDimPlot(seu, "SingleR_annot", size = 0.7)
 ```
 
 We can check out how many cells per sample we have for each annotated cell type:
 
 ```{r}
-dittoSeq::dittoBarPlot(seu_int, var = "SingleR_annot", group.by = "orig.ident")
+dittoSeq::dittoBarPlot(seu, var = "SingleR_annot", group.by = "orig.ident")
 ```
 
 ::: {.callout-important}
@@ -251,7 +245,7 @@ Compare our manual annotation (based on the set of T cell genes) to the annotati
 :::
 
 ::: {.callout-hint}
-You can for example use the plotting function `dittoBarPlot` to visualize the cell types according to cluster (use `integrated_snn_res.0.3` in stead of `orig.ident`))
+You can for example use the plotting function `dittoBarPlot` to visualize the cell types according to cluster (use `RNA_snn_res.0.3` in stead of `orig.ident`))
 :::
 
 ::: {.callout-tip collapse="true"}
@@ -259,9 +253,9 @@ You can for example use the plotting function `dittoBarPlot` to visualize the ce
 We can have a look at the mean module score for each `SingleR` annotation like this:
 
 ```{r}
-dittoSeq::dittoBarPlot(seu_int, 
+dittoSeq::dittoBarPlot(seu, 
                        var = "SingleR_annot", 
-                       group.by = "integrated_snn_res.0.3")
+                       group.by = "RNA_snn_res.0.3")
 ```
 
 Here, you can see that cluster 0 and 8 contain cells annotated as T cells (CD4+ and CD8+).
@@ -273,7 +267,7 @@ Here, you can see that cluster 0 and 8 contain cells annotated as T cells (CD4+ 
 Now, save the dataset so you can use it tomorrow:
 
 ```{r}
-saveRDS(seu_int, "seu_day2-4.rds")
+saveRDS(seu, "seu_day2-4.rds")
 ```
 
 Clear your environment:

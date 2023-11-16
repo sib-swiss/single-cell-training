@@ -16,10 +16,10 @@ title: "Differential gene expression"
 
 ### Find all markers for each cluster
 
-Load the `seu_int` dataset you have created yesterday:
+Load the `seu` dataset you have created yesterday:
 
 ```{r}
-seu_int <- readRDS("seu_day2-4.rds")
+seu <- readRDS("seu_day2-4.rds")
 ```
 
 And load the following packages (install them if they are missing):
@@ -39,7 +39,7 @@ Now run analysis:
 
 ```{r}
 #| output: false
-de_genes <- Seurat::FindAllMarkers(seu_int,  min.pct = 0.25,
+de_genes <- Seurat::FindAllMarkers(seu,  min.pct = 0.25,
                                    only.pos = TRUE)
 ```
 
@@ -65,9 +65,9 @@ top_specific_markers <- de_genes %>%
 And generate e.g. a dotplot:
 
 ```{r}
-dittoSeq::dittoDotPlot(seu_int,
+dittoSeq::dittoDotPlot(seu,
                        vars = unique(top_specific_markers$gene), 
-                       group.by = "integrated_snn_res.0.3")
+                       group.by = "RNA_snn_res.0.3")
 ```
 
 ::: callout-important
@@ -101,17 +101,17 @@ The `FindMarkers` function allows to test for differential gene expression analy
 First we can set the default cell identity to the cell types defined by `SingleR`:
 
 ```{r}
-seu_int <- Seurat::SetIdent(seu_int, value = "SingleR_annot")
+seu <- Seurat::SetIdent(seu, value = "SingleR_annot")
 ```
 
 Run the differential gene expression analysis and subset the table to keep the significant genes:
 
 ```{r}
 #| output: false
-deg_cd8_cd4 <- Seurat::FindMarkers(seu_int,
+deg_cd8_cd4 <- Seurat::FindMarkers(seu,
                                    ident.1 = "CD8+ T cells",
                                    ident.2 = "CD4+ T cells",
-                                   group.by = seu_int$SingleR_annot,
+                                   group.by = seu$SingleR_annot,
                                    test.use = "wilcox")
 deg_cd8_cd4 <- subset(deg_cd8_cd4, deg_cd8_cd4$p_val_adj<0.05)
 ```
@@ -152,7 +152,7 @@ Indeed, because we compared ident.1 = "CD8+ T cells" to ident.2 = "CD4+ T cells"
 Plotting the genes in these two T-cell groups only:
 
 ```{r}
-Seurat::VlnPlot(seu_int, 
+Seurat::VlnPlot(seu, 
             features = c("CD4", "CD8A", "CD8B"),
             idents = c("CD8+ T cells", "CD4+ T cells"))
 ```
