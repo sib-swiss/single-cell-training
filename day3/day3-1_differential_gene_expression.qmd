@@ -43,12 +43,6 @@ de_genes <- Seurat::FindAllMarkers(seu,  min.pct = 0.25,
                                    only.pos = TRUE)
 ```
 
-::: callout-note
-## Time for coffee
-
-This takes a while. Have a break.
-:::
-
 Subset the table to only keep the significant genes, and you can save it as a csv file if you wish to explore it further. Then extract the top 3 markers per cluster:
 
 ```{r}
@@ -332,7 +326,7 @@ How many genes are significant? How does the fold change of these genes compare 
 dim(tum_vs_norm) 
 ```
 
-We find 1893 significant genes. If we merge the `FindMarkers` and the `limma` results, keep `limma`'s most significant genes and plot:
+We find 3820 significant genes. If we merge the `FindMarkers` and the `limma` results, keep `limma`'s most significant genes and plot:
 
 ```{r}
 merge_limma_FindMarkers <- merge(tum_vs_norm, limma_de, by="row.names",
