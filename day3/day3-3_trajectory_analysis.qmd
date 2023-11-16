@@ -325,7 +325,6 @@ gc()
 This part showcases how you can use `monocle3` to perform a trajectory analysis. First load the `seu` dataset:
 
 ```{r}
-#| eval: false
 seu <- readRDS("seu_day2-4.rds")
 ```
 
