@@ -1,6 +1,6 @@
 # ------ Day 2
 
-setwd("/export/scratch/twyss/SIB_scRNAseq_course/July2023/data/")
+setwd("/export/scratch/twyss/SIB_scRNAseq_course/november2023/data/")
 
 # Import seurat object, already filtered, normalized, scaled.
 library(Seurat)
@@ -42,7 +42,7 @@ Seurat::FeaturePlot(seu, features = c("HBA1",
                                       "IGKC", # top variable gene, immunoglobin kappa constant (antibody, plasma B cells)
                                       "percent.mito"))
 
-FeaturePlot(seu,features=c("HBA1","percent.globin"),blend=TRUE)
+FeaturePlot(seu,features=c("HBA1","percent.globin"), blend=TRUE)
 
 # B. Change the number of neighbors used for the calculation of the UMAP. 
 # Which is the parameter to change and how did it affect the output.
@@ -67,9 +67,11 @@ Seurat::DimPlot(seu, reduction = "umap")
 seu <- Seurat::RunUMAP(seu, dims = 1:25)
 Seurat::DimPlot(seu, reduction = "umap")
 
-# Integration: only if necessary (visual separation of samples on UMAP):
+# ----- Integration: only if necessary (visual separation of samples on UMAP):
+
 Seurat::DimPlot(seu, reduction = "umap")
 
+# Method using functions from V4 still work
 # Each sample has to be normalized independently before batch correction.
 # Create list of seurat objects:
 seu_list <- Seurat::SplitObject(seu, split.by = "orig.ident")
@@ -82,10 +84,13 @@ for (i in 1:length(seu_list)) {
 
 # Find anchors and integrate:
 seu_anchors <- Seurat::FindIntegrationAnchors(object.list = seu_list, dims = 1:30)
-seu_int <- Seurat::IntegrateData(anchorset = seu_anchors, dims = 1:30)
+seu_int <- Seurat::IntegrateData(anchorset = seu_anchors, dims = 1:30, 
+                                 normalization.method = "LogNormalize")
 
 names(seu_int@assays)
 DefaultAssay(seu_int) # integrated
+# Seurat v5: changed structure of RNA assay counts after integration...
+seu_int@assays$RNA
 
 # Need to re-scale, re-run PCA and UMAP
 seu_int <- Seurat::ScaleData(seu_int)
@@ -109,11 +114,38 @@ seu_int[["umap_noInt"]] <- Seurat::CreateDimReducObject(embeddings = seu@reducti
                                                 key = "UMAPnoInt_", assay = DefaultAssay(seu))
 names(seu_int@reductions)
 
-p1<-DimPlot(seu_int, reduction = "umap_noInt") + ggtitle("Before integration")
-p2<-DimPlot(seu_int) + ggtitle("After integration")
+p1 <- Seurat::DimPlot(seu_int, reduction = "umap_noInt") + ggtitle("Before integration")
+p2 <- Seurat::DimPlot(seu_int) + ggtitle("After integration")
 cowplot::plot_grid(p1, p2, ncol = 2)
 
-# Clustering at several resolutions:
+# New function for integration in Seurat V5:
+seu_split <- seu
+seu_split[["RNA"]] <- split(seu_split[["RNA"]], f = seu_split$orig.ident) # split RNA assay 
+# according to batches:
+# Because the data is split into layers, normalization and variable feature 
+# identification is performed for each batch independently
+seu_split
+seu_split <- Seurat::NormalizeData(seu_split)
+seu_split <- Seurat::FindVariableFeatures(seu_split)
+seu_split <- Seurat::ScaleData(seu_split)
+seu_split <- Seurat::RunPCA(seu_split)
+
+seu_split <- Seurat::IntegrateLayers(
+  object = seu_split, method = CCAIntegration,
+  orig.reduction = "pca", new.reduction = "integrated.cca",
+  verbose = FALSE
+)
+# Anchor-based CCA integration (method=CCAIntegration)
+# Anchor-based RPCA integration (method=RPCAIntegration)
+# Harmony (method=HarmonyIntegration)
+# FastMNN (method= FastMNNIntegration)
+# scVI (method=scVIIntegration)
+
+seu_split <- Seurat::RunUMAP(seu_split, reduction = "integrated.cca", dims = 1:30, 
+                             reduction.name = "umap.cca")
+Seurat::DimPlot(seu_split, reduction = "umap.cca", group.by = "orig.ident", label=T)
+
+# ---- Clustering at several resolutions:
 head(seu_int@meta.data)
 
 ?FindNeighbors
@@ -135,7 +167,7 @@ library(clustree)
 clustree::clustree(seu_int@meta.data[,grep("integrated_snn_res", colnames(seu_int@meta.data))],
                    prefix = "integrated_snn_res.")
 
-Idents(seu_int)
+Seurat::Idents(seu_int)
 Seurat::DimPlot(seu_int)
 Seurat::DimPlot(seu_int, group.by = "integrated_snn_res.0.1")
 
@@ -146,9 +178,12 @@ Seurat::DimPlot(seu_int, group.by = "integrated_snn_res.0.3")
 table(seu_int$integrated_snn_res.0.3,
       seu_int$orig.ident)
 
-seu_int<-readRDS("seu_int_day2_part2.rds")
+saveRDS(seu_int, "seu_int_day2_part2.rds")
 
 ####  Manual and automatic cell annotation:
+
+seu_int<-readRDS("seu_int_day2_part2.rds")
+
 # Manual with addModuleScore:
 
 # Keep res 0.3 as the default cell ID:  
@@ -185,15 +220,27 @@ Seurat::FeaturePlot(seu_int, monocyte_genes, ncol=2)
 Seurat::VlnPlot(seu_int,
                 features = monocyte_genes,
                 ncol = 2) # cluster 2
-
+DefaultAssay(seu_int)<-"RNA"
 # calculate a score per cell for a group of genes:
+
+# This works with Seurat v4:
+# seu_int <- Seurat::AddModuleScore(seu_int,
+#                       features = list(tcell_genes),
+#                       name = "tcell_genes")
+
+# need to join layers before running AddModuleScore
+# this will probably be fixed in next releases
+seu_int[["joined"]] <- JoinLayers(seu_int[["RNA"]])
+
 seu_int <- Seurat::AddModuleScore(seu_int,
                                   features = list(tcell_genes),
-                                  name = "tcell_genes")
+                                  name = "tcell_genes",
+                                  assay = "joined")
+
 head(seu_int@meta.data)
 Seurat::FeaturePlot(seu_int, "tcell_genes1", ncol=2)
 Seurat::VlnPlot(seu_int,
-                features = tcell_genes,
+                features = "tcell_genes1",
                 ncol = 2) # cluster 0 and 8
 
 # Use UCell for scoring gene signatures in single cells:
@@ -211,7 +258,7 @@ signatures <- list(Immune = c("PTPRC"),
                    Myeloid_cell = c("CD14", "LYZ", "CSF1R", "FCER1G", "SPI1", "LCK-"))
 
 seu_int <- UCell::AddModuleScore_UCell(seu_int, features = signatures, name = NULL,
-                                      ncores = 4)
+                                      ncores = 4, assay = "joined")
 head(seu_int@meta.data)
 Seurat::FeatureScatter(seu_int, feature1 = "tcell_genes1", feature2 = "Tcell",
                        group.by = "integrated_snn_res.0.3")
@@ -226,7 +273,8 @@ g2m.genes <- Seurat::cc.genes.updated.2019$g2m.genes
 # add cycling state to meta.data:
 seu_int <- Seurat::CellCycleScoring(seu_int,
                                     s.features = s.genes,
-                                    g2m.features = g2m.genes)
+                                    g2m.features = g2m.genes,
+                                     assay="joined")
 
 Seurat::DimPlot(seu_int, group.by = "Phase")
 
@@ -247,7 +295,7 @@ table(ref$label.main)
 
 ?SingleR
 # already ran:
-seu_int_SingleR <- SingleR::SingleR(test = Seurat::GetAssayData(seu_int, slot = "data"),
+seu_int_SingleR <- SingleR::SingleR(test = Seurat::GetAssayData(seu_int, assay = "joined"),
                                     ref = ref,
                                     labels = ref$label.main)
 # the output contains annotation scores and assigned labels per cell:
@@ -269,7 +317,7 @@ other
 # assign to NA:
 singleR_labels[singleR_labels %in% other] <- "none" # or NA as in course website
 
-# add the singleR annotation to the seurat's object meta.data:
+# add the singleR annotation to the integrated seurat's object meta.data:
 seu_int$SingleR_annot <- singleR_labels
 
 # UMAP with Seurat or dittoSeq:
@@ -293,8 +341,10 @@ write.csv(cbind(cell=rownames(seu_int@meta.data),
                 singleR=seu_int$SingleR_annot),
           "cell_clustering_ID.csv", row.names = F, quote = F)
 
-# save data set and clear environment:
 saveRDS(seu_int, "seu_int_day2_part2.rds")
+
+
+# save data set and clear environment:
 rm(list = ls())
 gc()
 .rs.restartR()

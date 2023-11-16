@@ -186,7 +186,7 @@ head(proB@meta.data)
 ```
 
 ::: callout-note
-If you want to know how this pro-B cell subset is generated, have a look at the script [here](../../assets/scripts/generate_object_proB.R).
+If you want to know how this pro-B cell subset is generated, have a look at the script [here](https://raw.githubusercontent.com/sib-swiss/single-cell-training/master/scripts/generate_object_proB.R).
 :::
 
 
