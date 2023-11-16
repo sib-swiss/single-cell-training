@@ -340,15 +340,15 @@ Generate a `monocle3` object (with class `cell_data_set`) from our `Seurat` obje
 
 ```{r}
 # create gene metadata data.frame
-feature_names <- as.data.frame(rownames(seu_int))
-rownames(feature_names) <- rownames(seu_int)
+feature_names <- as.data.frame(rownames(seu))
+rownames(feature_names) <- rownames(seu)
 colnames(feature_names) <- "gene_short_name"
 
 # initiate monocle object from seurat count table 
-seu_int_monocl <- monocle3::new_cell_data_set(Seurat::GetAssayData(seu_int,
+seu_monocl <- monocle3::new_cell_data_set(Seurat::GetAssayData(seu,
                                                                    assay = "joined",
                                                                    layer = "counts"),
-                                              cell_metadata = seu_int@meta.data,
+                                              cell_metadata = seu@meta.data,
                                               gene_metadata = feature_names)
 ```
 
@@ -362,13 +362,13 @@ We pre-process the newly created object. What does it involve? Check:
 Preprocess the dataset:
 
 ```{r}
-seu_int_monocl <- monocle3::preprocess_cds(seu_int_monocl)
+seu_monocl <- monocle3::preprocess_cds(seu_monocl)
 ```
 
 And check out the elbow plot:
 
 ```{r}
-monocle3::plot_pc_variance_explained(seu_int_monocl)
+monocle3::plot_pc_variance_explained(seu_monocl)
 ```
 
 Perform UMAP using the implementation in the `monocle3` package and its default parameters:
@@ -376,23 +376,23 @@ Perform UMAP using the implementation in the `monocle3` package and its default 
 ```{r}
 #| output: false
 #| message: false
-seu_int_monocl <- monocle3::reduce_dimension(seu_int_monocl, reduction_method = "UMAP")
+seu_monocl <- monocle3::reduce_dimension(seu_monocl, reduction_method = "UMAP")
 ```
 
 Plot the `monocle3` UMAP coloring cells according to the cluster ID, marker gene or annotation that were stored in the `Seurat` object:
 
 ```{r}
-monocle3::plot_cells(seu_int_monocl, 
+monocle3::plot_cells(seu_monocl, 
                      color_cells_by = "integrated_snn_res.0.3", 
                      cell_size = 1, 
                      show_trajectory_graph = FALSE)
 
-monocle3::plot_cells(seu_int_monocl, genes = "CD79A", 
+monocle3::plot_cells(seu_monocl, genes = "CD79A", 
                      cell_size = 1,
                      show_trajectory_graph = FALSE,
                      scale_to_range = FALSE)
 
-monocle3::plot_cells(seu_int_monocl, 
+monocle3::plot_cells(seu_monocl, 
                      color_cells_by = "SingleR_annot", 
                      cell_size = 1, 
                      show_trajectory_graph = FALSE)
@@ -402,19 +402,19 @@ monocle3::plot_cells(seu_int_monocl,
 Cluster cells using `monocle3`'s clustering function:
 
 ```{r}
-seu_int_monocl <- monocle3::cluster_cells(seu_int_monocl, resolution=0.00025)
-monocle3::plot_cells(seu_int_monocl, label_cell_groups = F)
+seu_monocl <- monocle3::cluster_cells(seu_monocl, resolution=0.00025)
+monocle3::plot_cells(seu_monocl, label_cell_groups = F)
 ```
 
 learn graph (i.e. identify trajectory) using `monocle3` UMAP and clustering:
 
 ```{r}
 #| output: false
-seu_int_monocl <- monocle3::learn_graph(seu_int_monocl)
+seu_monocl <- monocle3::learn_graph(seu_monocl)
 ```
 
 ```{r}
-monocle3::plot_cells(seu_int_monocl)
+monocle3::plot_cells(seu_monocl)
 ```
 
 ::: {.callout-important}
@@ -425,7 +425,7 @@ Find the CD34+ B-cell cluster in the monocle UMAP. This cluster has a high expre
 ::: {.callout-tip collapse="true"}
 
 ```{r}
-monocle3::plot_cells(seu_int_monocl, genes = c("CD79A", "CD34"),
+monocle3::plot_cells(seu_monocl, genes = c("CD79A", "CD34"),
                  show_trajectory_graph = FALSE, 
                  cell_size = 0.7, group_label_size = 4)
 ```
@@ -438,16 +438,16 @@ Select the "initial" cells in the B-cell cluster to calculate pseudotime. The in
 
 ```{r}
 #| eval: false
-seu_int_monocl <- monocle3::order_cells(seu_int_monocl)
+seu_monocl <- monocle3::order_cells(seu_monocl)
 ```
 
 ```{r}
 #| echo: false
-seu_int_monocl <- monocle3::order_cells(seu_int_monocl, root_pr_nodes = c("Y_156", "Y_195", "Y_215", "Y_223", "Y_231"))
+seu_monocl <- monocle3::order_cells(seu_monocl, root_pr_nodes = c("Y_156", "Y_195", "Y_215", "Y_223", "Y_231"))
 ```
 
 ```{r}
-monocle3::plot_cells(seu_int_monocl,
+monocle3::plot_cells(seu_monocl,
            color_cells_by = "pseudotime",
            label_cell_groups=F,
            label_leaves=F,
@@ -459,13 +459,13 @@ In order to find genes which expression is affected by pseudtime, we first have 
 
 ```{r}
 #| eval: false
-seuB <- choose_cells(seu_int_monocl)
+seuB <- choose_cells(seu_monocl)
 ```
 
 ```{r}
 #| echo: false
-cls <- clusters(seu_int_monocl) 
-seuB <- seu_int_monocl[, names(cls)[cls %in% c(10, 3, 11)]]
+cls <- clusters(seu_monocl) 
+seuB <- seu_monocl[, names(cls)[cls %in% c(10, 3, 11)]]
 ```
 
 <figure>
