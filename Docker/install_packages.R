@@ -5,22 +5,25 @@
 ## a vector of packages to install (edit in this section) ----------------------
 ### packages could be either on CRAN or bioconductor
 
-pkgs <- c("ggplot2", "BiocManager", "sctransform", "dplyr",
-          "scuttle",
-          "devtools", "cowplot", "matrixStats",
-          "ggbeeswarm", "ggnewscale", "msigdbr", "ggrastr",
-          "Seurat", "bit64", "scater",
-          "AnnotationDbi",
-          "SingleR", "clusterProfiler", "celldex",
-          "dittoSeq", "DelayedArray",
-          "DelayedMatrixStats",
-          "limma", "SingleCellExperiment",
-          "SummarizedExperiment",
-          "slingshot", "batchelor",
-          "clustree", "edgeR", "org.Hs.eg.db")
+# force compilation from source for tidytree
+# binary installation is only available for earlier versions
 
-### if packages need to be installed from github:
-### devtools::install_github("namespace/repo")
+
+pkgs <- c("devtools", "remotes",
+  "BiocManager", "dplyr",
+  "scuttle",
+  "cowplot",
+  "ggbeeswarm", "ggnewscale", "msigdbr", "ggrastr",
+  "bit64", "scater",
+  "AnnotationDbi",
+  "SingleR", "celldex",
+  "dittoSeq", "DelayedArray",
+  "DelayedMatrixStats",
+  "limma", "SingleCellExperiment",
+  "SummarizedExperiment",
+  "slingshot", "batchelor",
+  "clustree", "edgeR", "org.Hs.eg.db"
+)
 
 ## install Bioconductor --------------------------------------------------------
 if (!require("BiocManager", quietly = TRUE)) {
@@ -30,22 +33,34 @@ if (!require("BiocManager", quietly = TRUE)) {
 ## install and check package loading -------------------------------------------
 for (pkg in basename(pkgs)) {
   BiocManager::install(pkg, ask = FALSE, update = FALSE)
-  
-  if (! library(pkg, character.only = TRUE, logical.return = TRUE)) {
-    write(paste0("Installation of package ",
-                 pkg,
-                 " exited with non-zero exit status"),
-          stdout())
+
+  if (!library(pkg, character.only = TRUE, logical.return = TRUE)) {
+    write(
+      paste0(
+        "Installation of package ",
+        pkg,
+        " exited with non-zero exit status"
+      ),
+      stdout()
+    )
     quit(status = 1, save = "no")
   }
 }
+# Seurat from source
+install.packages("Seurat", repos = "https://cran.rstudio.com", type = "source")
 
-# installation old Matrix.utils because it's not on CRAN
-install.packages("https://cran.r-project.org/src/contrib/Archive/Matrix.utils/Matrix.utils_0.9.8.tar.gz", type = "source", repos = NULL)
-# adding this because Matrix might be downgraded by above command
-install.packages("Matrix")
+# clusterProfiler from repo
+remotes::install_github("YuLab-SMU/yulab.utils")
+remotes::install_github("YuLab-SMU/clusterProfiler")
+
+# # installation old Matrix.utils because it's not on CRAN
+# install.packages("https://cran.r-project.org/src/contrib/Archive/Matrix.utils/Matrix.utils_0.9.8.tar.gz", type = "source", repos = NULL)
+# # adding this because Matrix might be downgraded by above command
+# install.packages("Matrix")
 # Monocle3:
 devtools::install_github("cole-trapnell-lab/leidenbase")
 devtools::install_github("cole-trapnell-lab/monocle3")
-# Presto for fast wicoxon rank sum test:
+# Presto for fast wilcoxon rank sum test:
 remotes::install_github("immunogenomics/presto")
+# STACAS for integration:
+remotes::install_github("carmonalab/STACAS")
