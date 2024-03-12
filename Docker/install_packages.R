@@ -22,7 +22,8 @@ pkgs <- c("devtools", "remotes",
   "limma", "SingleCellExperiment",
   "SummarizedExperiment",
   "slingshot", "batchelor",
-  "clustree", "edgeR", "org.Hs.eg.db"
+  "clustree", "edgeR", "org.Hs.eg.db",
+  "glmGamPoi"
 )
 
 ## install Bioconductor --------------------------------------------------------
