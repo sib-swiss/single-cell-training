@@ -111,7 +111,8 @@ cellranger count \
 --sample=ETV6-RUNX1_1 \
 --transcriptome=/data/cellranger_index \
 --fastqs=/home/rstudio/single_cell_course/course_data/reads \
---localcores=4 
+--localcores=4 \
+--create-bam=true
 ```
 ::: 
 
