@@ -121,7 +121,7 @@ So, the function takes an object as input and we assign it to an object with the
 
 ::: {.callout-note}
 ## Getting specific information out of the `Seurat` object
-In order to get specific data you can use the `@` and `$` symbols to browse through the objects. However, `Seurat` comes with a lot of convenience functions, that are easier to use. So, e.g. to get the raw count matrix, you could type `seurat_object@assays$RNA@counts`, however, this is equivalent to `GetAssayData(object = seurat_object, slot = "counts")`. More information on these convenience functions [here](https://satijalab.org/seurat/articles/essential_commands.html).
+In order to get specific data you can use the `@` and `$` symbols to browse through the objects. However, `Seurat` comes with a lot of convenience functions, that are easier to use. So, e.g. to get the raw count matrix, you could type `seu@assays$RNA@layers$counts`, however, this is equivalent to `GetAssayData(object = seu, layer = "counts")`. More information on these convenience functions [here](https://satijalab.org/seurat/articles/essential_commands.html).
 ::: 
 
 ::: {.callout-important}
