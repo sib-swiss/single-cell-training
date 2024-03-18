@@ -84,7 +84,8 @@ cellranger count \
 --sample=FIXME \
 --transcriptome=FIXME \
 --fastqs=FIXME \
---localcores=4 
+--localcores=4 \
+--create-bam=true
 ```
 ::: 
 
