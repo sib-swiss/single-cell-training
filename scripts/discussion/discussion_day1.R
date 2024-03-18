@@ -1,5 +1,5 @@
 # SIB's scRNAseq course
-# 8722
+# 8724
 # R version 4.3.2
 
 # Correction of exercises
@@ -24,12 +24,12 @@
 
 
 #### Analysis within R (R console)
-setwd("/export/scratch/twyss/SIB_scRNAseq_course/november2023/data/")
+setwd("/export/scratch/twyss/SIB_scRNAseq_course/March2024/data/")
 
 # ----- Import cellranger output and generate Seurat object
-library(Seurat) # v.5.0.0
+library(Seurat) # v.5.0.2
 library(ggplot2)
-library(Matrix)
+library(Matrix) # 1.6.5
 
 # import Sample info and path to cellranger output for each sample:
 ?Read10X
@@ -67,7 +67,7 @@ seu <- Seurat::CreateSeuratObject(counts = sparse_matrix,
                                   project = "pbmmc",
                                   min.cells = 3,
                                   min.features = 100)
-seu # all genes and all cells included, no filtering done
+seu # 
 # 18673 features across 6946 samples within 1 assay 
 
 # Checking the structure of the object:
@@ -164,7 +164,6 @@ seu
 Seurat::VlnPlot(seu, features = c("nFeature_RNA",
                                   "percent.mito"))
 
-
 #### Normalization and scaling:
 # check data before normalization:
 Seurat::GetAssayData(seu)[1:10,1:10]  
@@ -195,11 +194,14 @@ Seurat::LabelPoints(plot = vf_plot,
 seu <- Seurat::ScaleData(seu,
                          features = rownames(seu))
 
-# Testing SCTransform:
-# seu_SCT <- Seurat::SCTransform(seu)
-# saveRDS(seu_SCT, "seu_SCT_day1.rds")
+# Testing SCTransform (takes a few minutes)
+if(FALSE) {
+ seu_SCT <- Seurat::SCTransform(seu)
+saveRDS(seu_SCT, "seu_SCT_day1.rds")
 # import seurat object with SCTransform Day1:
+} else {
 seu_SCT<-readRDS("seu_SCT_day1.rds")
+}
 names(seu_SCT@assays)
 # [1] "RNA" "SCT"
 
