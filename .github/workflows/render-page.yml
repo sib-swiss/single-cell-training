@@ -13,6 +13,8 @@ jobs:
     container: geertvangeest/single-cell-rstudio:latest
     steps:
       - uses: actions/checkout@v4
+        with:
+            ref: 74-set-up-quarto-to-run-as-action
       - name: Publish to GitHub Pages (and render) 
         uses: quarto-dev/quarto-actions/publish@v2
         with:
