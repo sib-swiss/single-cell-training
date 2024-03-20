@@ -5,6 +5,12 @@ title: "Trajectory analysis"
 
 ## Material
 
+Lecture Alex Russel Lederer:
+
+{{< downloadthis ../assets/pdf/Lecture_pseudotime_velocity.pdf dname="Lecture_pseudotime_velocity" label="Download the presentation" icon="filetype-pdf" >}}
+
+Lecture Tania Wyss and Rachel Marcone:
+
 {{< downloadthis ../assets/pdf/Trajectories.pdf dname="Trajectories" label="Download the presentation" icon="filetype-pdf" >}}
 
 {{< video https://youtu.be/FNrjzFUMOzU?si=G-ETBiHkkMe6eWfQ >}}
