@@ -1,3 +1,4 @@
+name: Render and publish
 
 on:
     workflow_dispatch:
