@@ -5,6 +5,7 @@ on:
     push:
       branches:
         - main
+        - 74-set-up-quarto-to-run-as-action
 
 jobs:
   docker:
