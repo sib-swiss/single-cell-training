@@ -11,7 +11,7 @@ cellranger*
 course_data*
 *.rds
 _site/
-_freeze/
+# _freeze/
 .quarto/
 /.quarto/
 *cache*
