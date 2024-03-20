@@ -8,18 +8,19 @@ library(dittoSeq)
 library(dplyr)
 
 ### Find marker genes ("differential" gene expression)
-setwd("/export/scratch/twyss/SIB_scRNAseq_course/July2023/data/")
-seu_int <- readRDS("seu_int_day2_part2.rds")
+# setwd("/export/scratch/twyss/SIB_scRNAseq_course/July2023/data/")
+setwd("/home/rstudio/single_cell_course/")
+
+seu <- readRDS("seu_day2_part2.rds")
 
 # Use wilcoxon test from Seurat (make sure the default cell identity
 # is set to what you want it to be)
-Idents(seu_int) # res 0.3 with clusters 0-12
+Idents(seu) # res 0.3 with clusters 0-12
 # make sure the Default assay is set to RNA:
-DefaultAssay(seu_int)<-"RNA"
-?FindAllMarkers
+?FindAllMarkers # check Value section for type of output
 
 # this takes a while! Already run:
-de_genes <- Seurat::FindAllMarkers(seu_int,  min.pct = 0.25,
+de_genes <- Seurat::FindAllMarkers(seu,  min.pct = 0.25,
                                     only.pos = TRUE)
 head(de_genes) 
 
@@ -40,22 +41,22 @@ top_specific_markers <- de_genes %>%
   dplyr::top_n(3, avg_log2FC) # select top 3 rows by value
 
 View(top_specific_markers)
-dittoSeq::dittoDotPlot(seu_int, vars = unique(top_specific_markers$gene), 
-                       group.by = "integrated_snn_res.0.3")
-dittoSeq::dittoDotPlot(seu_int, vars = unique(top_specific_markers$gene), 
+dittoSeq::dittoDotPlot(seu, vars = unique(top_specific_markers$gene), 
+                       group.by = "RNA_snn_res.0.3")
+dittoSeq::dittoDotPlot(seu, vars = unique(top_specific_markers$gene), 
                        group.by = "SingleR_annot")
 
 # check if T cell genes are within DE genes
 tcell_genes <- c("IL7R", "LTB", "TRAC", "CD3D")
 de_genes[de_genes$gene %in% tcell_genes,]
 
-# pairwise DE between CD4+ and CD8+ T cells
-seu_int <- Seurat::SetIdent(seu_int, value = "SingleR_annot")
+# marker detection between CD4+ and CD8+ T cells
+seu <- Seurat::SetIdent(seu, value = "SingleR_annot")
 
-deg_cd8_cd4 <- Seurat::FindMarkers(seu_int,
+deg_cd8_cd4 <- Seurat::FindMarkers(seu,
                                    ident.1 = "CD8+ T cells",
                                    ident.2 = "CD4+ T cells",
-                                   group.by = seu_int$SingleR_annot,
+                                   group.by = seu$SingleR_annot,
                                    test.use = "wilcox")
 deg_cd8_cd4<-subset(deg_cd8_cd4, deg_cd8_cd4$p_val_adj<0.05)
 
@@ -64,8 +65,12 @@ View(deg_cd8_cd4)
 ?FindMarkers
 deg_cd8_cd4[c("CD4", "CD8A", "CD8B"),]
 
+# How many of the DE genes are part of the variable features?
+length(which(rownames(deg_cd8_cd4) %in% VariableFeatures(seu)))
+# 54
+
 # Plotting the T cell genes only in T cells:
-Seurat::VlnPlot(seu_int, 
+Seurat::VlnPlot(seu, 
                 features = c("CD4", "CD8A", "CD8B"),
                 idents = c("CD8+ T cells", "CD4+ T cells"),
                 group.by = "SingleR_annot")
@@ -124,6 +129,8 @@ counts(summed)[1:3,]
 head(colData(summed))
 
 #As in the standard limma analysis generate a DGE object
+library(edgeR)
+library(limma)
 
 y <- DGEList(counts(summed), samples=colData(summed)$sample)
 
@@ -133,6 +140,8 @@ y <- y[keep,]
 
 ##see how many genes were kept 
 summary(keep)
+#    Mode   FALSE    TRUE 
+# logical   11086   10017 
 
 ## Create the design matrix and include the patient ID (or scRNAseq technology, etc) as a covariate:
 design <- model.matrix(~0 + summed$type + summed$patient.id)
@@ -163,7 +172,6 @@ dge <- edgeR::calcNormFactors(y)
 vm <- limma::voom(dge, design = design, plot = TRUE)
 ?lmFit
 fit <- limma::lmFit(vm, design = design)
-?contrasts.fit
 fit.contrasts <- limma::contrasts.fit(fit, contrast.mat)
 ?eBayes
 fit.contrasts <- limma::eBayes(fit.contrasts)
@@ -521,75 +529,71 @@ PCAplot_slingshot(sce,
 
 # get matrix and filter for minimum number of cells and 
 # features (the latter is a fix for backward compatibility)
-mat_tmp <- seu_int@assays$RNA@counts
-seu_tmp <- Seurat::CreateSeuratObject(mat_tmp, min.cells = 3,
-                                      min.features = 100)
-
-feature_names <- as.data.frame(rownames(seu_tmp))
-rownames(feature_names) <- rownames(seu_tmp)
+# create gene metadata data.frame
+feature_names <- as.data.frame(rownames(seu))
+rownames(feature_names) <- rownames(seu)
 colnames(feature_names) <- "gene_short_name"
 
-# already ran: (takes a while)
-seu_int_monocl <- monocle3::new_cell_data_set(seu_tmp@assays$RNA@counts,
-                                              cell_metadata = seu_int@meta.data,
-                                              gene_metadata = feature_names)
+# initiate monocle object from seurat count table 
+seu_monocl <- monocle3::new_cell_data_set(Seurat::GetAssayData(seu,
+                                                               layer = "counts"),
+                                          cell_metadata = seu@meta.data,
+                                          gene_metadata = feature_names)
 
 # # Preprocess the dataset:
 ?preprocess_cds
 # already ran: (takes a while)
-seu_int_monocl <- monocle3::preprocess_cds(seu_int_monocl)
+seu_monocl <- monocle3::preprocess_cds(seu_monocl)
 
 # elbow plot:
-monocle3::plot_pc_variance_explained(seu_int_monocl)
+monocle3::plot_pc_variance_explained(seu_monocl)
 
 # Perform UMAP using the implementation in the monocle3 package and its default parameters:
-seu_int_monocl <- monocle3::reduce_dimension(seu_int_monocl, reduction_method = "UMAP")
+seu_monocl <- monocle3::reduce_dimension(seu_monocl, reduction_method = "UMAP")
 
 # Plot the monocle3 UMAP coloring cells according to the cluster ID ran with Seurat:
-monocle3::plot_cells(seu_int_monocl, 
-                     color_cells_by = "integrated_snn_res.0.3", 
+monocle3::plot_cells(seu_monocl, 
+                     color_cells_by = "RNA_snn_res.0.3", 
                      cell_size = 1, 
                      show_trajectory_graph = FALSE)
 # Slightly different UMAP between Seurat and Monocle3:
-p1<-DimPlot(seu_int, group.by = "integrated_snn_res.0.3", label = T)
-p2<-monocle3::plot_cells(seu_int_monocl, 
-                         color_cells_by = "integrated_snn_res.0.3", 
+p1<-DimPlot(seu, group.by = "RNA_snn_res.0.3", label = T)
+p2<-monocle3::plot_cells(seu_monocl, 
+                         color_cells_by = "RNA_snn_res.0.3", 
                          cell_size = 0.7, 
                          show_trajectory_graph = FALSE,
-                         label_cell_groups = T)
+                         label_cell_groups = T, 
+                         group_label_size=6)
 cowplot::plot_grid(p1,p2, ncol = 2)
 
 # plot B cell marker:
-monocle3::plot_cells(seu_int_monocl, genes = "CD79A", 
+monocle3::plot_cells(seu_monocl, genes = "CD79A", 
                      show_trajectory_graph = FALSE, 
                      cell_size = 1, norm_method = "log")
 # Cluster cells using monocle3‘s clustering function:
 ?cluster_cells
-# seu_int_monocl <- monocle3::cluster_cells(seu_int_monocl, cluster_method = "leiden", resolution=0.0002)
-# Error in leidenbase::leiden_find_partition(graph_result[["g"]], partition_type = partition_type,  : 
-# REAL() can only be applied to a 'numeric', not a 'NULL'
-seu_int_monocl <- monocle3::cluster_cells(seu_int_monocl, cluster_method = "louvain")
+seu_monocl <- monocle3::cluster_cells(seu_monocl, resolution=0.00025)
+# monocle3::partitions(seu_monocl)
+monocle3::plot_cells(seu_monocl, label_cell_groups = F)
 
-# monocle3::partitions(seu_int_monocl)
-monocle3::plot_cells(seu_int_monocl, label_cell_groups = F)
 
 # learn graph (i.e. identify trajectory) using monocle3 UMAP and clustering:
-seu_int_monocl <- monocle3::learn_graph(seu_int_monocl)
-monocle3::plot_cells(seu_int_monocl)
+seu_monocl <- monocle3::learn_graph(seu_monocl)
+monocle3::plot_cells(seu_monocl)
 
 # Find the CD34+ B-cell cluster in the monocle UMAP. This cluster has a high expression of CD79A and expresses CD34.
-monocle3::plot_cells(seu_int_monocl, genes = c("CD79A", "CD34"),
+monocle3::plot_cells(seu_monocl, genes = c("CD79A", "CD34"),
                      show_trajectory_graph = FALSE, 
                      cell_size = 0.7, group_label_size = 4)
 
 # Select the “initial” cells in the B-cell cluster to calculate pseudotime. 
 # The initial cells in this case are the CD34+ B-cells we have just identified. 
 # A pop up window will open and you need to click on the “initial” cells (one node per trajectory), then click “Done”.
-# seu_int_monocl <- monocle3::learn_graph(seu_int_monocl)
+# seu_monocl <- monocle3::learn_graph(seu_monocl)
 
-seu_int_monocl<-monocle3::order_cells(seu_int_monocl)
+seu_monocl<-monocle3::order_cells(seu_monocl)
 
-monocle3::plot_cells(seu_int_monocl,
+monocle3::plot_cells(seu_monocl,
                      color_cells_by = "pseudotime",
                      label_cell_groups=F,
                      label_leaves=F,
@@ -599,7 +603,7 @@ monocle3::plot_cells(seu_int_monocl,
 # In order to find genes which expression is affected by pseudotime, 
 # we first have to isolate the B-cell cluster. Therefore, extract 
 # all cells in the B-cell cluster with the interactive choose_cells function:
-seuB <- choose_cells(seu_int_monocl)
+seuB <- choose_cells(seu_monocl)
 class(seuB)
 
 # Check whether you have selected the right cells:
