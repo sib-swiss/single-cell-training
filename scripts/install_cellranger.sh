@@ -9,3 +9,8 @@ tar -xzvf cellranger-7.1.0.tar.gz
 # now users need to add the cellranger directory to their path with
 # export PATH=$PATH:/data/cellranger-7.1.0
 # for users data is mounted to the root directory
+
+# also download the reference data
+wget https://single-cell-transcriptomics.s3.eu-central-1.amazonaws.com/cellranger_index.tar.gz
+tar -xvf cellranger_index.tar.gz
+rm cellranger_index.tar.gz
