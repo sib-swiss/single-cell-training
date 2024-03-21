@@ -1,1 +1,0 @@
-Sitemap: https://sib-swiss.github.io/single-cell-training/sitemap.xml

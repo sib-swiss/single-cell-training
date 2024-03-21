@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.361">
+<meta name="generator" content="quarto-1.3.450">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Single cell transcriptomics - Enrichment analysis</title>
 <style>
@@ -256,8 +256,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></section><section id="exercises" class="level2"><h2 class="anchored" data-anchor-id="exercises">Exercises</h2>
 <p>Load the following packages:</p>
 <div class="cell" data-hash="day3-2_enrichment_analysis_cache/html/unnamed-chunk-2_02e7d4ff1a63ade0bd19ade403372a3e">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">clusterProfiler</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">enrichplot</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yulab-smu.top/biomedical-knowledge-mining-book/">clusterProfiler</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yulab-smu.top/biomedical-knowledge-mining-book/">enrichplot</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If the <code>FindMarkers</code> or <code>FindAllMarkers</code> functions were used, we obtained a table listing only the significant genes, but we don’t have any information of fold change for the non-significant genes. Therefore, we can use the over-representation analysis which is a threshold-based method. Using our list of significant genes, we can test if any gene set is over-represented among significant genes or not using a test similar to a Fisher test to compare differences in proportions.</p>
 <p>The <code>clusterProfiler</code> package provides functions for over-representation analysis of Gene Ontology gene sets (among other functions, including functions for actual GSEA) or KEGG gene sets.</p>
@@ -281,7 +281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="op">?</span><span class="va">enrichGO</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-hash="day3-2_enrichment_analysis_cache/html/unnamed-chunk-6_d589e167429ec9721ba85e82d306b491">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tum_vs_norm_go</span> <span class="op">&lt;-</span> <span class="fu">clusterProfiler</span><span class="fu">::</span><span class="fu">enrichGO</span><span class="op">(</span><span class="va">tum_down_genes</span>,</span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tum_vs_norm_go</span> <span class="op">&lt;-</span> <span class="fu">clusterProfiler</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/enrichGO.html">enrichGO</a></span><span class="op">(</span><span class="va">tum_down_genes</span>,</span>
 <span>                                            <span class="st">"org.Hs.eg.db"</span>,</span>
 <span>                                            keyType <span class="op">=</span> <span class="st">"SYMBOL"</span>,</span>
 <span>                                            ont <span class="op">=</span> <span class="st">"BP"</span>,</span>
@@ -405,7 +405,7 @@ The columns <code>GeneRatio</code> and <code>BgRatio</code>
 </div>
 <p>Some GO terms seem redundant because they contain many of the same genes, which is a characteristic of Gene Ontology gene sets. We can simplify this list by removing redundant gene sets:</p>
 <div class="cell" data-hash="day3-2_enrichment_analysis_cache/html/unnamed-chunk-9_c0e7057d2f4134cbfa716f9d1b9306a5">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">enr_go</span> <span class="op">&lt;-</span> <span class="fu">clusterProfiler</span><span class="fu">::</span><span class="fu">simplify</span><span class="op">(</span><span class="va">tum_vs_norm_go</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">enr_go</span> <span class="op">&lt;-</span> <span class="fu">clusterProfiler</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/simplify-methods.html">simplify</a></span><span class="op">(</span><span class="va">tum_vs_norm_go</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-hash="day3-2_enrichment_analysis_cache/html/unnamed-chunk-10_3f3b6339df4de19309abd92192dcbba9">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/View.html">View</a></span><span class="op">(</span><span class="va">enr_go</span><span class="op">@</span><span class="va">result</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -500,7 +500,7 @@ The columns <code>GeneRatio</code> and <code>BgRatio</code>
 </div>
 <p>We can quite easily generate a plot called an enrichment map with the <code>enrichplot</code> package:</p>
 <div class="cell" data-hash="day3-2_enrichment_analysis_cache/html/unnamed-chunk-12_3a67d3d3f3caafedfd630cf4456325b0">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">enrichplot</span><span class="fu">::</span><span class="fu">emapplot</span><span class="op">(</span><span class="fu">enrichplot</span><span class="fu">::</span><span class="fu">pairwise_termsim</span><span class="op">(</span><span class="va">enr_go</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">enrichplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/emapplot.html">emapplot</a></span><span class="op">(</span><span class="fu">enrichplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/pairwise_termsim.html">pairwise_termsim</a></span><span class="op">(</span><span class="va">enr_go</span><span class="op">)</span>,</span>
 <span>                     showCategory <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>                     cex.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>category_label <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -509,11 +509,11 @@ The columns <code>GeneRatio</code> and <code>BgRatio</code>
 </div>
 <p>Instead of testing for Gene Ontology terms, we can also test for other gene set collections. For example the Hallmark collection from <a href="http://www.gsea-msigdb.org/gsea/msigdb/index.jsp">MSigDB</a>:</p>
 <div class="cell" data-hash="day3-2_enrichment_analysis_cache/html/unnamed-chunk-13_3133571032a826f94cddbb614b8bb197">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gmt</span> <span class="op">&lt;-</span> <span class="fu">msigdbr</span><span class="fu">::</span><span class="fu">msigdbr</span><span class="op">(</span>species <span class="op">=</span> <span class="st">"human"</span>, category <span class="op">=</span> <span class="st">"H"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gmt</span> <span class="op">&lt;-</span> <span class="fu">msigdbr</span><span class="fu">::</span><span class="fu"><a href="https://igordot.github.io/msigdbr/reference/msigdbr.html">msigdbr</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"human"</span>, category <span class="op">=</span> <span class="st">"H"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can use the function <code>enricher</code> to test for over-representation of any set of genes of the Hallmark collection. We have to include the “universe”, i.e.&nbsp;the full list of background, non significant genes, against which to test for differences in proportions:</p>
 <div class="cell" data-hash="day3-2_enrichment_analysis_cache/html/unnamed-chunk-14_72b43dd4a7e61f6179f2eec5588fa4df">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tum_vs_norm_enrich</span> <span class="op">&lt;-</span> <span class="fu">clusterProfiler</span><span class="fu">::</span><span class="fu">enricher</span><span class="op">(</span>gene <span class="op">=</span> <span class="va">tum_down_genes</span>,</span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tum_vs_norm_enrich</span> <span class="op">&lt;-</span> <span class="fu">clusterProfiler</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/enricher.html">enricher</a></span><span class="op">(</span>gene <span class="op">=</span> <span class="va">tum_down_genes</span>,</span>
 <span>                                                universe <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">proB</span><span class="op">)</span>,</span>
 <span>                                                pAdjustMethod <span class="op">=</span> <span class="st">"BH"</span>,</span>
 <span>                                                pvalueCutoff  <span class="op">=</span> <span class="fl">0.05</span>,</span>
@@ -605,7 +605,7 @@ The columns <code>GeneRatio</code> and <code>BgRatio</code>
 <section id="clear-environment" class="level3"><h3 class="anchored" data-anchor-id="clear-environment">Clear environment</h3>
 <p>Clear your environment:</p>
 <div class="cell" data-hash="day3-2_enrichment_analysis_cache/html/unnamed-chunk-17_25d68bcc27fc591b07aef70f1a22dd95">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span><span class="op">(</span>list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ls.html">ls</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span><span class="op">(</span>list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/AnnotationDbi/man/Bimap-envirAPI.html">ls</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/gc.html">gc</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">.rs.restartR</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
