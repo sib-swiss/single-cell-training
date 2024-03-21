@@ -94,6 +94,7 @@ DimPlot(proB, group.by = "type")
 
 head(proB@meta.data)
 
+#taking the proB data 
 Seurat::DefaultAssay(proB) <- "RNA"
 Seurat::Idents(proB) <- proB$orig.ident
 
@@ -101,41 +102,42 @@ Seurat::Idents(proB) <- proB$orig.ident
 proB$patient.id<-gsub("ETV6-RUNX1", "ETV6_RUNX1", proB$orig.ident)
 proB$patient.id<-sapply(strsplit(proB$patient.id, "-"), '[', 2)
 
-## here it is new, to allow to perform pseudo-bulk:
+## Here we do perform pseudo-bulk:
 ##first a mandatory column of sample needs to be added to the meta data that is the grouping factor, should be the samples
 proB$sample <- factor(proB$orig.ident)
 
-##first an sce object is needed
-sce_proB <- Seurat::as.SingleCellExperiment(proB)
+# aggergate the cells per sampple
+bulk <- Seurat::AggregateExpression(proB, group.by = "sample",
+                                    return.seurat = TRUE,
+                                    assay = "RNA")
+bulk@meta.data
 
-#The needed package has to be installed if not already done:
-# if (!require("BiocManager", quietly = TRUE))
-#   install.packages("BiocManager")
-# BiocManager::install("scuttle")
+# create a metadata data frame based on the aggregated cells
+meta_data <- unique(proB@meta.data[, c("orig.ident",
+                                       "sample", "type",
+                                       "patient.id")])
+rownames(meta_data) <- meta_data$orig.ident
+bulk@meta.data <- meta_data[colnames(bulk), ]
 
-library(scuttle)
-
-##aggregateAcrossCells here it is only aggregated by sample, one could imagine
-##to aggregate by sample and by celltype for instance
-summed <- scuttle::aggregateAcrossCells(sce_proB, 
-                               id=colData(sce_proB)[,c("sample")])
-class(summed)
-?SingleCellExperiment
 ##have a look at the counts
-counts(summed)[1:3,]
+counts <- Seurat::GetAssayData(bulk, layer = "counts") |> as.matrix()
+
+head(counts)
 
 #have a look at the colData of our new object summed, can you see type and 
 #patient.id are there
-head(colData(summed))
+head(bulk@meta.data)
 
 #As in the standard limma analysis generate a DGE object
 library(edgeR)
 library(limma)
 
-y <- DGEList(counts(summed), samples=colData(summed)$sample)
+#As in the standard limma analysis generate a DGE object
+
+y <- edgeR::DGEList(counts, samples = bulk@meta.data)
 
 ##filter lowly expressed (recommanded for limma)
-keep <- filterByExpr(y, group=summed$type)
+keep <- edgeR::filterByExpr(y, group = bulk$type)
 y <- y[keep,]
 
 ##see how many genes were kept 
@@ -144,14 +146,14 @@ summary(keep)
 # logical   11086   10017 
 
 ## Create the design matrix and include the patient ID (or scRNAseq technology, etc) as a covariate:
-design <- model.matrix(~0 + summed$type + summed$patient.id)
+design <- model.matrix(~0 + y$samples$type + y$samples$patient.id)
 
 # Have a look
 design
 
 # change column/rownames names to more simple group names: 
 colnames(design) <- make.names(c("ETV6-RUNX1", "PBMMC","patient2","patient3"))
-rownames(design)<-colData(summed)$sample
+rownames(design)<-rownames(bulk@meta.data)
 
 # Create contrasts, i.e. specify which groups we want to compare, here we want
 # to find genes differentially expressed between cluster 1 and cluster 2.
@@ -209,10 +211,11 @@ library(org.Hs.eg.db)
 AnnotationDbi::keytypes(org.Hs.eg.db)
 
 # select genes down-regulated in tumor:
-tum_down <- subset(tum_vs_norm,
-                   tum_vs_norm$avg_log2FC < -1 &
-                     tum_vs_norm$p_val_adj < 0.05)
-tum_down_genes <- rownames(tum_down) # 62 genes
+tum_down  <- subset(limma_de,
+                    limma_de$logFC < -1 
+                    & limma_de$adj.P.Val <  0.05)
+tum_down_genes <- rownames(tum_down)
+length(tum_down_genes) # 958
 
 # over-representation analysis (Fisher test) for down-reg genes:
 ?enrichGO
@@ -221,12 +224,13 @@ tum_vs_norm_go <- clusterProfiler::enrichGO(gene = tum_down_genes,
                                             OrgDb =  "org.Hs.eg.db",
                                             keyType = "SYMBOL",
                                             ont = "BP",
+                                            universe = rownames(limma_de), 
                                             minGSSize = 50)
 View(tum_vs_norm_go@result)
 class(tum_vs_norm_go@geneSets)
 head(names(tum_vs_norm_go@geneSets))
 # Check for key word in Description of GO terms:
-tum_vs_norm_go@result[grep("cell cycle", tum_vs_norm_go@result$Description),]
+tum_vs_norm_go@result[grep("cell cycle", tum_vs_norm_go@result$Description), c(1,2,6)]
 
 # remove redundant gene sets (already run):
 enr_go <- clusterProfiler::simplify(tum_vs_norm_go)
@@ -242,7 +246,7 @@ gmt <- msigdbr::msigdbr(species = "Homo sapiens", category = "H")
 ?clusterProfiler::read.gmt
 
 tum_vs_norm_enrich <- clusterProfiler::enricher(gene = tum_down_genes,
-                                                universe = rownames(proB),
+                                                universe = rownames(limma_de),
                                                 pAdjustMethod = "BH",
                                                 TERM2GENE = gmt[,c("gs_name", "gene_symbol")])
 View(tum_vs_norm_enrich@result[which(tum_vs_norm_enrich@result$p.adjust<0.05),])
