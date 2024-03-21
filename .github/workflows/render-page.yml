@@ -6,16 +6,51 @@ on:
       branches:
         - master
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
-  docker:
+  # Single deploy job since we're just deploying
+  publish-site:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    container: geertvangeest/single-cell-rstudio:latest
-    permissions:
-        contents: write
+    container:
+      image: geertvangeest/single-cell-rstudio:latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Publish to GitHub Pages (and render) 
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build site
         run: |
-            quarto publish gh-pages . --no-browser
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # this secret is always available for github actions
+          quarto render
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site/'
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+# jobs:
+#   docker:
+#     runs-on: ubuntu-latest
+#     container: geertvangeest/single-cell-rstudio:latest
+#     permissions:
+#         contents: write
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Publish to GitHub Pages (and render) 
+#         run: |
+#             quarto publish gh-pages . --no-browser
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # this secret is always available for github actions
