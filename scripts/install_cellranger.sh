@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # run this commands in the admin container
+# e.g. docker run ubuntu -it --rm -v data:/data ubuntu
 
 sudo su
 cd /home/rstudio/data
