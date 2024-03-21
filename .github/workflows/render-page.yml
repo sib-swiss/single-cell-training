@@ -8,7 +8,7 @@ on:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -36,25 +36,9 @@ jobs:
       
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        # If you're changing the branch from main,
-        # also change the `main` in `refs/heads/main`
-        # below accordingly.
         if: github.ref == 'refs/heads/master'
         with:
             github_token: ${{ secrets.GITHUB_TOKEN }}
             publish_branch: gh-pages
             publish_dir: ./_site
 
-# jobs:
-#   docker:
-#     runs-on: ubuntu-latest
-#     container: geertvangeest/single-cell-rstudio:latest
-#     permissions:
-#         contents: write
-#     steps:
-#       - uses: actions/checkout@v4
-#       - name: Publish to GitHub Pages (and render) 
-#         run: |
-#             quarto publish gh-pages . --no-browser
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # this secret is always available for github actions
