@@ -62,9 +62,6 @@ extra_css:
 extra:
   version:
     provider: mike
-  analytics:
-    provider: google
-    property: G-1H5B39PY7V
   consent:
     title: Cookie consent
     description: >- 
