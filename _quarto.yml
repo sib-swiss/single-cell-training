@@ -11,6 +11,8 @@ website:
   favicon: assets/SIB_logo.svg
   search: true
   page-navigation: true
+  google-analytics: G-1H5B39PY7V
+  cookie-consent: true
   navbar:
     background: "#003eaa"
     left:
