@@ -10,3 +10,4 @@ single_cell_course
 cellranger*
 course_data*
 *.rds
+env/
