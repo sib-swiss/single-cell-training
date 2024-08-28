@@ -11,8 +11,8 @@ website:
   favicon: assets/SIB_logo.svg
   search: true
   page-navigation: true
-  google-analytics: G-1H5B39PY7V
-  cookie-consent: true
+  # google-analytics: G-1H5B39PY7V
+  # cookie-consent: true
   navbar:
     background: "#003eaa"
     left:
@@ -55,6 +55,22 @@ format:
     toc: true
     header-includes: |
       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro">
+      <!-- Matomo -->
+      <script>
+        var _paq = window._paq = window._paq || [];
+        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+          var u="https://matomo.sib.swiss/";
+          _paq.push(['setTrackerUrl', u+'matomo.php']);
+          _paq.push(['setSiteId', '220']);
+          var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+          g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+        })();
+      </script>
+      <!-- End Matomo Code -->
+
 
 execute:
   freeze: auto 
