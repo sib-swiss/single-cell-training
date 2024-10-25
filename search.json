@@ -151,21 +151,21 @@
     "href": "course_schedule.html#day-1",
     "title": "Course schedule",
     "section": "Day 1",
-    "text": "Day 1\n\n\n\nblock\nstart\nend\nsubject\n\n\n\n\nintroduction\n9:15 AM\n9:30 AM\nIntroduction\n\n\nblock 1\n9:30 AM\n10:30 AM\nIntroduction scRNAseq\n\n\n\n10:30 AM\n11:00 AM\nBREAK\n\n\nblock 2\n11:00 AM\n12:30 PM\nAnalysis tools and QC\n\n\n\n12:30 PM\n1:30 PM\nBREAK\n\n\nblock 3\n1:30 PM\n3:00 PM\nAnalysis tools and QC\n\n\n\n3:00 PM\n3:30 PM\nBREAK\n\n\nblock 4\n3:30 PM\n5:00 PM\nNormalization and scaling"
+    "text": "Day 1\n\n\n\nblock\nstart\nend\nsubject\n\n\n\n\nintroduction\n9:00 AM\n9:30 AM\nIntroduction\n\n\nblock 1\n9:30 AM\n10:30 AM\nIntroduction scRNAseq\n\n\n\n10:30 AM\n11:00 AM\nBREAK\n\n\nblock 2\n11:00 AM\n12:30 PM\nAnalysis tools and QC\n\n\n\n12:30 PM\n1:30 PM\nBREAK\n\n\nblock 3\n1:30 PM\n3:00 PM\nAnalysis tools and QC\n\n\n\n3:00 PM\n3:30 PM\nBREAK\n\n\nblock 4\n3:30 PM\n5:00 PM\nNormalization and scaling"
   },
   {
     "objectID": "course_schedule.html#day-2",
     "href": "course_schedule.html#day-2",
     "title": "Course schedule",
     "section": "Day 2",
-    "text": "Day 2\n\n\n\nblock\nstart\nend\nsubject\n\n\n\n\nblock 1\n9:15 AM\n10:30 AM\nIntegration and Dimensionality reduction\n\n\n\n10:30 AM\n11:00 AM\nBREAK\n\n\nblock 2\n11:00 AM\n12:30 PM\nFurther exercises\n\n\n\n12:30 PM\n1:30 PM\nBREAK\n\n\nblock 3\n1:30 PM\n3:00 PM\nClustering\n\n\n\n3:00 PM\n3:30 PM\nBREAK\n\n\nblock 4\n3:30 PM\n5:00 PM\nCell annotation"
+    "text": "Day 2\n\n\n\nblock\nstart\nend\nsubject\n\n\n\n\nblock 1\n9:00 AM\n10:30 AM\nIntegration and Dimensionality reduction\n\n\n\n10:30 AM\n11:00 AM\nBREAK\n\n\nblock 2\n11:00 AM\n12:30 PM\nFurther exercises\n\n\n\n12:30 PM\n1:30 PM\nBREAK\n\n\nblock 3\n1:30 PM\n3:00 PM\nClustering\n\n\n\n3:00 PM\n3:30 PM\nBREAK\n\n\nblock 4\n3:30 PM\n5:00 PM\nCell annotation"
   },
   {
     "objectID": "course_schedule.html#day-3",
     "href": "course_schedule.html#day-3",
     "title": "Course schedule",
     "section": "Day 3",
-    "text": "Day 3\n\n\n\nblock\nstart\nend\nsubject\n\n\n\n\nblock 1\n9:15 AM\n10:30 AM\nDifferential gene expression\n\n\n\n10:30 AM\n11:00 AM\nBREAK\n\n\nblock 2\n11:00 AM\n12:30 PM\nEnrichment analysis\n\n\n\n12:30 PM\n1:30 PM\nBREAK\n\n\nblock 3\n1:30 PM\n3:00 PM\nTrajectory analysis\n\n\n\n3:00 PM\n3:30 PM\nBREAK\n\n\nblock 4\n3:30 PM\n5:00 PM\nAdvanced analyses"
+    "text": "Day 3\n\n\n\nblock\nstart\nend\nsubject\n\n\n\n\nblock 1\n9:00 AM\n10:30 AM\nDifferential gene expression\n\n\n\n10:30 AM\n11:00 AM\nBREAK\n\n\nblock 2\n11:00 AM\n12:30 PM\nEnrichment analysis\n\n\n\n12:30 PM\n1:30 PM\nBREAK\n\n\nblock 3\n1:30 PM\n3:00 PM\nTrajectory analysis\n\n\n\n3:00 PM\n3:30 PM\nBREAK\n\n\nblock 4\n3:30 PM\n5:00 PM\nAdvanced analyses"
   },
   {
     "objectID": "about.html",
