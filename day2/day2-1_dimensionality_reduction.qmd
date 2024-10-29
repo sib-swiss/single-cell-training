@@ -5,7 +5,7 @@ title: "Dimensionality reduction"
 
 ## Material
 
-{{< downloadthis ../assets/pdf/scRNAseq_RM_Integration_dimreduction.pdf dname="scRNAseq_RM_Integration_dimreduction" label="Download the presentation" icon="filetype-pdf" >}}
+{{< downloadthis ../assets/pdf/Dimensionality_Reduction_SIB.pdf dname="Dimensionality_Reduction_SIB" label="Download the presentation" icon="filetype-pdf" >}}
 
 {{< video https://youtu.be/QS6ZH_41b4s?si=fvaNGkqjsIcxTEFn >}}
 
