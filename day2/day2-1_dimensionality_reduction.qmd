@@ -9,12 +9,16 @@ title: "Dimensionality reduction"
 
 {{< video https://youtu.be/QS6ZH_41b4s?si=fvaNGkqjsIcxTEFn >}}
 
+{{< downloadthis ../assets/pdf/scRNAseq_RM_Integration_dimreduction.pdf dname="scRNAseq_RM_Integration_dimreduction" label="Download the presentation from the video" icon="filetype-pdf" >}}
+
 - Making sense of [PCA](https://stats.stackexchange.com/questions/2691/making-sense-of-principal-component-analysis-eigenvectors-eigenvalues)
 - Understanding [t-SNE](https://distill.pub/2016/misread-tsne/)
 - [t-SNE explained](https://www.youtube.com/watch?v=NEaUSP4YerM) by Josh Starmer
 - Understanding [UMAP](https://pair-code.github.io/understanding-umap/)
 - [Video](https://www.youtube.com/watch?v=nq6iPZVUxZU) by one of the UMAP authors
 - More info on [UMAP parameters](https://umap.scikit-tda.org/parameters.html)
+
+
 
 
 ## Exercises

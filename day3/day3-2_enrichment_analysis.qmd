@@ -4,7 +4,7 @@ title: "Enrichment analysis"
 
 ## Material
 
-{{< downloadthis ../assets/pdf/enrichment_analysis.pdf dname="DGE_and_enrichment_analysis" label="Download the presentation" icon="filetype-pdf" >}}
+{{< downloadthis ../assets/pdf/enrichment_analysis.pdf dname="enrichment_analysis" label="Download the presentation" icon="filetype-pdf" >}}
 
 - [MSigDB](http://www.gsea-msigdb.org/gsea/msigdb/index.jsp)
 - `clusterProfiler` [vignette](https://bioconductor.org/packages/release/bioc/vignettes/clusterProfiler/inst/doc/clusterProfiler.html)
