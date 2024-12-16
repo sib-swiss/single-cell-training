@@ -1,7 +1,7 @@
 {
   "upload_type": "lesson",
   "title": "Course material Single cell transcriptomics",
-  "license": "cc-by-sa-4.0",
+  "license": "cc-by-4.0",
   "keywords": [
     "NGS",
     "RNA-seq",
@@ -25,6 +25,11 @@
       "name": "van Geest, Geert",
       "affiliation": "SIB Swiss Institute of Bioinformatics",
       "orcid": "0000-0002-1561-078X"
+    },
+    {
+      "name": "Cascione, Luciano",
+      "affiliation": "Institute of Oncology Research, Bellinzona",
+      "orcid": "0000-0002-4606-0637"  
     },
     {
       "name": "Palagi, Patricia",
