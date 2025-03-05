@@ -21,4 +21,5 @@ _site/
 .sh_history
 .wget-hsts
 de_genes_FindAllMarkers.csv
-
+*.html
+data/

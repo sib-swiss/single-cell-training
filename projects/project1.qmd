@@ -1,0 +1,84 @@
+---
+title: "Project 1"
+execute:
+  eval: false
+project:
+  execute-dir: project
+---
+
+Project 1 is about a single cell sequencing project of zebrafish retina. Photoreceptors were damaged with MNU and the response was investigated with help of transgenic fish that contained contstruct with a non-coding element (careg) regulating attached to a EGFP transcript, that can be used as regenerative activation marker. For single-cell transcriptomics analysis, cell suspensions were created from retinal cells, and processed with the 10x 3' kit. 
+
+## Available data
+
+Data has been downloaded and prepared for you from [GEO GSE202212](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202212). The format is `.h5`, and contains the count matrices after running `cellranger`. To create the count tables, the EGFP sequence was added to the reference genome. The gene name of EGFP is `GFPx`. 
+
+In order to download the data, run:
+
+```{bash}
+wget thedata.tar.gz
+tar -xzcvf thedata.tar.gz
+```
+
+
+After extracting, you see that there are eight files with count matrices:
+
+```
+GSM6106352_ctrl1_filtered_feature_bc_matrix.h5
+GSM6106353_ctrl2_filtered_feature_bc_matrix.h5
+GSM6106354_3dp1_filtered_feature_bc_matrix.h5
+GSM6106355_3dp2_filtered_feature_bc_matrix.h5
+GSM6106356_7dp1_filtered_feature_bc_matrix.h5
+GSM6106357_7dp2_filtered_feature_bc_matrix.h5
+GSM6106358_10dp1_filtered_feature_bc_matrix.h5
+GSM6106359_10dp2_filtered_feature_bc_matrix.h5
+```
+
+Showing us that we have two replicates per treatment, and four treatments:
+
+- ctrl: controls
+- 3dp: 3 days post injury
+- 7dp: 7 days post injury
+- 10dp: 10 days post injury
+
+Use the following code to read the h5 files in R, and create a combined Seurat object:
+
+```{r}
+library(Seurat)
+library(stringr)
+# get a list of file names
+h5_files <- list.files("data/project1/GSE202212_RAW/", full.names = TRUE)
+
+# create a list of seurat objects
+seu_list <- lapply(h5_files,
+  function(x) {
+    # extract the sample name from the file name
+    sample_id <- basename(x) |> word(2, sep = "_")
+    
+    # read the h5 files as sparse matrix and convert it to a seurat object
+    Read10X_h5(x, use.names = TRUE, unique.features = TRUE) |> 
+      CreateSeuratObject(project = sample_id) 
+  }
+)
+
+# name the list according to the treatment name
+names(seu_list) <- basename(h5_files) |> word(2, sep = "_")
+
+# merge the seurat objects and join the assay layers
+seu <- merge(seu_list[[1]], y = seu_list[2:length(seu_list)],
+             add.cell.ids = names(seu_list),
+             project = "zebra") |>
+  JoinLayers()
+```
+
+
+::: {.callout-important}
+## Project exercise
+
+with this dataset, go through the steps we have performed during the course, and try to reproduce the results provided in the paper. Pay specific attention to quality control, clustering and annotation. 
+:::
+
+## Tips
+
+- For mitochondrial genes, ribosomol genes and hemoglobin genes you can use the following patterns: `"^mt-"`, `"^rp[sl]"` and `"^hb[^(p)]"`. 
+- Work iterative; meaning that based on results of an analyis, adjust the previous analysis. For example, if clustering is not according to cell types, try to adjust the number of components or the resolution. 
+
