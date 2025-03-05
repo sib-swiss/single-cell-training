@@ -13,7 +13,7 @@ title: "Course schedule"
 | introduction 	| 9:15 AM  	| 9:30 AM 	| [Introduction](day1/day1-1_setup.qmd) |
 | block 1 	| 9:30 AM  	| 10:30 AM 	| [Introduction scRNAseq](day1/day1-1_setup.qmd) |
 |         	| 10:30 AM 	| 11:00 AM 	| BREAK                          	|
-| block 2 	| 11:00 AM 	| 12:30 PM 	| [Analysis tools and QC](day1/day1-2_analysis_tools_qc.qmd) 	     |
+| block 2 	| 11:00 AM 	| 12:30 PM 	| [10X and Cellranger](day1/day1-1a_cellranger.qmd) 	     |
 |         	| 12:30 PM 	| 1:30 PM  	| BREAK                          	|
 | block 3 	| 1:30 PM  	| 3:00 PM  	| [Analysis tools and QC](day1/day1-2_analysis_tools_qc.qmd)             	 |
 |         	| 3:00 PM  	| 3:30 PM  	| BREAK                          	|
