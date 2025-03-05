@@ -1,0 +1,7 @@
+---
+title: "Project 2"
+execute:
+    eval: false
+project:
+    execute-dir: project
+---
