@@ -41,6 +41,8 @@ website:
       - text: "projects"
         menu:
           - href: "projects/project1.qmd"
+          - href: "projects/project2.qmd"
+          - href: "projects/project3.qmd"
           
     right:
       - icon: github
