@@ -17,7 +17,7 @@ jobs:
   publish-site:
     runs-on: ubuntu-latest
     container:
-      image: geertvangeest/single-cell-rstudio:latest
+      image: sibswiss/training-singlecell-rstudio:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
