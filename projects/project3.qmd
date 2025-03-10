@@ -4,4 +4,132 @@ execute:
     eval: false
 project:
     execute-dir: project
+editor_options: 
+  chunk_output_type: console
 ---
+
+
+Project 3 focuses on understanding the role of type I interferon (IFN-I) responsiveness in shaping immune outcomes following PD1 blockade therapy. Type I interferons play a dual role in cancer immunotherapy, promoting both anti-tumor immunity and immune suppression through T cell exhaustion. To investigate how pre-existing IFN-I responses influence therapeutic success, this study utilizes scRNA-seq data from **healthy donors and 8 treated patients** to analyze transcriptional responses in immune cells.  
+
+Unsupervised clustering of transcriptional profiles revealed distinct immune cell populations and IFN-I-induced responses. Differences in IFN-I responsiveness were linked to immune cell states and transcriptional programs that influence therapy outcomes. Patients with lower pre-therapy IFN-I responsiveness in CD4 and CD8 effector T cells (Teff cells) exhibited transcriptional signatures associated with improved immune function, whereas highly responsive Teff cells displayed gene expression patterns linked to immune dysfunction and therapy resistance.  
+
+Further analysis identified epigenetically imprinted IFN-I response states that predefine immune reactivity to therapy. Coexpression and network analyses demonstrated that IFN-I responsiveness influences functional T cell programs and systemic immune coordination. This study provides insights into how pre-existing immune states impact therapeutic success and highlights transcriptional markers that could be used to predict patient outcomes in PD1 blockade immunotherapy.  
+
+## Available data
+
+Data has been downloaded and prepared for you from [GEO GSE199994](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE199994). 
+
+In order to download the data, run:
+
+```{bash}
+wget GSE199994.tar.gz
+tar -xzcvf GSE199994.tar.gz
+```
+
+```
+GSE199994/
+├── data
+│   ├── HD1
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   ├── HD2
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   ├── P1
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   ├── P2
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   ├── P3
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   ├── P4
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   ├── P5
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   ├── P6
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   ├── P7
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   └── P8
+│       ├── barcodes.tsv.gz
+│       ├── features.tsv.gz
+│       └── matrix.mtx.gz
+└── paper.pdf
+```
+
+Showing us that we have two replicates of healthy donors and 8 of treatment:
+
+- HD: controls
+- P: treatments
+
+
+Use the following code to read the data files in R, and create a combined Seurat object:
+
+```{r}
+library(Seurat)
+
+# Function to read the data from the files and create a Seurat object
+read_10x_data <- function(sample_path) {
+  # Read data
+  data <- Read10X(sample_path)
+  barcodes <- readLines(paste0(sample_path, "/barcodes.tsv.gz"))
+  features <- read.delim(paste0(sample_path, "/features.tsv.gz"), header = FALSE)
+
+  # Create Seurat object
+  seurat_object <- Seurat::CreateSeuratObject(data)
+  seurat_object <- AddMetaData(seurat_object, metadata = barcodes, 
+                               col.name = "barcodes")
+  seurat_object <- AddMetaData(seurat_object, metadata = features$V2,
+                               col.name = "features")
+
+  return(seurat_object)
+}
+
+# Data directory
+data_dir <- "data/project3/GSE199994/data"
+
+# Read data for each sample and combine into a single Seurat object
+samples <- basename(list.dirs(path = data_dir, full.names = T)[-1])
+
+seurat_objects <- lapply(samples, function(sample) 
+  read_10x_data(sample_path = file.path(data_dir, sample)))
+
+combined_seurat <- merge(seurat_objects[[1]],
+  y = seurat_objects[-1],
+  add.cell.ids = samples, project = "InterferonStudy"
+)
+
+combined_seurat@meta.data$orig.ident <- sapply(
+  rownames(combined_seurat@meta.data),
+  function(x) {
+    paste(strsplit(x = x, split = "_")[[1]][1:3], collapse = "_")
+  }
+)
+```
+
+
+::: {.callout-important}
+## Project exercise
+
+with this dataset, go through the steps we have performed during the course, and try to reproduce the results provided in the paper. Pay specific attention to quality control, clustering and annotation. 
+:::
+
+## Tips
+
+- For mitochondrial genes, ribosomol genes and hemoglobin genes you can use the following patterns: `"^MT-"`, `"^RP[SL]"` and `"^HB[^(P)]"`. 
+- Work iterative; meaning that based on results of an analyis, adjust the previous analysis. For example, if clustering is not according to cell types, try to adjust the number of components or the resolution. 
