@@ -4,4 +4,147 @@ execute:
     eval: false
 project:
     execute-dir: project
+editor_options: 
+  chunk_output_type: console
 ---
+
+Project 2 focuses on a single-cell sequencing study of the Drosophila brain following acute cocaine exposure. Flies were exposed to cocaine, which impaired locomotor activity and increased the incidence of seizures and compulsive grooming. To investigate the specific cell populations responding to cocaine, single-cell transcriptional responses were analyzed in duplicate samples of flies that consumed sucrose or sucrose supplemented with cocaine. The study utilized the 10x Genomics Chromium platform for single-cell RNA sequencing.
+
+Unsupervised clustering of transcriptional profiles from 86,224 cells revealed 36 distinct clusters, representing all major cell types (neuronal and glial) and neurotransmitter types from most brain regions. Differential expression analysis within individual clusters indicated cluster-specific responses to cocaine, with Kenyon cells of the mushroom bodies and glia showing particularly large transcriptional changes. The study highlighted profound sexual dimorphism in brain transcriptional responses to cocaine, with males exhibiting more pronounced changes than females.
+
+Cluster-specific coexpression networks and global interaction networks revealed diverse cellular processes affected by acute cocaine exposure, providing an atlas of sexually dimorphic cocaine-modulated gene expression in the Drosophila brain.
+
+
+## Available data
+
+Data has been downloaded and prepared for you from [GEO GSE152495](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE152495). 
+
+In order to download the data, run:
+
+```{bash}
+wget GSE152495.tar.gz
+tar -xzcvf GSE152495.tar.gz
+```
+
+
+After extracting, you would see the following format:
+
+```
+GSE152495/
+├── data
+│   ├── Female_Cocaine_1
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   ├── Female_Cocaine_2
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   ├── Female_Sucrose_1
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   ├── Female_Sucrose_2
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   ├── Male_Cocaine_1
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   ├── Male_Cocaine_2
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   ├── Male_Sucrose_1
+│   │   ├── barcodes.tsv.gz
+│   │   ├── features.tsv.gz
+│   │   └── matrix.mtx.gz
+│   └── Male_Sucrose_2
+│       ├── barcodes.tsv.gz
+│       ├── features.tsv.gz
+│       └── matrix.mtx.gz
+└── paper.pdf
+```
+
+Showing us that we have two replicates per treatment, and two treatments:
+
+- Male_Sucrose: controls
+- Female_Sucrose: controls
+- Male_Cocaine: treatments
+- Female_Cocaine: treatments
+
+Use the following code to read the data files in R, and create a combined Seurat object:
+
+```{r}
+library(Seurat)
+
+# Function to read the data from the files and create a Seurat object
+read_10x_data <- function(sample_path) {
+  # Read data
+  data <- Read10X(sample_path)
+  barcodes <- readLines(paste0(sample_path, "/barcodes.tsv.gz"))
+  features <- read.delim(paste0(sample_path, "/features.tsv.gz"), header = FALSE)
+
+  # Create Seurat object
+  seurat_object <- Seurat::CreateSeuratObject(data)
+  seurat_object <- AddMetaData(seurat_object, metadata = barcodes, 
+                               col.name = "barcodes")
+  seurat_object <- AddMetaData(seurat_object, metadata = features$V2,
+                               col.name = "features")
+
+  return(seurat_object)
+}
+
+# Data directory
+data_dir <- "data/project2/GSE152495/data"
+
+# Read data for each sample and combine into a single Seurat object
+samples <- basename(list.dirs(path = data_dir, full.names = T)[-1])
+
+seurat_objects <- lapply(samples, function(sample) 
+  read_10x_data(sample_path = file.path(data_dir, sample)))
+
+combined_seurat <- merge(seurat_objects[[1]],
+  y = seurat_objects[-1],
+  add.cell.ids = samples, project = "CocaineStudy"
+)
+
+combined_seurat@meta.data$orig.ident <- sapply(
+  rownames(combined_seurat@meta.data),
+  function(x) {
+    paste(strsplit(x = x, split = "_")[[1]][1:3], collapse = "_"
+    )
+  }
+)
+```
+
+
+::: {.callout-important}
+## Project exercise
+
+with this dataset, go through the steps we have performed during the course, and try to reproduce the results provided in the paper. Pay specific attention to quality control, clustering and annotation. 
+:::
+
+## Tips
+
+- For mitochondrial genes, ribosomol genes and hemoglobin genes you can use the following table:
+
+```{r}
+library(biomaRt)
+
+# Connect to Ensembl's FlyBase dataset
+ensembl <- useMart("ensembl", dataset = "dmelanogaster_gene_ensembl")
+
+# Define attributes to fetch
+attributes <- c("flybase_annot_id", "ensembl_gene_id", "flybase_gene_id",
+                "external_gene_name", "flybasename_gene", "description")
+
+# Get data
+gene_table <- getBM(attributes = attributes, mart = ensembl)
+
+# Print the first few rows
+head(gene_table)
+```
+
+- Work iterative; meaning that based on results of an analyis, adjust the previous analysis. For example, if clustering is not according to cell types, try to adjust the number of components or the resolution. 
