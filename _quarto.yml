@@ -36,8 +36,6 @@ website:
         menu:
           - href: "day3/day3-1_differential_gene_expression.qmd"
           - href: "day3/day3-2_enrichment_analysis.qmd"
-          - href: "day3/day3-3_trajectory_analysis.qmd"
-          - href: "day3/day3-4_advanced_analyses.qmd"
       - text: "projects"
         menu:
           - href: "projects/project1.qmd"

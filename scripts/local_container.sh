@@ -4,4 +4,4 @@ docker run \
 --name rstudio_admin \
 -e PASSWORD=test123 \
 -v $PWD:/home/rstudio \
-geertvangeest/single-cell-rstudio:2023.11
+geertvangeest/ngs-longreads-vscode:latest
