@@ -40,8 +40,8 @@ Data has been downloaded and prepared for you from [GEO GSE208653](https://www.n
 In order to download the data, run:
 
 ```{bash}
-wget GSE208653.tar.gz
-tar -xzcvf GSE208653.tar.gz
+https://single-cell-transcriptomics.s3.eu-central-1.amazonaws.com/projects/data/project4.tar.gz
+tar -xzcvf project4.tar.gz
 ```
 
 ```
