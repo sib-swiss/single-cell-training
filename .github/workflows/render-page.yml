@@ -9,6 +9,7 @@ on:
         - '**.yml'
       branches:
         - master
+        - 3-build-fails-on-project-initialization
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:

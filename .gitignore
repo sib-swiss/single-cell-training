@@ -6,6 +6,7 @@ site
 .config
 .bash_history
 .Rhistory
+.Rprofile
 single_cell_course
 cellranger*
 course_data*
