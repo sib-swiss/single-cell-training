@@ -5,7 +5,7 @@ title: "Cell annotation"
 
 ## Material
 
-{{< downloadthis ../assets/pdf/CellAnnotation_SIB.pdf dname="CellAnnotation_SIB" label="Download the presentation" icon="filetype-pdf" >}}
+{{< downloadthis ../assets/pdf/cell_type_annotation.pdf dname="cell_type_annotation" label="Download the presentation" icon="filetype-pdf" >}}
 
 {{< video https://youtu.be/dNO7W7qkKBM?si=xkLBHjT8V25AEzIx >}}
 
