@@ -3,9 +3,9 @@ title: "SIB course Single Cell Transcriptomics"
 ---
 
 ::: {.callout-caution}
-## Looking for previous material?
+## Enrolled in a course?
 
-Are you looking for material of previous versions of the course? Find it at [sib-swiss.github.io/single-cell-training-archived](https://sib-swiss.github.io/single-cell-training-archived)
+This website is maintained for asynchronous learning. Please go to [sib-swiss.github.io/single-cell-r-training](sib-swiss.github.io/single-cell-r-training) if you're enrolled in a course.
 :::
 
 <figure>
