@@ -59,9 +59,21 @@ markdown_extensions:
 extra_css:
   - stylesheets/extra.css
 
+extra_javascript:
+  - javascripts/consent.js
+
 extra:
   version:
     provider: mike
+  consent:
+    title: Cookie consent
+    description: >- 
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our trainig material and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our training material better.
+    cookies:
+      matomo: Matomo Analytics
 
 copyright: >
   Copyright &copy; 2021 - 2022 SIB Swiss Institute of Bioinformatics –
